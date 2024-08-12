@@ -22,4 +22,5 @@ build:
 	$(eval $@GOOS = darwin)
 	$(eval $@GOARCH = amd64)
 	GOOS=$($@GOOS) GOARCH=$($@GOARCH) go build -o "dist/proxmox-cli-$($@GOOS)-$($@GOARCH)" cmd/proxmox_cli/main.go
-
+test:
+	go test -v ./...
