@@ -2,30 +2,59 @@ package proxmoxapi
 
 import (
 	"fmt"
+	"net/http"
 )
 
 type ProxmoxAPI struct {
-	creds *credentials
+	config     ProxmoxAPIConfig
+	creds      *credentials
+	httpClient *http.Client
+}
+
+type ProxmoxAPIConfig struct {
+	Host               string
+	Port               int
+	InsecureSkipVerify bool
 }
 
 // TODO: To test credentials, do a proxmox version
 // query to ensure credentials are valid
-func New() (*ProxmoxAPI, error) {
+func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error) {
 	creds, err := newCredentialsFromEnv()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &ProxmoxAPI{creds}, nil
+	api := &ProxmoxAPI{
+		config:     config,
+		creds:      creds,
+		httpClient: newHttpClient(config.InsecureSkipVerify),
+	}
+
+	return api, nil
 }
 
 // TODO: To test credentials, do a proxmox version
 // query to ensure credentials are valid
-func NewWithCredentials(creds *credentials) *ProxmoxAPI {
-	return &ProxmoxAPI{creds}
+func NewWithCredentials(config ProxmoxAPIConfig, creds *credentials) *ProxmoxAPI {
+	api := &ProxmoxAPI{
+		creds:      creds,
+		httpClient: newHttpClient(config.InsecureSkipVerify),
+	}
+
+	return api
 }
 
-func (api *ProxmoxAPI) SayHello() {
-	fmt.Println("Hello from API")
+type apiResponse[T any] struct {
+	Data T `json:"data"`
+}
+
+func (api *ProxmoxAPI) buildHttpRequestUrl(path string) string {
+	if path[0] == '/' {
+		path = path[1:]
+	}
+
+	return fmt.Sprintf("https://%s:%d/api2/json/%s", api.config.Host, api.config.Port, path)
+
 }
