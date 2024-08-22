@@ -5,13 +5,6 @@ import (
 	"net/http"
 )
 
-type proxmoxHttpClient struct {
-	host     string
-	port     int
-	insecure bool
-	client   *http.Client
-}
-
 type httpClient = http.Client
 
 func newHttpClient(insecureSkipVerify bool) *httpClient {
