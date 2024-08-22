@@ -3,6 +3,7 @@ package proxmoxapi
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type ProxmoxAPI struct {
@@ -51,9 +52,15 @@ type apiResponse[T any] struct {
 }
 
 func (api *ProxmoxAPI) buildHttpRequestUrl(path string) string {
-	if path[0] == '/' {
-		path = path[1:]
+	checkForwardSlashRune := func(r rune) bool {
+		if r == '/' {
+			return true
+		}
+
+		return false
 	}
+
+	path = strings.TrimFunc(path, checkForwardSlashRune)
 
 	return fmt.Sprintf("https://%s:%d/api2/json/%s", api.config.Host, api.config.Port, path)
 
