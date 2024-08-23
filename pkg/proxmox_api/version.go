@@ -29,7 +29,7 @@ func (api *ProxmoxAPI) GetVersion() (GetVersionResponse, error) {
 		auth := fmt.Sprintf("PVEAPIToken=%s!%s=%s", api.creds.username, api.creds.tokenName, api.creds.token)
 		req.Header.Add("Authorization", auth)
 	} else {
-		return result.Data, errors.New("TODO: Change error")
+		return result.Data, errors.New("TODO: Change error: only token credentials supported")
 	}
 
 	res, err := api.httpClient.Do(req)
@@ -39,7 +39,7 @@ func (api *ProxmoxAPI) GetVersion() (GetVersionResponse, error) {
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return result.Data, errors.New("TODO: Change error")
+		return result.Data, errors.New("TODO: Change error: status code is not 200")
 	}
 
 	b, err := io.ReadAll(res.Body)

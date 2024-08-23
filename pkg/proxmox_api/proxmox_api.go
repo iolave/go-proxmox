@@ -18,8 +18,6 @@ type ProxmoxAPIConfig struct {
 	InsecureSkipVerify bool
 }
 
-// TODO: To test credentials, do a proxmox version
-// query to ensure credentials are valid
 func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error) {
 	creds, err := newCredentialsFromEnv()
 
@@ -33,18 +31,30 @@ func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error) {
 		httpClient: newHttpClient(config.InsecureSkipVerify),
 	}
 
+	_, err = api.GetVersion()
+
+	if err != nil {
+		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
+	}
+
 	return api, nil
 }
 
 // TODO: To test credentials, do a proxmox version
 // query to ensure credentials are valid
-func NewWithCredentials(config ProxmoxAPIConfig, creds *credentials) *ProxmoxAPI {
+func NewWithCredentials(config ProxmoxAPIConfig, creds *credentials) (*ProxmoxAPI, error) {
 	api := &ProxmoxAPI{
 		creds:      creds,
 		httpClient: newHttpClient(config.InsecureSkipVerify),
 	}
 
-	return api
+	_, err := api.GetVersion()
+
+	if err != nil {
+		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
+	}
+
+	return api, nil
 }
 
 type apiResponse[T any] struct {
