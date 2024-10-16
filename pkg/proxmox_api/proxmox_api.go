@@ -1,9 +1,14 @@
 package proxmoxapi
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
+
+	myerrors "github.com/iolave/go-proxmox/errors"
 )
 
 type ProxmoxAPI struct {
@@ -44,6 +49,7 @@ func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error) {
 // query to ensure credentials are valid
 func NewWithCredentials(config ProxmoxAPIConfig, creds *credentials) (*ProxmoxAPI, error) {
 	api := &ProxmoxAPI{
+		config:     config,
 		creds:      creds,
 		httpClient: newHttpClient(config.InsecureSkipVerify),
 	}
@@ -74,4 +80,46 @@ func (api *ProxmoxAPI) buildHttpRequestUrl(path string) string {
 
 	return fmt.Sprintf("https://%s:%d/api2/json/%s", api.config.Host, api.config.Port, path)
 
+}
+
+func sendGetRequest[T any](api *ProxmoxAPI, urlPath string) (T, error) {
+	url := api.buildHttpRequestUrl(urlPath)
+	result := &apiResponse[T]{}
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+
+	if err != nil {
+		return result.Data, err
+	}
+
+	if api.creds.credType == CREDENTIALS_TOKEN {
+		auth := fmt.Sprintf("PVEAPIToken=%s!%s=%s", api.creds.username, api.creds.tokenName, api.creds.token)
+		req.Header.Add("Authorization", auth)
+	} else {
+		return result.Data, errors.New("only token credentials are supported at the moment")
+	}
+
+	res, err := api.httpClient.Do(req)
+
+	if err != nil {
+		return result.Data, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return result.Data, myerrors.NewHTTPErrorFromReponse(res)
+	}
+
+	b, err := io.ReadAll(res.Body)
+
+	if err != nil {
+		return result.Data, err
+	}
+
+	err = json.Unmarshal(b, result)
+
+	if err != nil {
+		return result.Data, err
+	}
+
+	return result.Data, nil
 }
