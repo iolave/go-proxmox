@@ -1,5 +1,7 @@
 package proxmoxapi
 
+import "net/http"
+
 type NodeStatus string
 
 const (
@@ -21,5 +23,5 @@ type GetNodesResponse struct {
 }
 
 func (api *ProxmoxAPI) GetNodes() ([]GetNodesResponse, error) {
-	return sendGetRequest[[]GetNodesResponse](api, "/nodes")
+	return sendRequest[[]GetNodesResponse](http.MethodGet, api, "/nodes", nil)
 }
