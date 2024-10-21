@@ -1,6 +1,7 @@
 package proxmoxapi
 
 import (
+	"net/http"
 	"path"
 	"strconv"
 )
@@ -24,13 +25,13 @@ type GetNodeFirewallRulesResponse[Position interface{ int | string }] struct {
 }
 
 func (api *ProxmoxAPI) GetNodeFirewallRules(node string) ([]GetNodeFirewallRulesResponse[int], error) {
-	return sendGetRequest[[]GetNodeFirewallRulesResponse[int]](api, path.Join("/nodes", node, "/firewall/rules"))
+	return sendRequest[[]GetNodeFirewallRulesResponse[int]](http.MethodGet, api, path.Join("/nodes", node, "/firewall/rules"), nil)
 }
 
 func (api *ProxmoxAPI) GetNodeFirewallRulesByPos(node string, pos int) (GetNodeFirewallRulesResponse[string], error) {
-	return sendGetRequest[GetNodeFirewallRulesResponse[string]](api, path.Join("/nodes", node, "/firewall/rules", strconv.Itoa(pos)))
+	return sendRequest[GetNodeFirewallRulesResponse[string]](http.MethodGet, api, path.Join("/nodes", node, "/firewall/rules", strconv.Itoa(pos)), nil)
 }
 
 func (api *ProxmoxAPI) ReadNodeFirewallLog(node string) ([]FirewallLogEntry, error) {
-	return sendGetRequest[[]FirewallLogEntry](api, path.Join("/nodes", node, "/firewall/log"))
+	return sendRequest[[]FirewallLogEntry](http.MethodGet, api, path.Join("/nodes", node, "/firewall/log"), nil)
 }

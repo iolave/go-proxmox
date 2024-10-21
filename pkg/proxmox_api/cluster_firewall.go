@@ -1,6 +1,10 @@
 package proxmoxapi
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+	"net/url"
+)
 
 type GetAliasResponse struct {
 	CIDR    string `json:"cidr"`
@@ -10,12 +14,36 @@ type GetAliasResponse struct {
 }
 
 func (api *ProxmoxAPI) GetClusterFirewallAliases() ([]GetAliasResponse, error) {
-	return sendGetRequest[[]GetAliasResponse](api, "/cluster/firewall/aliases")
+	return sendRequest[[]GetAliasResponse](http.MethodGet, api, "/cluster/firewall/aliases", nil)
 }
 
 func (api *ProxmoxAPI) GetClusterFirewallAlias(name string) (GetAliasResponse, error) {
 	path := fmt.Sprintf("/cluster/firewall/aliases/%s", name)
-	return sendGetRequest[GetAliasResponse](api, path)
+	return sendRequest[GetAliasResponse](http.MethodGet, api, path, nil)
+}
+
+func (api *ProxmoxAPI) CreateClusterFirewallAlias(name, cidr string, comment *string) error {
+	payload := url.Values{}
+	payload.Add("name", name)
+	payload.Add("cidr", cidr)
+
+	if comment != nil {
+		payload.Add("comment", *comment)
+	}
+
+	_, err := sendRequest[any](http.MethodPost, api, "/cluster/firewall/aliases", &payload)
+	return err
+}
+
+func (api *ProxmoxAPI) DeleteClusterFirewallAlias(name string, digest *string) error {
+	payload := url.Values{}
+	if digest != nil {
+		payload.Add("digest", *digest)
+	}
+
+	path := fmt.Sprintf("/cluster/firewall/aliases/%s", name)
+	_, err := sendRequest[any](http.MethodDelete, api, path, &payload)
+	return err
 }
 
 type GetIPSetResponse struct {
@@ -25,7 +53,7 @@ type GetIPSetResponse struct {
 }
 
 func (api *ProxmoxAPI) GetClusterFirewallIPSet() ([]GetIPSetResponse, error) {
-	return sendGetRequest[[]GetIPSetResponse](api, "/cluster/firewall/ipset")
+	return sendRequest[[]GetIPSetResponse](http.MethodGet, api, "/cluster/firewall/ipset", nil)
 }
 
 type GetRulesResponse struct {
@@ -33,5 +61,5 @@ type GetRulesResponse struct {
 }
 
 func (api *ProxmoxAPI) GetClusterFirewallRules() ([]GetRulesResponse, error) {
-	return sendGetRequest[[]GetRulesResponse](api, "/cluster/firewall/rules")
+	return sendRequest[[]GetRulesResponse](http.MethodGet, api, "/cluster/firewall/rules", nil)
 }
