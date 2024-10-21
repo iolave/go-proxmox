@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	myerrors "github.com/iolave/go-proxmox/errors"
+	"github.com/iolave/go-proxmox/pkg/cloudflare"
 )
 
 type ProxmoxAPI struct {
@@ -21,6 +22,7 @@ type ProxmoxAPIConfig struct {
 	Host               string
 	Port               int
 	InsecureSkipVerify bool
+	CfServiceToken     *cloudflare.CloudflareServiceToken
 }
 
 func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error) {
@@ -97,6 +99,11 @@ func sendGetRequest[T any](api *ProxmoxAPI, urlPath string) (T, error) {
 		req.Header.Add("Authorization", auth)
 	} else {
 		return result.Data, errors.New("only token credentials are supported at the moment")
+	}
+
+	if api.config.CfServiceToken != nil {
+		req.Header.Add("CF-Access-Client-Id", api.config.CfServiceToken.ClientId)
+		req.Header.Add("CF-Access-Client-Secret", api.config.CfServiceToken.ClientSecret)
 	}
 
 	res, err := api.httpClient.Do(req)
