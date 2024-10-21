@@ -1,14 +1,21 @@
 package proxmoxapi
 
-type GetAliasesResponse struct {
+import "fmt"
+
+type GetAliasResponse struct {
 	CIDR    string `json:"cidr"`
 	Digest  string `json:"digest"`
 	Name    string `json:"name"`
 	Comment string `json:"comment"`
 }
 
-func (api *ProxmoxAPI) GetClusterFirewallAliases() ([]GetAliasesResponse, error) {
-	return sendGetRequest[[]GetAliasesResponse](api, "/cluster/firewall/aliases")
+func (api *ProxmoxAPI) GetClusterFirewallAliases() ([]GetAliasResponse, error) {
+	return sendGetRequest[[]GetAliasResponse](api, "/cluster/firewall/aliases")
+}
+
+func (api *ProxmoxAPI) GetClusterFirewallAlias(name string) (GetAliasResponse, error) {
+	path := fmt.Sprintf("/cluster/firewall/aliases/%s", name)
+	return sendGetRequest[GetAliasResponse](api, path)
 }
 
 type GetIPSetResponse struct {
