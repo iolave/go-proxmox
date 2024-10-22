@@ -1,0 +1,57 @@
+site_name: Proxmox API for Golang
+site_url: https://go-proxmox.iolave.com
+repo_url: https://github.com/iolave/go-proxmox
+repo_name: iolave/go-proxmox
+markdown_extensions:
+  - abbr
+  - attr_list
+  - pymdownx.snippets
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+theme: 
+  name: material
+  features:
+    - content.tooltips
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - content.code.copy
+    - content.code.select
+    - navigation.expand
+    - navigation.path
+    - navigation.prune
+    - navigation.indexes
+    - toc.integrate
+  icon:
+    logo: material/api
+    repo: fontawesome/brands/github
+  palette: 
+    # Palette toggle for light mode
+    - scheme: default
+      primary: black
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: blue-grey
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+nav:
+  - Home:
+    - index.md
+  - Getting started:
+    - getting-started/index.md
+  - Reference:
+    - reference/index.md
+    - pkg:
+      - reference/pkg/proxmox_api.md
+      - reference/pkg/cloudflare.md
+

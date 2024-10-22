@@ -1,8 +1,12 @@
 GOBIN ?= $$(go env GOPATH)/bin
 
-.PHONY: install-go-test-coverage
+.PHONY: install-go-test-coverage install-docs-dependencies
+
 install-go-test-coverage:
 	go install github.com/vladopajic/go-test-coverage/v2@latest
+
+install-docs-dependencies:
+	./scripts/install-docs-deps.sh
 
 .PHONY: coverage-check
 coverage-check: install-go-test-coverage
@@ -16,6 +20,15 @@ coverage:
 	$(MAKE) $(MAKEFLAGS) coverage-check; rc=$$? \
         ; $(MAKE) $(MAKEFLAGS) coverage-report \
         ; exit $$rc
+
+generate-docs:
+	. /tmp/venv/go-proxmox/bin/activate
+	go run ./cmd/gomarkdoc/main.go
+	mkdocs build
+
+preview-docs: install-docs-dependencies
+	. /tmp/venv/go-proxmox/bin/activate
+	mkdocs serve
 
 build:
 	$(eval $@GOOS = linux)
