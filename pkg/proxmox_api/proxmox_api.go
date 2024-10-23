@@ -8,17 +8,17 @@ import (
 	"github.com/iolave/go-proxmox/pkg/cloudflare"
 )
 
-type ProxmoxAPI struct {
-	config     ProxmoxAPIConfig
-	creds      *credentials
-	httpClient *http.Client
-}
-
 type ProxmoxAPIConfig struct {
 	Host               string
 	Port               int
 	InsecureSkipVerify bool
 	CfServiceToken     *cloudflare.CloudflareServiceToken
+}
+
+type ProxmoxAPI struct {
+	config     ProxmoxAPIConfig
+	creds      *credentials
+	httpClient *http.Client
 }
 
 func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error) {
