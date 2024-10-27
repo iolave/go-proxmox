@@ -22,12 +22,12 @@ coverage:
         ; exit $$rc
 
 generate-docs:
-	. /tmp/venv/go-proxmox/bin/activate
-	go run ./cmd/gomarkdoc/main.go
+	source /tmp/venv/go-proxmox/bin/activate; \
+	go run ./cmd/gomarkdoc/main.go; \
 	mkdocs build
 
 preview-docs: install-docs-dependencies
-	. /tmp/venv/go-proxmox/bin/activate
+	source /tmp/venv/go-proxmox/bin/activate; \
 	mkdocs serve
 
 build:

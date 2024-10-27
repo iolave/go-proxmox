@@ -8,6 +8,7 @@ type GetVersionResponse struct {
 	RepoID  string `json:"repoid"`
 }
 
+// GetVersion retrieves proxmox version.
 func (api *ProxmoxAPI) GetVersion() (GetVersionResponse, error) {
 	return sendRequest[GetVersionResponse](http.MethodGet, api, "/version", nil)
 }
