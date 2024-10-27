@@ -2,6 +2,7 @@ package proxmoxapi
 
 import "net/http"
 
+// Proxmox availabe node statuses
 type NodeStatus string
 
 const (
@@ -22,6 +23,7 @@ type GetNodesResponse struct {
 	Uptime         int        `json:"uptime"`
 }
 
+// GetNodes retrieves nodes.
 func (api *ProxmoxAPI) GetNodes() ([]GetNodesResponse, error) {
 	return sendRequest[[]GetNodesResponse](http.MethodGet, api, "/nodes", nil)
 }

@@ -1,5 +1,6 @@
 package proxmoxapi
 
+// Promox firewall availabe log levels.
 type FirewallLogLevel string
 
 const (
@@ -14,6 +15,7 @@ const (
 	FIREWALL_LOG_LEVEL_NOLOG  FirewallLogLevel = "nolog"
 )
 
+// Proxmox firewall log entry.
 type FirewallLogEntry struct {
 	Id   int    `json:"n"`
 	Text string `json:"t"`
