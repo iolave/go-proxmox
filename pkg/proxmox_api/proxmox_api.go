@@ -17,7 +17,7 @@ type ProxmoxAPIConfig struct {
 
 type ProxmoxAPI struct {
 	config     ProxmoxAPIConfig
-	creds      *credentials
+	creds      *Credentials
 	httpClient *http.Client
 }
 
@@ -45,7 +45,7 @@ func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error) {
 
 // TODO: To test credentials, do a proxmox version
 // query to ensure credentials are valid
-func NewWithCredentials(config ProxmoxAPIConfig, creds *credentials) (*ProxmoxAPI, error) {
+func NewWithCredentials(config ProxmoxAPIConfig, creds *Credentials) (*ProxmoxAPI, error) {
 	api := &ProxmoxAPI{
 		config:     config,
 		creds:      creds,
