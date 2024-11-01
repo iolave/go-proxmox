@@ -103,6 +103,26 @@ type GetIPSetResponse struct {
 }
 ```
 
+<a name="GetNodeDatastoreContentResponse"></a>
+## type [GetNodeDatastoreContentResponse](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_storage.go#L31-L42>)
+
+TODO: Add missing verification property from [docs](<https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/content>).
+
+```go
+type GetNodeDatastoreContentResponse struct {
+    Format    string  `json:"format"`    // Format identifier ('raw', 'qcow2', 'subvol', 'iso', 'tgz' ...)
+    Size      int     `json:"size"`      // Volume size in bytes.
+    VolumeID  string  `json:"volid"`     // Volume identifier.
+    CreatedAt *int    `json:"ctime"`     // Creation time (seconds since the UNIX Epoch).
+    Encrypted *string `json:"encrypted"` // If whole backup is encrypted, value is the fingerprint or '1'  if encrypted. Only useful for the Proxmox Backup Server storage type.
+    Notes     *string `json:"notes"`     // Optional notes. If they contain multiple lines, only the first one is returned here.
+    Parent    *string `json:"parent"`    // Volume identifier of parent (for linked cloned).
+    Protected *bool   `json:"protected"` // Protection status. Currently only supported for backups.
+    Used      *int    `json:"used"`      // Used space. Please note that most storage plugins do not report anything useful here.
+    VmID      *int    `json:"vmid"`      // Associated Owner VMID.
+}
+```
+
 <a name="GetNodeFirewallRulesResponse"></a>
 ## type [GetNodeFirewallRulesResponse](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_firewall.go#L9-L25>)
 
@@ -125,6 +145,46 @@ type GetNodeFirewallRulesResponse[Position interface{ int | string }] struct {
     Source          string           `json:"source"`
     Sport           string           `json:"sport"`
     Type            string           `json:"type"`
+}
+```
+
+<a name="GetNodeLxcsResponse"></a>
+## type [GetNodeLxcsResponse](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_lxc.go#L8-L19>)
+
+
+
+```go
+type GetNodeLxcsResponse struct {
+    Status  LxcStatus `json:"status"`
+    VmID    int       `json:"vmid"`
+    Cpus    *int      `json:"cpus"`
+    Lock    *string   `json:"lock"`
+    MaxDisk *int      `json:"maxdisk"`
+    MaxMem  *int      `json:"maxmem"`
+    MaxSwap *int      `json:"maxswap"`
+    Name    *string   `json:"name"`
+    Tags    *string   `json:"tags"`
+    Uptime  *int      `json:"uptime"`
+}
+```
+
+<a name="GetNodeStoragesResponse"></a>
+## type [GetNodeStoragesResponse](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_storage.go#L9-L20>)
+
+
+
+```go
+type GetNodeStoragesResponse struct {
+    Content      string   `json:"content"`       // Allowed storage content types.
+    Storage      string   `json:"storage"`       // The storage identifier.
+    Type         string   `json:"type"`          // Storage type.
+    Active       *bool    `json:"active"`        // Set when storage is accessible.
+    Available    *int     `json:"avail"`         // Available storage space in bytes.
+    Enabled      *bool    `json:"enabled"`       // Set when storage is enabled (not disabled).
+    Shared       *bool    `json:"shared"`        // Shared flag from storage configuration.
+    TotalSpace   *int     `json:"total"`         // Total storage space in bytes.
+    UsedSpace    *int     `json:"used"`          // Total storage space in bytes.
+    UsedFraction *float64 `json:"used_fraction"` // Used fraction (used/total).
 }
 ```
 
@@ -171,6 +231,24 @@ type GetVersionResponse struct {
 }
 ```
 
+<a name="LxcStatus"></a>
+## type [LxcStatus](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/lxc.go#L3>)
+
+
+
+```go
+type LxcStatus string
+```
+
+<a name="LXC_STATUS_STOPPED"></a>
+
+```go
+const (
+    LXC_STATUS_STOPPED LxcStatus = "stopped"
+    LXC_STATUS_RUNNING LxcStatus = "running"
+)
+```
+
 <a name="NodeStatus"></a>
 ## type [NodeStatus](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/nodes.go#L6>)
 
@@ -214,7 +292,7 @@ func New(config ProxmoxAPIConfig) (*ProxmoxAPI, error)
 ### func [NewWithCredentials](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/proxmox_api.go#L48>)
 
 ```go
-func NewWithCredentials(config ProxmoxAPIConfig, creds *credentials) (*ProxmoxAPI, error)
+func NewWithCredentials(config ProxmoxAPIConfig, creds *Credentials) (*ProxmoxAPI, error)
 ```
 
 TODO: To test credentials, do a proxmox version query to ensure credentials are valid
@@ -238,6 +316,28 @@ func (api *ProxmoxAPI) DeleteClusterFirewallAlias(name string, digest *string) e
 DeleteClusterFirewallAlias removes a cluster firewall IP or Network alias.
 
 Digest prevents changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+
+<a name="ProxmoxAPI.DownloadISOToNodeDatastore"></a>
+### func \(\*ProxmoxAPI\) [DownloadISOToNodeDatastore](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_storage.go#L59>)
+
+```go
+func (api *ProxmoxAPI) DownloadISOToNodeDatastore(node, storageId, fileName, URL string) error
+```
+
+DownloadISOToNodeDatastore downloads an iso from an url into a node's datastore.
+
+TODO: Add optional [parameters](<https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/download-url>).
+
+<a name="ProxmoxAPI.DownloadVZTemplateToNodeDatastore"></a>
+### func \(\*ProxmoxAPI\) [DownloadVZTemplateToNodeDatastore](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_storage.go#L75>)
+
+```go
+func (api *ProxmoxAPI) DownloadVZTemplateToNodeDatastore(node, storageId, fileName, URL string) error
+```
+
+DownloadVZTemplateToNodeDatastore downloads a vztemplate from an url into a node's datastore.
+
+TODO: Add optional [parameters](<https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/download-url>).
 
 <a name="ProxmoxAPI.GetClusterFirewallAlias"></a>
 ### func \(\*ProxmoxAPI\) [GetClusterFirewallAlias](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/cluster_firewall.go#L22>)
@@ -275,6 +375,26 @@ func (api *ProxmoxAPI) GetClusterFirewallRules() ([]GetRulesResponse, error)
 
 GetClusterFirewallRules retrieves all cluster firewall rules.
 
+<a name="ProxmoxAPI.GetNodeDatastoreContent"></a>
+### func \(\*ProxmoxAPI\) [GetNodeDatastoreContent](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_storage.go#L49>)
+
+```go
+func (api *ProxmoxAPI) GetNodeDatastoreContent(node, storageId string) ([]GetNodeDatastoreContentResponse, error)
+```
+
+GetNodeDatastoreContent retrieves node's datastores info.
+
+TODO: Add optional [parameters](<https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/content>).
+
+<a name="ProxmoxAPI.GetNodeDatastores"></a>
+### func \(\*ProxmoxAPI\) [GetNodeDatastores](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_storage.go#L23>)
+
+```go
+func (api *ProxmoxAPI) GetNodeDatastores(node string) ([]GetNodeStoragesResponse, error)
+```
+
+GetNodeDatastores retrieves node's datastores info.
+
 <a name="ProxmoxAPI.GetNodeFirewallRules"></a>
 ### func \(\*ProxmoxAPI\) [GetNodeFirewallRules](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_firewall.go#L28>)
 
@@ -282,7 +402,7 @@ GetClusterFirewallRules retrieves all cluster firewall rules.
 func (api *ProxmoxAPI) GetNodeFirewallRules(node string) ([]GetNodeFirewallRulesResponse[int], error)
 ```
 
-GetNodeFirewallRules lists all rules.
+GetNodeFirewallRules retrieves node's firewall rules.
 
 <a name="ProxmoxAPI.GetNodeFirewallRulesByPos"></a>
 ### func \(\*ProxmoxAPI\) [GetNodeFirewallRulesByPos](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_firewall.go#L33>)
@@ -291,7 +411,16 @@ GetNodeFirewallRules lists all rules.
 func (api *ProxmoxAPI) GetNodeFirewallRulesByPos(node string, pos int) (GetNodeFirewallRulesResponse[string], error)
 ```
 
-GetNodeFirewallRulesByPos gets single rule data using the rule position \(pos\) as an index.
+GetNodeFirewallRulesByPos Retrieves a single node's firewall rule using rule's position \(pos\) as an index.
+
+<a name="ProxmoxAPI.GetNodeLxcs"></a>
+### func \(\*ProxmoxAPI\) [GetNodeLxcs](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_lxc.go#L22>)
+
+```go
+func (api *ProxmoxAPI) GetNodeLxcs(node string) ([]GetNodeLxcsResponse, error)
+```
+
+GetNodeLxcs returns node's lxc index per node.
 
 <a name="ProxmoxAPI.GetNodes"></a>
 ### func \(\*ProxmoxAPI\) [GetNodes](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/nodes.go#L27>)
@@ -300,7 +429,7 @@ GetNodeFirewallRulesByPos gets single rule data using the rule position \(pos\) 
 func (api *ProxmoxAPI) GetNodes() ([]GetNodesResponse, error)
 ```
 
-GetNodes returns all nodes.
+GetNodes retrieves nodes.
 
 <a name="ProxmoxAPI.GetVersion"></a>
 ### func \(\*ProxmoxAPI\) [GetVersion](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/version.go#L12>)
@@ -309,7 +438,7 @@ GetNodes returns all nodes.
 func (api *ProxmoxAPI) GetVersion() (GetVersionResponse, error)
 ```
 
-GetVersion returns proxmox version.
+GetVersion retrieves proxmox version.
 
 <a name="ProxmoxAPI.ReadNodeFirewallLog"></a>
 ### func \(\*ProxmoxAPI\) [ReadNodeFirewallLog](<https://github.com/iolave/go-proxmox/blob/master/pkg/proxmox_api/node_firewall.go#L42>)
@@ -318,7 +447,7 @@ GetVersion returns proxmox version.
 func (api *ProxmoxAPI) ReadNodeFirewallLog(node string) ([]FirewallLogEntry, error)
 ```
 
-ReadNodeFirewallLog read firewall log.
+ReadNodeFirewallLog Retrieves node's firewall log entries.
 
 TODO: Add missing limit, since, start, until parameters shown in [docs](<https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/firewall/log>).
 
