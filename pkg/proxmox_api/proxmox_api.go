@@ -73,5 +73,4 @@ func (api *ProxmoxAPI) buildHttpRequestUrl(path string) string {
 	path = strings.TrimFunc(path, checkForwardSlashRune)
 
 	return fmt.Sprintf("https://%s:%d/api2/json/%s", api.config.Host, api.config.Port, path)
-
 }
