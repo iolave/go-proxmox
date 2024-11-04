@@ -74,3 +74,7 @@ func (api *ProxmoxAPI) buildHttpRequestUrl(path string) string {
 
 	return fmt.Sprintf("https://%s:%d/api2/json/%s", api.config.Host, api.config.Port, path)
 }
+
+type pveOption interface {
+	String() string // Parse content to proxmox required format
+}

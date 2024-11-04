@@ -51,6 +51,8 @@ const (
 	LXC_LOCK_SNAPSHOT_DELETE LxcLock = "snapshot-delete"
 )
 
+var _ pveOption = &LxcNet{}
+
 // TODO: Add support for [trunks] (vlans).
 //
 // [trunks]: https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
@@ -144,7 +146,7 @@ func (api *ProxmoxAPI) GetLxcs(node string) ([]GetNodeLxcsResponse, error) {
 
 type CreateLxcRequest struct {
 	Node               string          // The cluster node name.
-	OSTemplate         string          // The OS template or backup file.
+	OSTemplate         string          // The OS template or backup file (in format "{STORAGE_ID}:{TYPE}/{TEMPLATE_NAME}", i.e. "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst")
 	VMID               *int            // The (unique) ID of the VM.
 	Arch               *LxcArch        // OS architecture type.
 	BWLimit            *int            // Override I/O bandwidth limit (in KiB/s).
@@ -170,7 +172,7 @@ type CreateLxcRequest struct {
 	Pool               *string         // Add the VM to the specified pool.
 	Protection         *bool           // Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
 	Restore            *bool           // Mark this as restore task.
-	RootFS             *string         // make this a struct Use volume as container root.
+	RootFS             *string         // Use volume as container root (in format "{STORAGE_ID}:{SIZE_IN_GIGS}", i.e. "local-lvm:8", if value not specified it defaults to "local-lvm:8", TODO: make this a struct).
 	Searchdomain       *string         // Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
 	SSHPublicKeys      *string         // Setup public SSH keys (one key per line, OpenSSH format).
 	Start              *bool           // Start the CT after its creation finished successfully.
@@ -189,72 +191,86 @@ type CreateLxcRequest struct {
 
 }
 
-func (api *ProxmoxAPI) CreateLxc(req CreateLxcRequest) (string, error) {
+type CreateLxcResponse struct {
+	VMID int // LXC container id within proxmox.
+}
+
+// CreateLxc creates an LXC container and return useful information to interact with it after it's creation.
+func (api *ProxmoxAPI) CreateLxc(req CreateLxcRequest) (*CreateLxcResponse, error) {
+	var err error
 	if req.Node == "" {
-		return "", errors.New("missing 'Node' parameter")
+		return nil, errors.New("missing 'Node' parameter")
 	}
 
 	p := &url.Values{}
 
-	helpers.AddPayloadValue(p, "ostemplate", req.OSTemplate)
+	helpers.AddPayloadValue(p, "ostemplate", &req.OSTemplate, nil)
+
+	var vmid int
 	if req.VMID == nil {
-		vmid, err := api.GetNextVMID()
+		vmid, err = api.GetNextVMID()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		helpers.AddPayloadValue(p, "vmid", vmid)
 	} else {
-		helpers.AddPayloadValue(p, "vmid", req.VMID)
+		vmid = *req.VMID
 	}
+	helpers.AddPayloadValue(p, "vmid", &vmid, nil)
 	//helpers.AddPayloadValue(p, "arch", req.Arch)
-	helpers.AddPayloadValue(p, "bwlimit", req.BWLimit)
+	helpers.AddPayloadValue(p, "bwlimit", req.BWLimit, nil)
 	//helpers.AddPayloadValue(p, "cmode", req.CMode)
-	helpers.AddPayloadValue(p, "console", req.Console)
-	helpers.AddPayloadValue(p, "cores", req.Cores)
-	helpers.AddPayloadValue(p, "cpulimit", req.CPULimit)
-	helpers.AddPayloadValue(p, "cpuunits", req.CPUUnits)
-	helpers.AddPayloadValue(p, "debug", req.Debug)
-	helpers.AddPayloadValue(p, "description", req.Desc)
-	helpers.AddPayloadValue(p, "features", req.Features)
-	helpers.AddPayloadValue(p, "force", req.Force)
-	helpers.AddPayloadValue(p, "hookscript", req.Hookscript)
-	helpers.AddPayloadValue(p, "ignore-unpack-errors", req.IgnoreUnpackErrors)
-	//helpers.AddPayloadValue(p, "lock", req.Lock)
-	helpers.AddPayloadValue(p, "memory", req.Memory)
-	helpers.AddPayloadValue(p, "hostname", req.Nameserver)
+	helpers.AddPayloadValue(p, "console", req.Console, nil)
+	helpers.AddPayloadValue(p, "cores", req.Cores, nil)
+	helpers.AddPayloadValue(p, "cpulimit", req.CPULimit, nil)
+	helpers.AddPayloadValue(p, "cpuunits", req.CPUUnits, nil)
+	helpers.AddPayloadValue(p, "debug", req.Debug, nil)
+	helpers.AddPayloadValue(p, "description", req.Desc, nil)
+	helpers.AddPayloadValue(p, "features", req.Features, nil)
+	helpers.AddPayloadValue(p, "force", req.Force, nil)
+	helpers.AddPayloadValue(p, "hookscript", req.Hookscript, nil)
+	helpers.AddPayloadValue(p, "ignore-unpack-errors", req.IgnoreUnpackErrors, nil)
+	//helpers.AddPayloadValue(p, "lock", req.Lock, nil)
+	helpers.AddPayloadValue(p, "memory", req.Memory, nil)
+	helpers.AddPayloadValue(p, "hostname", req.Nameserver, nil)
 	if req.Net != nil {
 		for i := 0; i < len(*req.Net); i++ {
 			content := (*req.Net)[i].String()
-			helpers.AddPayloadValue(p, fmt.Sprintf("net%d", i), content)
+			helpers.AddPayloadValue(p, fmt.Sprintf("net%d", i), &content, nil)
 		}
 	}
-	helpers.AddPayloadValue(p, "onboot", req.OnBoot)
-	helpers.AddPayloadValue(p, "ostype", req.OSType)
-	helpers.AddPayloadValue(p, "password", req.Password)
-	helpers.AddPayloadValue(p, "pool", req.Pool)
-	helpers.AddPayloadValue(p, "protection", req.Protection)
-	helpers.AddPayloadValue(p, "restore", req.Restore)
-	helpers.AddPayloadValue(p, "rootfs", req.RootFS)
-	helpers.AddPayloadValue(p, "searchdomain", req.Searchdomain)
-	helpers.AddPayloadValue(p, "ssh-public-keys", req.SSHPublicKeys)
+	helpers.AddPayloadValue(p, "onboot", req.OnBoot, nil)
+	helpers.AddPayloadValue(p, "ostype", req.OSType, nil)
+	helpers.AddPayloadValue(p, "password", req.Password, nil)
+	helpers.AddPayloadValue(p, "pool", req.Pool, nil)
+	helpers.AddPayloadValue(p, "protection", req.Protection, nil)
+	helpers.AddPayloadValue(p, "restore", req.Restore, nil)
+	helpers.AddPayloadValue(p, "rootfs", req.RootFS, helpers.NewStr("local-lvm:8"))
+	helpers.AddPayloadValue(p, "searchdomain", req.Searchdomain, nil)
+	helpers.AddPayloadValue(p, "ssh-public-keys", req.SSHPublicKeys, nil)
 	if req.Start != nil && *req.Start == true {
 		// helpers.AddPayloadValue(p, "start", req.Start)
 		// TODO: Manually start using the lxc status start endpoint
 	}
-	helpers.AddPayloadValue(p, "startup", req.Startup)
-	helpers.AddPayloadValue(p, "storage", req.Storage)
-	helpers.AddPayloadValue(p, "swap", req.Swap)
-	helpers.AddPayloadValue(p, "tags", req.Tags)
-	helpers.AddPayloadValue(p, "template", req.Template)
-	helpers.AddPayloadValue(p, "timezone", req.Timezone)
-	helpers.AddPayloadValue(p, "tty", req.TTY)
-	helpers.AddPayloadValue(p, "unique", req.Unique)
-	helpers.AddPayloadValue(p, "unprivileged", req.Unprivileged)
+	helpers.AddPayloadValue(p, "startup", req.Startup, nil)
+	helpers.AddPayloadValue(p, "storage", req.Storage, nil)
+	helpers.AddPayloadValue(p, "swap", req.Swap, nil)
+	helpers.AddPayloadValue(p, "tags", req.Tags, nil)
+	helpers.AddPayloadValue(p, "template", req.Template, nil)
+	helpers.AddPayloadValue(p, "timezone", req.Timezone, nil)
+	helpers.AddPayloadValue(p, "tty", req.TTY, nil)
+	helpers.AddPayloadValue(p, "unique", req.Unique, nil)
+	helpers.AddPayloadValue(p, "unprivileged", req.Unprivileged, nil)
 
 	//helpers.AddPayloadValue(p, "unused[n]", req.Unuseds)
 	//helpers.AddPayloadValue(p, "dev[n]", req.Devs)
 	//helpers.AddPayloadValue(p, "mp[n]", req.MPs)
 
 	path := path.Join("/nodes", req.Node, "/lxc")
-	return sendRequest[string](http.MethodPost, api, path, p)
+	_, err = sendRequest[string](http.MethodPost, api, path, p)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &CreateLxcResponse{VMID: vmid}, nil
 }
