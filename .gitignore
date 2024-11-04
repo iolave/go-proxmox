@@ -3,3 +3,4 @@ dist
 **/*.swp
 cover*
 site/
+docs/reference/pkg/*

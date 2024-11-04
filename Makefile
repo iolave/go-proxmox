@@ -23,6 +23,7 @@ coverage:
 
 generate-docs: install-docs-dependencies
 	source /tmp/venv/go-proxmox/bin/activate; \
+	mkdir -p ./docs/reference/pkg/
 	go run ./cmd/gomarkdoc/main.go; \
 	mkdocs build
 
