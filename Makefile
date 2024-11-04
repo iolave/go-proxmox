@@ -21,7 +21,7 @@ coverage:
         ; $(MAKE) $(MAKEFLAGS) coverage-report \
         ; exit $$rc
 
-generate-docs:
+generate-docs: install-docs-dependencies
 	source /tmp/venv/go-proxmox/bin/activate; \
 	go run ./cmd/gomarkdoc/main.go; \
 	mkdocs build
