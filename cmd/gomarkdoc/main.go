@@ -12,14 +12,18 @@ import (
 )
 
 func main() {
-	proxmoxapiMd, err := getPackageMd("proxmox_api")
-	handleErr(err)
-	err = writePackageMd("proxmox_api", proxmoxapiMd)
-	handleErr(err)
-	cloudflareMd, err := getPackageMd("cloudflare")
-	handleErr(err)
-	err = writePackageMd("cloudflare", cloudflareMd)
-	handleErr(err)
+	packages := []string{
+		"proxmox_api",
+		"cloudflare",
+	}
+
+	for i := 0; i < len(packages); i++ {
+		pkg := packages[i]
+		md, err := getPackageMd(pkg)
+		handleErr(err)
+		err = writePackageMd(pkg, md)
+		handleErr(err)
+	}
 }
 
 func handleErr(err error) {
@@ -48,7 +52,6 @@ func writePackageMd(pkgName string, md string) error {
 }
 
 func getPackageMd(pkgName string) (string, error) {
-
 	// Create a renderer to output data
 	out, err := gomarkdoc.NewRenderer(
 		gomarkdoc.WithTemplateOverride("index", ""),
@@ -76,7 +79,15 @@ func getPackageMd(pkgName string) (string, error) {
 	// Create a documentation package from the build representation of our
 	// package.
 	log := logger.New(logger.DebugLevel)
-	pkg, err := lang.NewPackageFromBuild(log, buildPkg)
+	pkg, err := lang.NewPackageFromBuild(
+		log,
+		buildPkg,
+		lang.PackageWithRepositoryOverrides(&lang.Repo{
+			DefaultBranch: "master",
+			Remote:        "https://github.com/iolave/go-proxmox",
+			PathFromRoot:  "/",
+		}),
+	)
 
 	if err != nil {
 		return "", err

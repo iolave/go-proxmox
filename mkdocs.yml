@@ -15,6 +15,9 @@ markdown_extensions:
   - pymdownx.superfences
 theme: 
   name: material
+  font: 
+    text: Roboto Mono
+    code: Roboto Mono
   features:
     - content.tooltips
     - navigation.instant
@@ -31,19 +34,13 @@ theme:
     logo: material/api
     repo: fontawesome/brands/github
   palette: 
-    # Palette toggle for light mode
-    - scheme: default
-      primary: black
-      toggle:
-        icon: material/brightness-7 
-        name: Switch to dark mode
-
     # Palette toggle for dark mode
-    - scheme: slate
-      primary: blue-grey
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+    scheme: slate
+    primary: black
+    accent: deep orange
+    toggle:
+      icon: material/brightness-4
+      name: Switch to light mode
 nav:
   - Home:
     - index.md
