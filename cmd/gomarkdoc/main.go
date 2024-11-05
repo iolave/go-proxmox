@@ -13,7 +13,8 @@ import (
 
 func main() {
 	packages := []string{
-		"proxmox_api",
+		"pve",
+		"helpers",
 		"cloudflare",
 	}
 

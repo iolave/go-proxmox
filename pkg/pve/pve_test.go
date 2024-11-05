@@ -1,4 +1,4 @@
-package proxmoxapi
+package pve
 
 import (
 	"encoding/json"
@@ -23,7 +23,7 @@ func newProxmoxApiTestServer(data []byte, status int) *httptest.Server {
 func TestNewErrorWhenInvalidCredentials(t *testing.T) {
 	os.Setenv("PROXMOX_USER", "")
 
-	cfg := ProxmoxAPIConfig{
+	cfg := Config{
 		Host: "",
 		Port: 0,
 	}
@@ -49,7 +49,7 @@ func TestNewErrorWhenGetVersionReturnStatusCodeOtherThanOk(t *testing.T) {
 	os.Setenv("PROXMOX_USERNAME", "username")
 	os.Setenv("PROXMOX_TOKEN_NAME", "token_name")
 	os.Setenv("PROXMOX_TOKEN", "token")
-	_, err := New(ProxmoxAPIConfig{
+	_, err := New(Config{
 		Host:               host,
 		Port:               port,
 		InsecureSkipVerify: true,
@@ -73,8 +73,8 @@ func TestNewWithCredentialsSuccess(t *testing.T) {
 	os.Setenv("PROXMOX_USERNAME", "username")
 	os.Setenv("PROXMOX_TOKEN_NAME", "token_name")
 	os.Setenv("PROXMOX_TOKEN", "token")
-	creds, _ := newCredentialsFromEnv()
-	_, err := NewWithCredentials(ProxmoxAPIConfig{
+	creds, _ := NewEnvCreds()
+	_, err := NewWithCredentials(Config{
 		Host:               host,
 		Port:               port,
 		InsecureSkipVerify: true,
@@ -97,8 +97,8 @@ func TestNewWithCredentialsErrorWhenInvalidCredentials(t *testing.T) {
 	os.Setenv("PROXMOX_USERNAME", "username")
 	os.Setenv("PROXMOX_TOKEN_NAME", "token_name")
 	os.Setenv("PROXMOX_TOKEN", "token")
-	creds, _ := newCredentialsFromEnv()
-	_, err := NewWithCredentials(ProxmoxAPIConfig{
+	creds, _ := NewEnvCreds()
+	_, err := NewWithCredentials(Config{
 		Host:               host,
 		Port:               port,
 		InsecureSkipVerify: true,
@@ -122,7 +122,7 @@ func TestNewErrorWhenGetVersionReturnInvalidResponseData(t *testing.T) {
 	os.Setenv("PROXMOX_USERNAME", "username")
 	os.Setenv("PROXMOX_TOKEN_NAME", "token_name")
 	os.Setenv("PROXMOX_TOKEN", "token")
-	_, err := New(ProxmoxAPIConfig{
+	_, err := New(Config{
 		Host:               host,
 		Port:               port,
 		InsecureSkipVerify: true,
@@ -145,7 +145,7 @@ func TestBuildHttpRequestUrl(t *testing.T) {
 	host := url.Hostname()
 	port, _ := strconv.Atoi(url.Port())
 
-	api, _ := New(ProxmoxAPIConfig{Host: host, Port: port, InsecureSkipVerify: true})
+	api, _ := New(Config{Host: host, Port: port, InsecureSkipVerify: true})
 
 	normalizedPath := "some-path"
 	expected := fmt.Sprintf("https://%s:%d/api2/json/%s", host, port, normalizedPath)
@@ -157,10 +157,10 @@ func TestBuildHttpRequestUrl(t *testing.T) {
 	}
 
 	for i := 0; i < len(testCases); i++ {
-		result := api.buildHttpRequestUrl(testCases[i])
+		result := api.httpClient.buildRequestUrl(testCases[i])
 
 		if result != expected {
-			t.Fatalf(`buildHttpRequestUrl("%s"), expected "%s", got "%s"`, testCases[i], expected, result)
+			t.Fatalf(`buildRequestUrl("%s"), expected "%s", got "%s"`, testCases[i], expected, result)
 		}
 
 	}

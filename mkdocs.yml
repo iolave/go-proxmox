@@ -50,5 +50,5 @@ nav:
     - reference/index.md
     - pkg:
       - reference/pkg/cloudflare.md
-      - reference/pkg/proxmox_api.md
-
+      - reference/pkg/helpers.md
+      - reference/pkg/pve.md
