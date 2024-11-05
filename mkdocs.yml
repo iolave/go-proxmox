@@ -1,11 +1,11 @@
 site_name: Proxmox API for Golang
-site_url: https://go-proxmox.iolave.com
+site_url: https://go-proxmox.docs.iolave.com/
 repo_url: https://github.com/iolave/go-proxmox
 repo_name: iolave/go-proxmox
 markdown_extensions:
   - abbr
   - attr_list
-  - pymdownx.snippets
+  - admonition
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -13,23 +13,45 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - github-callouts
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 theme: 
   name: material
   font: 
     text: Roboto Mono
     code: Roboto Mono
   features:
-    - content.tooltips
-    - navigation.instant
-    - navigation.tabs
-    - navigation.tabs.sticky
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
     - content.code.copy
     - content.code.select
-    - navigation.expand
-    - navigation.path
-    - navigation.prune
+    - content.footnote.tooltips
+    - content.tabs.link
+    - content.tooltips
+    # - header.autohide
+    # - navigation.expand
+    # - navigation.footer
     - navigation.indexes
-    - toc.integrate
+    # - navigation.instant
+    # - navigation.instant.prefetch
+    # - navigation.instant.progress
+    # - navigation.prune
+    #- navigation.sections
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    #- navigation.top
+    #- navigation.tracking
+    #- search.highlight
+    #- search.share
+    - search.suggest
+    - toc.follow
   icon:
     logo: material/api
     repo: fontawesome/brands/github
@@ -44,11 +66,12 @@ theme:
 nav:
   - Home:
     - index.md
+    - implemented-features.md
   - Getting started:
     - getting-started/index.md
   - Reference:
-    - reference/index.md
     - pkg:
       - reference/pkg/cloudflare.md
       - reference/pkg/helpers.md
       - reference/pkg/pve.md
+  - Changelog: changelog.md

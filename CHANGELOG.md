@@ -6,9 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
+
+## [v0.2.0]
+### Added
+- Helpers:
+    - `BoolToInt` converts `true` to `1` and `false` to `0`.
+    - `NewStr`, `NewInt` and `NewBool` methods that converts the primitive value to a pointer to it.
+- Cloudflare Zero Trust support with Service Tokens.
+- Proxmox Cluster:
+    - `GetClusterFirewallAliases` retrieves all cluster firewall aliases.
+    - `GetClusterFirewallAlias` retrieves cluster firewall alias by it's name.
+    - `CreateClusterFirewallAlias` creates a cluster firewall IP or Network Alias.
+    - `UpdateClusterFirewallAlias` updates a cluster firewall IP or Network alias.
+    - `DeleteClusterFirewallAlias` removes a cluster firewall IP or Network alias.
+    - `GetClusterFirewallIPSet` retrieves all cluster firewall IPSets.
+    - `GetClusterFirewallRules` retrieves all cluster firewall rules.
+- Proxmox nodes:
+    - `GetAll` retrieves all nodes.
+    - `Get` retrieves a single nodes.
+    - `GetNodeRules` retrieves node's firewall rules.
+    - `GetNodeRulesByPos` Retrieves a single node's firewall rule using rule's position (pos) as an index.
+    - `ReadNodeLog` Retrieves node's firewall log entries.
+    - `GetNodeDatastores` retrieves node's datastores info.
+    - `GetNodeDatastoreContent` retrieves node's datastores info.
+    - `DownloadISOToNodeDatastore` downloads an iso from an url into a node's datastore.
+    - `DownloadVZTemplateToNodeDatastore` downloads a vztemplate from an url into a node's datastore.
+- Proxmox LXC:
+    - `GetLxcs` returns node's lxc index per node.
+    - `CreateLxc` creates an LXC container and return useful information to interact with it after it's creation.
+
 ### Changed
-- `ProxmoxAPI.NewWithCredentials` method can now return an error.
-- `ProxmoxAPI.New` and `ProxmoxAPI.NewWithCredentials` methods now sends a Get Version request to the remote proxmox api to check for valid credentials.
+- Main package was renamed from proxmoxapi to pve.
+- `pve.NewEnvCreds` method can now return an error.
+- `pve.New` and `pve.NewWithCredentials` methods now sends a Get Version request to the remote proxmox api to check for valid credentials.
+- `pve.Credentials` now have a Set method that adds the authorization header to the given http request.
 
 
 ## [v0.1.0]
@@ -17,5 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proxmox api token credentials support.
 - Proxmox api version endpoint.
 
-[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.2.0
 [v0.1.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.1.0
