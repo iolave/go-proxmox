@@ -1,4 +1,4 @@
-package proxmoxapi
+package pve
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"path"
 )
 
-type GetNodeStoragesResponse struct {
+type GetNodeDatastoreResponse struct {
 	Content      string   `json:"content"`       // Allowed storage content types.
 	Storage      string   `json:"storage"`       // The storage identifier.
 	Type         string   `json:"type"`          // Storage type.
@@ -20,9 +20,14 @@ type GetNodeStoragesResponse struct {
 }
 
 // GetNodeDatastores retrieves node's datastores info.
-func (api *ProxmoxAPI) GetNodeDatastores(node string) ([]GetNodeStoragesResponse, error) {
+func (api *PVE) GetNodeDatastores(node string) ([]GetNodeDatastoreResponse, error) {
 	path := path.Join("/nodes", node, "/storage")
-	return sendRequest[[]GetNodeStoragesResponse](http.MethodGet, api, path, nil)
+	method := http.MethodGet
+
+	res := &[]GetNodeDatastoreResponse{}
+	err := api.httpClient.sendReq(method, path, nil, res)
+
+	return *res, err
 }
 
 // TODO: Add missing verification property from [docs].
@@ -46,9 +51,14 @@ type GetNodeDatastoreContentResponse struct {
 // TODO: Add optional [parameters].
 //
 // [parameters]: https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/content
-func (api *ProxmoxAPI) GetNodeDatastoreContent(node, storageId string) ([]GetNodeDatastoreContentResponse, error) {
+func (api *PVE) GetNodeDatastoreContent(node, storageId string) ([]GetNodeDatastoreContentResponse, error) {
 	path := path.Join("/nodes", node, "/storage", storageId, "/content")
-	return sendRequest[[]GetNodeDatastoreContentResponse](http.MethodGet, api, path, nil)
+	method := http.MethodGet
+
+	res := &[]GetNodeDatastoreContentResponse{}
+	err := api.httpClient.sendReq(method, path, nil, res)
+
+	return *res, err
 }
 
 // DownloadISOToNodeDatastore downloads an iso from an url into a node's datastore.
@@ -56,14 +66,16 @@ func (api *ProxmoxAPI) GetNodeDatastoreContent(node, storageId string) ([]GetNod
 // TODO: Add optional [parameters].
 //
 // [parameters]: https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/download-url
-func (api *ProxmoxAPI) DownloadISOToNodeDatastore(node, storageId, fileName, URL string) error {
-	payload := url.Values{}
+func (api *PVE) DownloadISOToNodeDatastore(node, storageId, fileName, URL string) error {
+	path := path.Join("/nodes", node, "/storage", storageId, "/download-url")
+	method := http.MethodPost
+
+	payload := &url.Values{}
 	payload.Add("url", URL)
 	payload.Add("content", "iso")
 	payload.Add("filename", fileName)
 
-	path := path.Join("/nodes", node, "/storage", storageId, "/download-url")
-	_, err := sendRequest[any](http.MethodPost, api, path, &payload)
+	err := api.httpClient.sendReq(method, path, payload, nil)
 	return err
 }
 
@@ -72,13 +84,15 @@ func (api *ProxmoxAPI) DownloadISOToNodeDatastore(node, storageId, fileName, URL
 // TODO: Add optional [parameters].
 //
 // [parameters]: https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/download-url
-func (api *ProxmoxAPI) DownloadVZTemplateToNodeDatastore(node, storageId, fileName, URL string) error {
-	payload := url.Values{}
+func (api *PVE) DownloadVZTemplateToNodeDatastore(node, storageId, fileName, URL string) error {
+	path := path.Join("/nodes", node, "/storage", storageId, "/download-url")
+	method := http.MethodPost
+
+	payload := &url.Values{}
 	payload.Add("url", URL)
 	payload.Add("content", "vztmpl")
 	payload.Add("filename", fileName)
 
-	path := path.Join("/nodes", node, "/storage", storageId, "/download-url")
-	_, err := sendRequest[any](http.MethodPost, api, path, &payload)
+	err := api.httpClient.sendReq(method, path, payload, nil)
 	return err
 }

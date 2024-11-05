@@ -1,6 +1,6 @@
-package proxmoxapi
+package pve
 
-// Promox firewall availabe log levels.
+// Promox firewall available log levels.
 type FirewallLogLevel string
 
 const (

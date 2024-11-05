@@ -1,4 +1,4 @@
-package proxmoxapi
+package pve
 
 import (
 	"errors"
@@ -50,8 +50,6 @@ const (
 	LXC_LOCK_SNAPSHOT        LxcLock = "snapshot"
 	LXC_LOCK_SNAPSHOT_DELETE LxcLock = "snapshot-delete"
 )
-
-var _ pveOption = &LxcNet{}
 
 // TODO: Add support for [trunks] (vlans).
 //
@@ -139,9 +137,14 @@ type GetNodeLxcsResponse struct {
 }
 
 // GetLxcs returns node's lxc index per node.
-func (api *ProxmoxAPI) GetLxcs(node string) ([]GetNodeLxcsResponse, error) {
+func (api *PVE) GetLxcs(node string) ([]GetNodeLxcsResponse, error) {
+	method := http.MethodGet
 	path := path.Join("/nodes", node, "/lxc")
-	return sendRequest[[]GetNodeLxcsResponse](http.MethodGet, api, path, nil)
+
+	res := &[]GetNodeLxcsResponse{}
+	err := api.httpClient.sendReq(method, path, nil, nil)
+
+	return *res, err
 }
 
 type CreateLxcRequest struct {
@@ -196,81 +199,83 @@ type CreateLxcResponse struct {
 }
 
 // CreateLxc creates an LXC container and return useful information to interact with it after it's creation.
-func (api *ProxmoxAPI) CreateLxc(req CreateLxcRequest) (*CreateLxcResponse, error) {
+func (api *PVE) CreateLxc(req CreateLxcRequest) (CreateLxcResponse, error) {
+	method := http.MethodPost
+	path := path.Join("/nodes", req.Node, "/lxc")
+
 	var err error
 	if req.Node == "" {
-		return nil, errors.New("missing 'Node' parameter")
+		return CreateLxcResponse{}, errors.New("missing 'Node' parameter")
 	}
 
 	p := &url.Values{}
 
-	helpers.AddPayloadValue(p, "ostemplate", &req.OSTemplate, nil)
+	addPayloadValue(p, "ostemplate", &req.OSTemplate, nil)
 
 	var vmid int
 	if req.VMID == nil {
 		vmid, err = api.GetNextVMID()
 		if err != nil {
-			return nil, err
+			return CreateLxcResponse{}, err
 		}
 	} else {
 		vmid = *req.VMID
 	}
-	helpers.AddPayloadValue(p, "vmid", &vmid, nil)
-	//helpers.AddPayloadValue(p, "arch", req.Arch)
-	helpers.AddPayloadValue(p, "bwlimit", req.BWLimit, nil)
-	//helpers.AddPayloadValue(p, "cmode", req.CMode)
-	helpers.AddPayloadValue(p, "console", req.Console, nil)
-	helpers.AddPayloadValue(p, "cores", req.Cores, nil)
-	helpers.AddPayloadValue(p, "cpulimit", req.CPULimit, nil)
-	helpers.AddPayloadValue(p, "cpuunits", req.CPUUnits, nil)
-	helpers.AddPayloadValue(p, "debug", req.Debug, nil)
-	helpers.AddPayloadValue(p, "description", req.Desc, nil)
-	helpers.AddPayloadValue(p, "features", req.Features, nil)
-	helpers.AddPayloadValue(p, "force", req.Force, nil)
-	helpers.AddPayloadValue(p, "hookscript", req.Hookscript, nil)
-	helpers.AddPayloadValue(p, "ignore-unpack-errors", req.IgnoreUnpackErrors, nil)
-	//helpers.AddPayloadValue(p, "lock", req.Lock, nil)
-	helpers.AddPayloadValue(p, "memory", req.Memory, nil)
-	helpers.AddPayloadValue(p, "hostname", req.Nameserver, nil)
+	addPayloadValue(p, "vmid", &vmid, nil)
+	//addPayloadValue(p, "arch", req.Arch)
+	addPayloadValue(p, "bwlimit", req.BWLimit, nil)
+	//addPayloadValue(p, "cmode", req.CMode)
+	addPayloadValue(p, "console", req.Console, nil)
+	addPayloadValue(p, "cores", req.Cores, nil)
+	addPayloadValue(p, "cpulimit", req.CPULimit, nil)
+	addPayloadValue(p, "cpuunits", req.CPUUnits, nil)
+	addPayloadValue(p, "debug", req.Debug, nil)
+	addPayloadValue(p, "description", req.Desc, nil)
+	addPayloadValue(p, "features", req.Features, nil)
+	addPayloadValue(p, "force", req.Force, nil)
+	addPayloadValue(p, "hookscript", req.Hookscript, nil)
+	addPayloadValue(p, "ignore-unpack-errors", req.IgnoreUnpackErrors, nil)
+	//addPayloadValue(p, "lock", req.Lock, nil)
+	addPayloadValue(p, "memory", req.Memory, nil)
+	addPayloadValue(p, "hostname", req.Nameserver, nil)
 	if req.Net != nil {
 		for i := 0; i < len(*req.Net); i++ {
 			content := (*req.Net)[i].String()
-			helpers.AddPayloadValue(p, fmt.Sprintf("net%d", i), &content, nil)
+			addPayloadValue(p, fmt.Sprintf("net%d", i), &content, nil)
 		}
 	}
-	helpers.AddPayloadValue(p, "onboot", req.OnBoot, nil)
-	helpers.AddPayloadValue(p, "ostype", req.OSType, nil)
-	helpers.AddPayloadValue(p, "password", req.Password, nil)
-	helpers.AddPayloadValue(p, "pool", req.Pool, nil)
-	helpers.AddPayloadValue(p, "protection", req.Protection, nil)
-	helpers.AddPayloadValue(p, "restore", req.Restore, nil)
-	helpers.AddPayloadValue(p, "rootfs", req.RootFS, helpers.NewStr("local-lvm:8"))
-	helpers.AddPayloadValue(p, "searchdomain", req.Searchdomain, nil)
-	helpers.AddPayloadValue(p, "ssh-public-keys", req.SSHPublicKeys, nil)
+	addPayloadValue(p, "onboot", req.OnBoot, nil)
+	addPayloadValue(p, "ostype", req.OSType, nil)
+	addPayloadValue(p, "password", req.Password, nil)
+	addPayloadValue(p, "pool", req.Pool, nil)
+	addPayloadValue(p, "protection", req.Protection, nil)
+	addPayloadValue(p, "restore", req.Restore, nil)
+	addPayloadValue(p, "rootfs", req.RootFS, helpers.NewStr("local-lvm:8"))
+	addPayloadValue(p, "searchdomain", req.Searchdomain, nil)
+	addPayloadValue(p, "ssh-public-keys", req.SSHPublicKeys, nil)
 	if req.Start != nil && *req.Start == true {
-		// helpers.AddPayloadValue(p, "start", req.Start)
+		// addPayloadValue(p, "start", req.Start)
 		// TODO: Manually start using the lxc status start endpoint
 	}
-	helpers.AddPayloadValue(p, "startup", req.Startup, nil)
-	helpers.AddPayloadValue(p, "storage", req.Storage, nil)
-	helpers.AddPayloadValue(p, "swap", req.Swap, nil)
-	helpers.AddPayloadValue(p, "tags", req.Tags, nil)
-	helpers.AddPayloadValue(p, "template", req.Template, nil)
-	helpers.AddPayloadValue(p, "timezone", req.Timezone, nil)
-	helpers.AddPayloadValue(p, "tty", req.TTY, nil)
-	helpers.AddPayloadValue(p, "unique", req.Unique, nil)
-	helpers.AddPayloadValue(p, "unprivileged", req.Unprivileged, nil)
+	addPayloadValue(p, "startup", req.Startup, nil)
+	addPayloadValue(p, "storage", req.Storage, nil)
+	addPayloadValue(p, "swap", req.Swap, nil)
+	addPayloadValue(p, "tags", req.Tags, nil)
+	addPayloadValue(p, "template", req.Template, nil)
+	addPayloadValue(p, "timezone", req.Timezone, nil)
+	addPayloadValue(p, "tty", req.TTY, nil)
+	addPayloadValue(p, "unique", req.Unique, nil)
+	addPayloadValue(p, "unprivileged", req.Unprivileged, nil)
 
-	//helpers.AddPayloadValue(p, "unused[n]", req.Unuseds)
-	//helpers.AddPayloadValue(p, "dev[n]", req.Devs)
-	//helpers.AddPayloadValue(p, "mp[n]", req.MPs)
+	//addPayloadValue(p, "unused[n]", req.Unuseds)
+	//addPayloadValue(p, "dev[n]", req.Devs)
+	//addPayloadValue(p, "mp[n]", req.MPs)
 
-	path := path.Join("/nodes", req.Node, "/lxc")
-	_, err = sendRequest[string](http.MethodPost, api, path, p)
+	err = api.httpClient.sendReq(method, path, p, nil)
 
 	if err != nil {
-		return nil, err
+		return CreateLxcResponse{}, nil
 	}
 
-	return &CreateLxcResponse{VMID: vmid}, nil
+	return CreateLxcResponse{VMID: vmid}, nil
 }

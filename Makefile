@@ -10,7 +10,7 @@ install-docs-dependencies:
 
 .PHONY: coverage-check
 coverage-check: install-go-test-coverage
-	go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
+	go test -v ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
 	${GOBIN}/go-test-coverage --config=./.testcoverage.yml
 
 coverage-report: 
@@ -23,6 +23,7 @@ coverage:
 
 generate-docs: install-docs-dependencies
 	source /tmp/venv/go-proxmox/bin/activate; \
+	rm -rf ./docs/reference/pkg
 	mkdir -p ./docs/reference/pkg/
 	go run ./cmd/gomarkdoc/main.go; \
 	mkdocs build

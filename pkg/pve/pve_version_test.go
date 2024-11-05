@@ -1,4 +1,4 @@
-package proxmoxapi
+package pve
 
 import (
 	"encoding/json"
@@ -9,8 +9,8 @@ import (
 	"testing"
 )
 
-func buildGetVersionSuccessResponse() apiResponse[GetVersionResponse] {
-	return apiResponse[GetVersionResponse]{
+func buildGetVersionSuccessResponse() pveResponse[GetVersionResponse] {
+	return pveResponse[GetVersionResponse]{
 		Data: GetVersionResponse{
 			Release: "Release",
 			Version: "Version",
@@ -33,7 +33,7 @@ func TestGetVersionSuccess(t *testing.T) {
 	os.Setenv("PROXMOX_TOKEN_NAME", "token_name")
 	os.Setenv("PROXMOX_TOKEN", "token")
 
-	api, err := New(ProxmoxAPIConfig{
+	api, err := New(Config{
 		Host:               host,
 		Port:               port,
 		InsecureSkipVerify: true,
