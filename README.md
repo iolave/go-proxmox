@@ -7,5 +7,5 @@ I built this api client from scratch in order to write a [telmate/terraform-prov
 
 To see a list of all implemented api features and more information, read the full docs [here].
 
-[here]: https://go-proxmox.docs.iolave.com/
+[here]: https://go-proxmox.iolave.com/
 [telmate/terraform-provider-proxmox]: https://github.com/Telmate/terraform-provider-proxmox

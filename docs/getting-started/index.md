@@ -70,7 +70,7 @@ config := pve.Config{
 ```
 
 
-[pve package]: https://go-proxmox.docs.iolave.com/reference/pkg/pve/
-[credentials]: https://go-proxmox.docs.iolave.com/reference/pkg/pve/#type-credentials
+[pve package]: https://go-proxmox.iolave.com/reference/pkg/pve/
+[credentials]: https://go-proxmox.iolave.com/reference/pkg/pve/#type-credentials
 [service token]: https://developers.cloudflare.com/cloudflare-one/identity/service-tokens
 [application]: https://developers.cloudflare.com/cloudflare-one/applications/
