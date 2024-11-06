@@ -1,5 +1,5 @@
 site_name: Proxmox API for Golang
-site_url: https://go-proxmox.docs.iolave.com/
+site_url: https://go-proxmox.iolave.com/
 repo_url: https://github.com/iolave/go-proxmox
 repo_name: iolave/go-proxmox
 markdown_extensions:

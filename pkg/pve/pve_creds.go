@@ -40,9 +40,9 @@ type Credentials struct {
 // * It returns an error with the [CREDENTIALS_NOT_SUPPORTED_ERROR] message
 // when [CredentialType] is not supported.
 //
-// [CREDENTIALS_MISSING_REQUEST_ERROR]: https://go-proxmox.docs.iolave.com/reference/pkg/pve#constants
-// [CREDENTIALS_NOT_SUPPORTED_ERROR]: https://go-proxmox.docs.iolave.com/reference/pkg/pve#constants
-// [CredentialType]: https://go-proxmox.docs.iolave.com/reference/pkg/pve#type-credentialtype
+// [CREDENTIALS_MISSING_REQUEST_ERROR]: https://go-proxmox.iolave.com/reference/pkg/pve#constants
+// [CREDENTIALS_NOT_SUPPORTED_ERROR]: https://go-proxmox.iolave.com/reference/pkg/pve#constants
+// [CredentialType]: https://go-proxmox.iolave.com/reference/pkg/pve#type-credentialtype
 func (c *Credentials) Set(req *http.Request) error {
 	if req == nil {
 		return errors.New(CREDENTIALS_MISSING_REQUEST_ERROR)
@@ -78,7 +78,7 @@ func NewTokenCreds(user, tokenName, token string) *Credentials {
 //
 // It returns an error when a credential type is not detected.
 //
-// [environment variables]: https://go-proxmox.docs.iolave.com/getting-started/#enviroment-variables
+// [environment variables]: https://go-proxmox.iolave.com/getting-started/#enviroment-variables
 func NewEnvCreds() (*Credentials, error) {
 	username := os.Getenv("PROXMOX_USERNAME")
 	password := os.Getenv("PROXMOX_PASSWORD")
