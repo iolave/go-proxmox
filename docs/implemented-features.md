@@ -550,3 +550,15 @@
 | `/nodes/:node/vzdump/defaults`                              |:material-close:|
 | `/nodes/:node/vzdump/extractconfig`                         |:material-close:|
 
+## Pools
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/pools`                                                    |:material-close:|:material-close:|:material-close:|:material-close:|
+| `/pools/:poolid`                                            |:material-close:||:material-close:|:material-close:|
+
+## Storage
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/storage`                                                  |:material-close:|:material-close:|
+| `/storage/:storage`                                         |:material-close:||:material-close:|:material-close:|
+
