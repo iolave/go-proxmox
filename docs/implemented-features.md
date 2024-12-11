@@ -1,7 +1,7 @@
 ## PVE Core
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/version`                                                  |:material-check-all:|
+| `/version`                                                  |:material-check:|
 
 ## Access
 | Path                                                        | GET                | POST           | PUT | DELETE |
@@ -218,7 +218,134 @@
 | `/cluster/sdn/zones/:zone`                                  |:material-close:||:material-close:|:material-close:|
 
 ## Nodes
-### LXC
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes`                                                    |:material-close:|
+| `/nodes/:node`                                              |:material-close:|
+| `/nodes/:node/aplinfo`                                      |:material-close:|:material-close:|
+| `/nodes/:node/config`                                       |:material-close:||:material-close:|
+| `/nodes/:node/dns`                                          |:material-close:||:material-close:|
+| `/nodes/:node/execute`                                      ||:material-close:|
+| `/nodes/:node/hosts`                                        |:material-close:|:material-close:|
+| `/nodes/:node/journal`                                      |:material-close:|
+| `/nodes/:node/migrateall`                                   ||:material-close:|
+| `/nodes/:node/netstat`                                      |:material-close:|
+| `/nodes/:node/query-url-metadata`                           |:material-close:|
+| `/nodes/:node/report`                                       |:material-close:|
+| `/nodes/:node/rrd`                                          |:material-close:|
+| `/nodes/:node/rrddata`                                      |:material-close:|
+| `/nodes/:node/spiceshell`                                   ||:material-close:|
+| `/nodes/:node/startall`                                     ||:material-close:|
+| `/nodes/:node/status`                                       |:material-close:|:material-close:|
+| `/nodes/:node/stopall`                                      ||:material-close:|
+| `/nodes/:node/subscription`                                 |:material-close:|:material-close:|:material-close:|:material-close:|
+| `/nodes/:node/suspendall`                                   ||:material-close:|
+| `/nodes/:node/syslog`                                       |:material-close:|
+| `/nodes/:node/termproxy`                                    ||:material-close:|
+| `/nodes/:node/time`                                         |:material-close:||:material-close:|
+| `/nodes/:node/version`                                      |:material-close:|
+| `/nodes/:node/vncshell`                                     ||:material-close:|
+| `/nodes/:node/vncwebsocket`                                 |:material-close:|
+| `/nodes/:node/wakeonlan`                                    ||:material-close:|
+
+### Node: apt
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/apt`                                          |:material-check-all:|
+| `/nodes/:node/apt/changelog`                                |:material-check-all:|
+| `/nodes/:node/apt/repositories`                             |:material-check-all:|:material-check-all:|:material-check-all:|
+| `/nodes/:node/apt/update`                                   |:material-check-all:|:material-check-all:|
+| `/nodes/:node/apt/versions`                                 |:material-check-all:|
+
+### Node: Capabilities
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/capabilities`                                 |:material-check-all:|
+| `/nodes/:node/capabilities/qemu`                            |:material-check-all:|
+| `/nodes/:node/capabilities/qemu/cpu`                        |:material-check-all:|
+| `/nodes/:node/capabilities/qemu/machines`                   |:material-check-all:|
+
+### Node: ceph
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/ceph`                                         |:material-check-all:|
+| `/nodes/:node/ceph/cmd-safety`                              |:material-check-all:|
+| `/nodes/:node/ceph/crush`                                   |:material-check-all:|
+| `/nodes/:node/ceph/init`                                    ||:material-check-all:|
+| `/nodes/:node/ceph/log`                                     |:material-check-all:|
+| `/nodes/:node/ceph/restart`                                 ||:material-check-all:|
+| `/nodes/:node/ceph/rules`                                   |:material-check-all:|
+| `/nodes/:node/ceph/start`                                   ||:material-check-all:|
+| `/nodes/:node/ceph/status`                                  |:material-check-all:|
+| `/nodes/:node/ceph/stop`                                    ||:material-check-all:|
+| `/nodes/:node/ceph/cfg`                                     |:material-check-all:|
+| `/nodes/:node/ceph/cfg/db`                                  |:material-check-all:|
+| `/nodes/:node/ceph/cfg/raw`                                 |:material-check-all:|
+| `/nodes/:node/ceph/cfg/value`                               |:material-check-all:|
+| `/nodes/:node/ceph/fs`                                      |:material-check-all:|
+| `/nodes/:node/ceph/fs/:name`                                ||:material-check-all:|
+| `/nodes/:node/ceph/mds`                                     |:material-check-all:|
+| `/nodes/:node/ceph/mds/:name`                               ||:material-check-all:||:material-check-all:|
+| `/nodes/:node/ceph/mgr`                                     |:material-check-all:|
+| `/nodes/:node/ceph/mgr/:id`                                 ||:material-check-all:||:material-check-all:|
+| `/nodes/:node/ceph/mon`                                     |:material-check-all:|
+| `/nodes/:node/ceph/mon/:monid`                              ||:material-check-all:||:material-check-all:|
+| `/nodes/:node/ceph/osd`                                     |:material-check-all:|:material-check-all:|
+| `/nodes/:node/ceph/osd/:osdid`                              |:material-check-all:|||:material-check-all:|
+| `/nodes/:node/ceph/osd/:osdid/in`                           ||:material-check-all:|
+| `/nodes/:node/ceph/osd/:osdid/lv-info`                      |:material-check-all:|
+| `/nodes/:node/ceph/osd/:osdid/metadata`                     |:material-check-all:|
+| `/nodes/:node/ceph/osd/:osdid/out`                          ||:material-check-all:|
+| `/nodes/:node/ceph/osd/:osdid/scrub`                        ||:material-check-all:|
+| `/nodes/:node/ceph/pool`                                    |:material-check-all:|:material-check-all:|
+| `/nodes/:node/ceph/pool/:name`                              |:material-check-all:||:material-check-all:|:material-check-all:|
+| `/nodes/:node/ceph/pool/:name/status`                       |:material-check-all:|
+
+
+### Node: Certificates
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/certificates`                                 |:material-check-all:|
+| `/nodes/:node/certificates/custom`                          ||:material-check-all:||:material-check-all:|
+| `/nodes/:node/certificates/info`                            |:material-check-all:|
+| `/nodes/:node/certificates/acme`                            |:material-check-all:|
+| `/nodes/:node/certificates/acme/certificate`                ||:material-check-all:|:material-check-all:|:material-check-all:|
+
+### Node: Disks
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/disks`                                        |:material-check-all:|
+| `/nodes/:node/disks/directory`                              |:material-check-all:|:material-check-all:|
+| `/nodes/:node/disks/directory/:name`                        ||||:material-check-all:|
+| `/nodes/:node/disks/lvm`                                    |:material-check-all:|:material-check-all:|
+| `/nodes/:node/disks/lvm/:name`                              ||||:material-check-all:|
+| `/nodes/:node/disks/lvmthin`                                |:material-check-all:|:material-check-all:|
+| `/nodes/:node/disks/lvmthin/:name`                          ||||:material-check-all:|
+| `/nodes/:node/disks/zfs`                                    |:material-check-all:|:material-check-all:| 
+| `/nodes/:node/disks/zfs/:name`                              |:material-check-all:|||:material-check-all:| 
+| `/nodes/:node/disks/initgpt`                                ||:material-check-all:|
+| `/nodes/:node/disks/list`                                   |:material-check-all:|
+| `/nodes/:node/disks/smart`                                  |:material-check-all:|
+| `/nodes/:node/disks/wipedisk`                               |||:material-check-all:|
+
+### Node: Firewall
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/firewall`                                     |:material-check-all:|
+| `/nodes/:node/firewall/rules`                               |:material-check-all:|:material-check-all:|
+| `/nodes/:node/firewall/rules/:pos`                          |:material-check-all:||:material-check-all:|:material-check-all:|
+| `/nodes/:node/firewall/log`                                 |:material-check-all:|
+| `/nodes/:node/firewall/options`                             |:material-check-all:||:material-check-all:|
+
+### Node: Hardware
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/hardware`                                     |:material-check-all:|
+| `/nodes/:node/hardware/pci/:pci-id-or-mapping`              |:material-check-all:|
+| `/nodes/:node/hardware/pci/:pci-id-or-mapping/mdev`         |:material-check-all:|
+| `/nodes/:node/hardware/usb`                                 |:material-check-all:|
+
+### Node: lxc
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/nodes/:node/lxc`                                          |:material-check-all:|:material-check:|
@@ -263,4 +390,163 @@
 | `/nodes/:node/lxc/:vmid/termproxy`                          ||:material-close:|
 | `/nodes/:node/lxc/:vmid/vncproxy`                           ||:material-close:|
 | `/nodes/:node/lxc/:vmid/vncwebsocket`                       |:material-close:|
+
+### Node: Network
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/network`                                      |:material-close:|:material-close:|:material-close:|:material-close:|
+| `/nodes/:node/network/:iface`                               |:material-close:||:material-close:|:material-close:|
+
+### Node: qemu
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/qemu`                                         |:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid`                                   |:material-close:|||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent`                             |:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/exec`                        ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/exec-status`                 |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/file-read`                   |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/file-write`                  ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/fsfreeze-freeze`             ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/fsfreeze-status`             ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/fsfreeze-thaw`               ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/fstrim`                      ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-fsinfo`                  |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-host-name`               |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-memory-block-info`       |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-memory-blocks`           |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-osinfo`                  |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-time`                    |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-timezone`                |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-users`                   |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/get-vcpus`                   |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/info`                        |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/network-get-interfaces`      |:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/set-user-password`           ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/shutdown`                    ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/suspend-disk`                ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/suspend-hybrid`              ||:material-close:|
+| `/nodes/:node/qemu/:vmid/agent/suspend-ram`                 ||:material-close:|
+| `/nodes/:node/qemu/:vmid/cloudinit`                         |:material-close:||:material-close:|
+| `/nodes/:node/qemu/:vmid/cloudinit/dump`                    |:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall`                          |:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/log`                      |:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/option`                   |:material-close:||:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/refs`                     |:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/aliases`                  |:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/aliases/:name`            |:material-close:||:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/ipset`                    |:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/ipset/:name`              |:material-close:|:material-close:||:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/ipset/:name/:cidr`        |:material-close:||:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/rules`                    |:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/firewall/rules/:pos`               |:material-close:||:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/snapshot`                          |:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/snapshot/:snapname`                |:material-close:|||:material-close:|
+| `/nodes/:node/qemu/:vmid/snapshot/:snapname/config`         |:material-close:||:material-close:|
+| `/nodes/:node/qemu/:vmid/snapshot/:snapname/rollback`       ||:material-close:|
+| `/nodes/:node/qemu/:vmid/status`                            |:material-close:|
+| `/nodes/:node/qemu/:vmid/status/current`                    |:material-close:|
+| `/nodes/:node/qemu/:vmid/status/reboot`                     ||:material-close:|
+| `/nodes/:node/qemu/:vmid/status/reset`                      ||:material-close:|
+| `/nodes/:node/qemu/:vmid/status/resume`                     ||:material-close:|
+| `/nodes/:node/qemu/:vmid/status/shutdown`                   ||:material-close:|
+| `/nodes/:node/qemu/:vmid/status/start`                      ||:material-close:|
+| `/nodes/:node/qemu/:vmid/status/stop`                       ||:material-close:|
+| `/nodes/:node/qemu/:vmid/status/suspend`                    ||:material-close:|
+| `/nodes/:node/qemu/:vmid/clone`                             ||:material-close:|
+| `/nodes/:node/qemu/:vmid/config`                            |:material-close:|:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/feature`                           |:material-close:|
+| `/nodes/:node/qemu/:vmid/migrate`                           |:material-close:|:material-close:|
+| `/nodes/:node/qemu/:vmid/monitor`                           ||:material-close:|
+| `/nodes/:node/qemu/:vmid/move_disk`                         ||:material-close:|
+| `/nodes/:node/qemu/:vmid/mtunnel`                           ||:material-close:|
+| `/nodes/:node/qemu/:vmid/mtunnelwebsocket`                  |:material-close:|
+| `/nodes/:node/qemu/:vmid/pending`                           |:material-close:|
+| `/nodes/:node/qemu/:vmid/remote_migrate`                    ||:material-close:|
+| `/nodes/:node/qemu/:vmid/resize`                            |||:material-close:|
+| `/nodes/:node/qemu/:vmid/rrd`                               |:material-close:|
+| `/nodes/:node/qemu/:vmid/rrddata`                           |:material-close:|
+| `/nodes/:node/qemu/:vmid/sendkey`                           |||:material-close:|
+| `/nodes/:node/qemu/:vmid/spicyproxy`                        ||:material-close:|
+| `/nodes/:node/qemu/:vmid/template`                          ||:material-close:|
+| `/nodes/:node/qemu/:vmid/termproxy`                         ||:material-close:|
+| `/nodes/:node/qemu/:vmid/unlink`                            |||:material-close:|
+| `/nodes/:node/qemu/:vmid/vncproxy`                          ||:material-close:|
+| `/nodes/:node/qemu/:vmid/vncwebsocket`                      |:material-close:|
+
+### Node: Replication
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/replication`                                  |:material-close:|
+| `/nodes/:node/replication/:id`                              |:material-close:|
+| `/nodes/:node/replication/:id/log`                          |:material-close:|
+| `/nodes/:node/replication/:id/schedule_now`                 ||:material-close:|
+| `/nodes/:node/replication/:id/status`                       |:material-close:|
+
+
+### Node: Scan
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/scan`                                         |:material-close:|
+| `/nodes/:node/scan/cifs`                                    |:material-close:|
+| `/nodes/:node/scan/gluterfs`                                |:material-close:|
+| `/nodes/:node/scan/iscsi`                                   |:material-close:|
+| `/nodes/:node/scan/lvm`                                     |:material-close:|
+| `/nodes/:node/scan/lvmthin`                                 |:material-close:|
+| `/nodes/:node/scan/nfs`                                     |:material-close:|
+| `/nodes/:node/scan/pbs`                                     |:material-close:|
+| `/nodes/:node/scan/zfs`                                     |:material-close:|
+
+### Node: sdn
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/sdn`                                          |:material-close:|
+| `/nodes/:node/sdn/zones`                                    |:material-close:|
+| `/nodes/:node/sdn/zones/:zone`                              |:material-close:|
+| `/nodes/:node/sdn/zones/:zone/content`                      |:material-close:|
+
+### Node: Services
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/services`                                     |:material-close:|
+| `/nodes/:node/services/:service`                            |:material-close:|
+| `/nodes/:node/services/:service/reload`                     ||:material-close:|
+| `/nodes/:node/services/:service/restart`                    ||:material-close:|
+| `/nodes/:node/services/:service/start`                      ||:material-close:|
+| `/nodes/:node/services/:service/state`                      |:material-close:|
+| `/nodes/:node/services/:service/stop`                       ||:material-close:|
+
+
+### Node: Storage
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/storage`                                      |:material-close:|
+| `/nodes/:node/storage/:storage`                             |:material-close:|
+| `/nodes/:node/storage/:storage/content`                     |:material-close:|:material-close:|
+| `/nodes/:node/storage/:storage/content/:volume`             |:material-close:|:material-close:|:material-close:|:material-close:|
+| `/nodes/:node/storage/:storage/file-restore`                |:material-close:|:material-close:|:material-close:|:material-close:|
+| `/nodes/:node/storage/:storage/file-restore/download`       |:material-close:|
+| `/nodes/:node/storage/:storage/file-restore/list`           |:material-close:|
+| `/nodes/:node/storage/:storage/download-url`                ||:material-close:|
+| `/nodes/:node/storage/:storage/import-metadata`             |:material-close:|
+| `/nodes/:node/storage/:storage/prunebackups`                |:material-close:|||:material-close:|
+| `/nodes/:node/storage/:storage/rdd`                         |:material-close:|
+| `/nodes/:node/storage/:storage/rdddata`                     |:material-close:|
+| `/nodes/:node/storage/:storage/status`                      |:material-close:|
+| `/nodes/:node/storage/:storage/upload`                      ||:material-close:|
+
+### Node: Tasks
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/tasks`                                        |:material-close:|
+| `/nodes/:node/tasks/:upid`                                  |:material-close:|||:material-close:|
+| `/nodes/:node/tasks/:upid/log`                              |:material-close:|
+| `/nodes/:node/tasks/:upid/status`                           |:material-close:|
+
+### Node: VZDump
+| Path                                                        | GET                | POST           | PUT | DELETE |
+|-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
+| `/nodes/:node/vzdump`                                       ||:material-close:|
+| `/nodes/:node/vzdump/defaults`                              |:material-close:|
+| `/nodes/:node/vzdump/extractconfig`                         |:material-close:|
 
