@@ -66,7 +66,7 @@ theme:
 nav:
   - Home:
     - index.md
-    - implemented-features.md
+    - implemented-endpoints.md
   - Getting started:
     - getting-started/index.md
   - Reference:

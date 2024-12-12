@@ -15,7 +15,7 @@ type GetClusterFirewallAliasesResponse struct {
 
 // GetClusterFirewallAliases retrieves all cluster firewall aliases.
 func (api *PVE) GetClusterFirewallAliases() ([]GetClusterFirewallAliasesResponse, error) {
-	method := http.MethodPost
+	method := http.MethodGet
 	path := "/cluster/firewall/aliases"
 
 	res := &[]GetClusterFirewallAliasesResponse{}
@@ -103,7 +103,7 @@ type GetClusterFirewallIPSetResponse struct {
 
 // GetClusterFirewallIPSet retrieves all cluster firewall IPSets.
 func (api *PVE) GetClusterFirewallIPSet() ([]GetClusterFirewallIPSetResponse, error) {
-	method := http.MethodPost
+	method := http.MethodGet
 	path := "/cluster/firewall/ipset"
 
 	res := &[]GetClusterFirewallIPSetResponse{}
@@ -119,7 +119,7 @@ type GetClusterFirewallRulesResponse struct {
 // GetClusterFirewallRules retrieves all cluster firewall rules.
 func (api *PVE) GetClusterFirewallRules() ([]GetClusterFirewallRulesResponse, error) {
 	method := http.MethodGet
-	path := "/cluster/firewall/aliases"
+	path := "/cluster/firewall/rules"
 
 	res := &[]GetClusterFirewallRulesResponse{}
 	err := api.httpClient.sendReq(method, path, nil, res)
