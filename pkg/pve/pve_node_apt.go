@@ -1,6 +1,7 @@
 package pve
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"path"
@@ -13,6 +14,8 @@ type NodeAPTIndex struct {
 }
 
 // GetNodeAPTIndex returns node's directory index for apt (Advanced Package Tool).
+//
+// GET /nodes/:node/apt accessible by all authenticated users.
 func (api *PVE) GetNodeAPTIndex(node string) ([]NodeAPTIndex, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/apt")
@@ -24,6 +27,8 @@ func (api *PVE) GetNodeAPTIndex(node string) ([]NodeAPTIndex, error) {
 }
 
 // GetNodeAPTChangelog returns the changelog for a given pacakge name. If version is nil, the latest version available will be considered and otherwise, it will return the changelog found for the given version.
+//
+// GET /nodes/:node/apt/changelog requires the "Sys.Audit" permission.
 func (api *PVE) GetNodeAPTChangelog(node, name string, version *string) (string, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/apt/changelog")
@@ -92,12 +97,63 @@ type GetNodeAPTRepoInfo struct {
 }
 
 // GetNodeAPTRepoInfo returns APT repository information.
+//
+// GET /nodes/:node/apt/repositories requires the "Sys.Audit" permission.
 func (api *PVE) GetNodeAPTRepoInfo(node string) (GetNodeAPTRepoInfo, error) {
 	method := http.MethodGet
-	path := path.Join("/nodes", node, "/apt/changelog")
+	path := path.Join("/nodes", node, "/apt/repositories")
 
 	res := new(GetNodeAPTRepoInfo)
 	err := api.httpClient.sendReq(method, path, nil, res)
 
 	return *res, err
+}
+
+// SetNodeAPTRepoProps changes the properties of a repository (currently only allows enabling/disabling).
+//   - "index": Index within the file (starting from 0).
+//   - "node": Cluster node name.
+//   - "filePath": Path to the containing file.
+//   - "digest": Digest to detect modifications.
+//   - "enabled": Whether the repository should be enabled or not.
+//
+// POST /nodes/:node/apt/repositoreies requires the "Sys.Modify" permission.
+func (api *PVE) SetNodeAPTRepoProps(index int, node, filePath string, digest *string, enabled *bool) error {
+	method := http.MethodPost
+	path := path.Join("/nodes", node, "/apt/repositories")
+
+	payload := &url.Values{}
+
+	payload.Add("index", fmt.Sprintf("%d", index))
+	payload.Add("path", filePath)
+	if digest != nil {
+		payload.Add("digest", *digest)
+	}
+	if enabled != nil {
+		payload.Add("enabled", fmt.Sprintf("%d", helpers.BoolToInt(*enabled)))
+	}
+
+	err := api.httpClient.sendReq(method, path, nil, nil)
+
+	return err
+}
+
+// AddNodeAPTStdRepo adds a standard repository to the configuration.
+//   - node: Cluster node name.
+//   - handle: Handle that identifies a repository.
+//   - digest: Digest to detect modifications.
+//
+// PUT /nodes/:node/apt/repositoreies requires the "Sys.Modify" permission.
+func (api *PVE) AddNodeAPTStdRepo(node, handle string, digest *string) error {
+	method := http.MethodPut
+	path := path.Join("/nodes", node, "/apt/repositories")
+
+	payload := &url.Values{}
+
+	if digest != nil {
+		payload.Add("digest", *digest)
+	}
+
+	err := api.httpClient.sendReq(method, path, nil, nil)
+
+	return err
 }

@@ -261,7 +261,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/nodes/:node/apt`                                          |:material-check-all:|
 | `/nodes/:node/apt/changelog`                                |:material-check-all:|
-| `/nodes/:node/apt/repositories`                             |:material-check-all:|:material-close:|:material-close:|
+| `/nodes/:node/apt/repositories`                             |:material-check-all:|:material-check-all:|:material-check-all:|
 | `/nodes/:node/apt/update`                                   |:material-close:|:material-close:|
 | `/nodes/:node/apt/versions`                                 |:material-close:|
 
