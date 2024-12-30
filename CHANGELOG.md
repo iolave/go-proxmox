@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
+## [v0.2.1]
+### Fixed
+- `GetClusterFirewallAliases` http method is now get.
+- `GetClusterFirewallIPSet` http method is now get.
+- `GetClusterFirewallRules` url path is now correct.
 
 ## [v0.2.0]
 ### Added
@@ -48,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proxmox api token credentials support.
 - Proxmox api version endpoint.
 
-[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.2.1...HEAD
+[v0.2.1]: https://github.com/iolave/go-proxmox/releases/tag/v0.2.1
 [v0.2.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.2.0
 [v0.1.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.1.0
