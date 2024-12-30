@@ -192,3 +192,21 @@ func (api *PVE) UpdateAPTIndex(node string, notify, quiet bool) (string, error) 
 
 	return res, err
 }
+
+// GetPveAPTInfo get package information for important Proxmox packages.
+//
+// TODO: [docs] lacks of response definition (map it).
+//   - node: Cluster node name.
+//
+// GET /nodes/:node/apt/versions requires the "Sys.Audit" permission.
+//
+// [docs]: https://pve.proxmox.com/pve-docs/api-viewer/index.html#/nodes/{node}/apt/versions
+func (api *PVE) GetPveAPTInfo(node string) (interface{}, error) {
+	method := http.MethodGet
+	path := path.Join("/nodes", node, "/apt/versions")
+
+	var res *interface{}
+	err := api.httpClient.sendReq(method, path, nil, res)
+
+	return res, err
+}

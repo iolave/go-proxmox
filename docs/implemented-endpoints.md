@@ -263,7 +263,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | `/nodes/:node/apt/changelog`                                |:material-check-all:|
 | `/nodes/:node/apt/repositories`                             |:material-check-all:|:material-check-all:|:material-check-all:|
 | `/nodes/:node/apt/update`                                   |:material-check:|:material-check-all:|
-| `/nodes/:node/apt/versions`                                 |:material-close:|
+| `/nodes/:node/apt/versions`                                 |:material-check:|
 
 ### Node: Capabilities
 | Path                                                        | GET                | POST           | PUT | DELETE |
