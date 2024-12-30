@@ -175,3 +175,20 @@ func (api *PVE) ListAPTUpdates(node string) (interface{}, error) {
 
 	return res, err
 }
+
+// ListAPTUpdates this is used to resynchronize the package index files from their sources (apt-get update).
+//
+//   - node: Cluster node name.
+//   - notify: Send notification about new packages.
+//   - quiet: Only produces output suitable for logging, omitting progress indicators.
+//
+// POST /nodes/:node/apt/update requires the "Sys.Modify" permission.
+func (api *PVE) UpdateAPTIndex(node string, notify, quiet bool) (string, error) {
+	method := http.MethodPost
+	path := path.Join("/nodes", node, "/apt/update")
+
+	res := ""
+	err := api.httpClient.sendReq(method, path, nil, &res)
+
+	return res, err
+}
