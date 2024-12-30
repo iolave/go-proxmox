@@ -157,3 +157,21 @@ func (api *PVE) AddNodeAPTStdRepo(node, handle string, digest *string) error {
 
 	return err
 }
+
+// ListAPTUpdates list available updates.
+//
+// TODO: [docs] lacks of response definition (map it).
+//   - node: Cluster node name.
+//
+// GET /nodes/:node/apt/update requires the "Sys.Modify" permission.
+//
+// [docs]: https://pve.proxmox.com/pve-docs/api-viewer/index.html#/nodes/{node}/apt/update
+func (api *PVE) ListAPTUpdates(node string) (interface{}, error) {
+	method := http.MethodGet
+	path := path.Join("/nodes", node, "/apt/update")
+
+	var res *interface{}
+	err := api.httpClient.sendReq(method, path, nil, res)
+
+	return res, err
+}
