@@ -17,6 +17,7 @@ type PVE struct {
 	config Config
 	creds  *Credentials
 	client *httpClient
+
 	// PVE API implementations
 	Node    *PVENodeService
 	Cluster *PVEClusterService
