@@ -14,9 +14,13 @@ type Config struct {
 }
 
 type PVE struct {
-	config     Config
-	creds      *Credentials
-	httpClient *httpClient
+	config Config
+	creds  *Credentials
+	client *httpClient
+	// PVE API implementations
+	Node    *PVENodeService
+	Cluster *PVEClusterService
+	LXC     *PVELxcService
 }
 
 func New(config Config) (*PVE, error) {
@@ -29,7 +33,7 @@ func New(config Config) (*PVE, error) {
 	api := &PVE{
 		config: config,
 		creds:  creds,
-		httpClient: newHttpClient(
+		client: newHttpClient(
 			creds,
 			config.CfServiceToken,
 			config.Host,
@@ -44,6 +48,8 @@ func New(config Config) (*PVE, error) {
 		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
 	}
 
+	initializeServices(api)
+
 	return api, nil
 }
 
@@ -51,7 +57,7 @@ func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
 	api := &PVE{
 		config: config,
 		creds:  creds,
-		httpClient: newHttpClient(
+		client: newHttpClient(
 			creds,
 			config.CfServiceToken,
 			config.Host,
@@ -66,5 +72,13 @@ func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
 		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
 	}
 
+	initializeServices(api)
+
 	return api, nil
+}
+
+func initializeServices(api *PVE) {
+	api.Node = newPVENodeService(api)
+	api.Cluster = newPVEClusterService(api)
+	api.LXC = newPVELxcService(api)
 }

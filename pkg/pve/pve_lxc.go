@@ -10,6 +10,16 @@ import (
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
 
+type PVELxcService struct {
+	api *PVE
+}
+
+func newPVELxcService(api *PVE) *PVELxcService {
+	service := new(PVELxcService)
+	service.api = api
+	return service
+}
+
 type LxcStatus string
 
 const (
@@ -136,13 +146,13 @@ type GetNodeLxcsResponse struct {
 	Uptime  *int      `json:"uptime"`
 }
 
-// GetLxcs returns node's lxc index per node.
-func (api *PVE) GetLxcs(node string) ([]GetNodeLxcsResponse, error) {
+// GetAll returns node's lxc index per node.
+func (s *PVELxcService) GetAll(node string) ([]GetNodeLxcsResponse, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/lxc")
 
 	res := &[]GetNodeLxcsResponse{}
-	err := api.httpClient.sendReq(method, path, nil, nil)
+	err := s.api.client.sendReq(method, path, nil, nil)
 
 	return *res, err
 }
@@ -198,8 +208,8 @@ type CreateLxcResponse struct {
 	VMID int // LXC container id within proxmox.
 }
 
-// CreateLxc creates an LXC container and return useful information to interact with it after it's creation.
-func (api *PVE) CreateLxc(req CreateLxcRequest) (CreateLxcResponse, error) {
+// Create creates an LXC container and return useful information to interact with it after it's creation.
+func (s *PVELxcService) Create(req CreateLxcRequest) (CreateLxcResponse, error) {
 	method := http.MethodPost
 	path := path.Join("/nodes", req.Node, "/lxc")
 
@@ -214,7 +224,7 @@ func (api *PVE) CreateLxc(req CreateLxcRequest) (CreateLxcResponse, error) {
 
 	var vmid int
 	if req.VMID == nil {
-		vmid, err = api.GetNextVMID()
+		vmid, err = s.api.Cluster.GetNextVMID()
 		if err != nil {
 			return CreateLxcResponse{}, err
 		}
@@ -271,7 +281,7 @@ func (api *PVE) CreateLxc(req CreateLxcRequest) (CreateLxcResponse, error) {
 	//addPayloadValue(p, "dev[n]", req.Devs)
 	//addPayloadValue(p, "mp[n]", req.MPs)
 
-	err = api.httpClient.sendReq(method, path, p, nil)
+	err = s.api.client.sendReq(method, path, p, nil)
 
 	if err != nil {
 		return CreateLxcResponse{}, nil

@@ -5,6 +5,22 @@ import (
 	"net/http"
 )
 
+type PVENodeService struct {
+	api      *PVE
+	APT      *PVENodeAPTService
+	Firewall *PVENodeFirewallService
+	Storage  *PVENodeStorageService
+}
+
+func newPVENodeService(api *PVE) *PVENodeService {
+	service := new(PVENodeService)
+	service.api = api
+	service.APT = newPVENodeAPTService(api)
+	service.Firewall = newPVENodeFirewallService(api)
+	service.Storage = newPVENodeStorageService(api)
+	return service
+}
+
 // Proxmox availabe node statuses
 type NodeStatus string
 
@@ -14,7 +30,7 @@ const (
 	NODE_STATUS_UNKNOWN NodeStatus = "unknown"
 )
 
-type GetNodesResponse struct {
+type GetNodeResponse struct {
 	Node           string     `json:"node"`
 	Status         NodeStatus `json:"status"`
 	CPU            float64    `json:"cpu"`
@@ -27,22 +43,22 @@ type GetNodesResponse struct {
 }
 
 // GetAll retrieves all nodes.
-func (api *PVE) GetAll() ([]GetNodesResponse, error) {
+func (service *PVENodeService) GetAll() ([]GetNodeResponse, error) {
 	method := http.MethodGet
 	path := "/nodes"
 
-	res := &[]GetNodesResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	res := &[]GetNodeResponse{}
+	err := service.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
 
 // Get retrieves a single nodes.
-func (api *PVE) Get(node string) (GetNodesResponse, error) {
-	nodes, err := api.GetAll()
+func (service *PVENodeService) Get(node string) (GetNodeResponse, error) {
+	nodes, err := service.GetAll()
 
 	if err != nil {
-		return GetNodesResponse{}, err
+		return GetNodeResponse{}, err
 	}
 
 	for i := 0; i < len(nodes); i++ {
@@ -51,5 +67,5 @@ func (api *PVE) Get(node string) (GetNodesResponse, error) {
 		}
 	}
 
-	return GetNodesResponse{}, errors.New("Node not found")
+	return GetNodeResponse{}, errors.New("Node not found")
 }

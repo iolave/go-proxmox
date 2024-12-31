@@ -6,6 +6,16 @@ import (
 	"net/url"
 )
 
+type PVEClusterFirewallService struct {
+	api *PVE
+}
+
+func newPVEClusterFirewallService(api *PVE) *PVEClusterFirewallService {
+	service := new(PVEClusterFirewallService)
+	service.api = api
+	return service
+}
+
 type GetClusterFirewallAliasesResponse struct {
 	CIDR    string `json:"cidr"`
 	Digest  string `json:"digest"`
@@ -13,30 +23,30 @@ type GetClusterFirewallAliasesResponse struct {
 	Comment string `json:"comment"`
 }
 
-// GetClusterFirewallAliases retrieves all cluster firewall aliases.
-func (api *PVE) GetClusterFirewallAliases() ([]GetClusterFirewallAliasesResponse, error) {
+// GetAliases retrieves all cluster firewall aliases.
+func (s *PVEClusterFirewallService) GetAliases() ([]GetClusterFirewallAliasesResponse, error) {
 	method := http.MethodGet
 	path := "/cluster/firewall/aliases"
 
 	res := &[]GetClusterFirewallAliasesResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
 
-// GetClusterFirewallAlias retrieves cluster firewall alias by it's name.
-func (api *PVE) GetClusterFirewallAlias(name string) (GetClusterFirewallAliasesResponse, error) {
+// GetAlias retrieves cluster firewall alias by it's name.
+func (s *PVEClusterFirewallService) GetAlias(name string) (GetClusterFirewallAliasesResponse, error) {
 	method := http.MethodGet
 	path := fmt.Sprintf("/cluster/firewall/aliases/%s", name)
 
 	res := &GetClusterFirewallAliasesResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
 
-// CreateClusterFirewallAlias creates a cluster firewall IP or Network Alias.
-func (api *PVE) CreateClusterFirewallAlias(name, cidr string, comment *string) error {
+// CreateAlias creates a cluster firewall IP or Network Alias.
+func (s *PVEClusterFirewallService) CreateAlias(name, cidr string, comment *string) error {
 	method := http.MethodPost
 	path := "/cluster/firewall/aliases"
 
@@ -48,14 +58,14 @@ func (api *PVE) CreateClusterFirewallAlias(name, cidr string, comment *string) e
 		payload.Add("comment", *comment)
 	}
 
-	err := api.httpClient.sendReq(method, path, &payload, nil)
+	err := s.api.client.sendReq(method, path, &payload, nil)
 	return err
 }
 
-// UpdateClusterFirewallAlias updates a cluster firewall IP or Network alias.
+// UpdateAlias updates a cluster firewall IP or Network alias.
 //
 // Digest prevents changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
-func (api *PVE) UpdateClusterFirewallAlias(name, cidr string, comment *string, digest *string, rename *string) error {
+func (s *PVEClusterFirewallService) UpdateAlias(name, cidr string, comment *string, digest *string, rename *string) error {
 	method := http.MethodPut
 	path := fmt.Sprintf("/cluster/firewall/aliases/%s", name)
 
@@ -74,14 +84,14 @@ func (api *PVE) UpdateClusterFirewallAlias(name, cidr string, comment *string, d
 		payload.Add("rename", *rename)
 	}
 
-	err := api.httpClient.sendReq(method, path, &payload, nil)
+	err := s.api.client.sendReq(method, path, &payload, nil)
 	return err
 }
 
-// DeleteClusterFirewallAlias removes a cluster firewall IP or Network alias.
+// DeleteAlias removes a cluster firewall IP or Network alias.
 //
 // Digest prevents changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
-func (api *PVE) DeleteClusterFirewallAlias(name string, digest *string) error {
+func (s *PVEClusterFirewallService) DeleteAlias(name string, digest *string) error {
 	method := http.MethodDelete
 	path := fmt.Sprintf("/cluster/firewall/aliases/%s", name)
 
@@ -91,7 +101,7 @@ func (api *PVE) DeleteClusterFirewallAlias(name string, digest *string) error {
 		payload.Add("digest", *digest)
 	}
 
-	err := api.httpClient.sendReq(method, path, &payload, nil)
+	err := s.api.client.sendReq(method, path, &payload, nil)
 	return err
 }
 
@@ -101,13 +111,13 @@ type GetClusterFirewallIPSetResponse struct {
 	Comment string `json:"comment"`
 }
 
-// GetClusterFirewallIPSet retrieves all cluster firewall IPSets.
-func (api *PVE) GetClusterFirewallIPSet() ([]GetClusterFirewallIPSetResponse, error) {
+// GetIPSet retrieves all cluster firewall IPSets.
+func (s *PVEClusterFirewallService) GetIPSet() ([]GetClusterFirewallIPSetResponse, error) {
 	method := http.MethodGet
 	path := "/cluster/firewall/ipset"
 
 	res := &[]GetClusterFirewallIPSetResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
@@ -116,13 +126,13 @@ type GetClusterFirewallRulesResponse struct {
 	Pos int `json:"pos"`
 }
 
-// GetClusterFirewallRules retrieves all cluster firewall rules.
-func (api *PVE) GetClusterFirewallRules() ([]GetClusterFirewallRulesResponse, error) {
+// GetRules retrieves all cluster firewall rules.
+func (s *PVEClusterFirewallService) GetRules() ([]GetClusterFirewallRulesResponse, error) {
 	method := http.MethodGet
 	path := "/cluster/firewall/rules"
 
 	res := &[]GetClusterFirewallRulesResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }

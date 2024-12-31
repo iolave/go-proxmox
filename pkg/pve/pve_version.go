@@ -14,7 +14,7 @@ func (api *PVE) GetVersion() (GetVersionResponse, error) {
 	method := http.MethodPost
 
 	res := &GetVersionResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }

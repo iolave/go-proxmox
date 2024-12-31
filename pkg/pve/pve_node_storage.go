@@ -6,6 +6,16 @@ import (
 	"path"
 )
 
+type PVENodeStorageService struct {
+	api *PVE
+}
+
+func newPVENodeStorageService(api *PVE) *PVENodeStorageService {
+	service := new(PVENodeStorageService)
+	service.api = api
+	return service
+}
+
 type GetNodeDatastoreResponse struct {
 	Content      string   `json:"content"`       // Allowed storage content types.
 	Storage      string   `json:"storage"`       // The storage identifier.
@@ -19,13 +29,13 @@ type GetNodeDatastoreResponse struct {
 	UsedFraction *float64 `json:"used_fraction"` // Used fraction (used/total).
 }
 
-// GetNodeDatastores retrieves node's datastores info.
-func (api *PVE) GetNodeDatastores(node string) ([]GetNodeDatastoreResponse, error) {
+// GetDatastores retrieves node's datastores info.
+func (s *PVENodeStorageService) GetDatastores(node string) ([]GetNodeDatastoreResponse, error) {
 	path := path.Join("/nodes", node, "/storage")
 	method := http.MethodGet
 
 	res := &[]GetNodeDatastoreResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
@@ -46,27 +56,27 @@ type GetNodeDatastoreContentResponse struct {
 	VmID      *int    `json:"vmid"`      // Associated Owner VMID.
 }
 
-// GetNodeDatastoreContent retrieves node's datastores info.
+// GetDatastoreContent retrieves node's datastores info.
 //
 // TODO: Add optional [parameters].
 //
 // [parameters]: https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/content
-func (api *PVE) GetNodeDatastoreContent(node, storageId string) ([]GetNodeDatastoreContentResponse, error) {
+func (s *PVENodeStorageService) GetDatastoreContent(node, storageId string) ([]GetNodeDatastoreContentResponse, error) {
 	path := path.Join("/nodes", node, "/storage", storageId, "/content")
 	method := http.MethodGet
 
 	res := &[]GetNodeDatastoreContentResponse{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
 
-// DownloadISOToNodeDatastore downloads an iso from an url into a node's datastore.
+// DownloadISOToDatastore downloads an iso from an url into a node's datastore.
 //
 // TODO: Add optional [parameters].
 //
 // [parameters]: https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/download-url
-func (api *PVE) DownloadISOToNodeDatastore(node, storageId, fileName, URL string) error {
+func (s *PVENodeStorageService) DownloadISOToDatastore(node, storageId, fileName, URL string) error {
 	path := path.Join("/nodes", node, "/storage", storageId, "/download-url")
 	method := http.MethodPost
 
@@ -75,16 +85,16 @@ func (api *PVE) DownloadISOToNodeDatastore(node, storageId, fileName, URL string
 	payload.Add("content", "iso")
 	payload.Add("filename", fileName)
 
-	err := api.httpClient.sendReq(method, path, payload, nil)
+	err := s.api.client.sendReq(method, path, payload, nil)
 	return err
 }
 
-// DownloadVZTemplateToNodeDatastore downloads a vztemplate from an url into a node's datastore.
+// DownloadVZTemplateToDatastore downloads a vztemplate from an url into a node's datastore.
 //
 // TODO: Add optional [parameters].
 //
 // [parameters]: https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/storage/{storage}/download-url
-func (api *PVE) DownloadVZTemplateToNodeDatastore(node, storageId, fileName, URL string) error {
+func (s *PVENodeStorageService) DownloadVZTemplateToDatastore(node, storageId, fileName, URL string) error {
 	path := path.Join("/nodes", node, "/storage", storageId, "/download-url")
 	method := http.MethodPost
 
@@ -93,6 +103,6 @@ func (api *PVE) DownloadVZTemplateToNodeDatastore(node, storageId, fileName, URL
 	payload.Add("content", "vztmpl")
 	payload.Add("filename", fileName)
 
-	err := api.httpClient.sendReq(method, path, payload, nil)
+	err := s.api.client.sendReq(method, path, payload, nil)
 	return err
 }

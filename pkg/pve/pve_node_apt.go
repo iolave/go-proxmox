@@ -9,27 +9,37 @@ import (
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
 
+type PVENodeAPTService struct {
+	api *PVE
+}
+
+func newPVENodeAPTService(api *PVE) *PVENodeAPTService {
+	service := new(PVENodeAPTService)
+	service.api = api
+	return service
+}
+
 type NodeAPTIndex struct {
 	ID string `json:"id"`
 }
 
-// GetNodeAPTIndex returns node's directory index for apt (Advanced Package Tool).
+// GetIndex returns node's directory index for apt (Advanced Package Tool).
 //
 // GET /nodes/:node/apt accessible by all authenticated users.
-func (api *PVE) GetNodeAPTIndex(node string) ([]NodeAPTIndex, error) {
+func (s *PVENodeAPTService) GetIndex(node string) ([]NodeAPTIndex, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/apt")
 
 	res := new([]NodeAPTIndex)
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
 
-// GetNodeAPTChangelog returns the changelog for a given pacakge name. If version is nil, the latest version available will be considered and otherwise, it will return the changelog found for the given version.
+// GetChangelog returns the changelog for a given pacakge name. If version is nil, the latest version available will be considered and otherwise, it will return the changelog found for the given version.
 //
 // GET /nodes/:node/apt/changelog requires the "Sys.Audit" permission.
-func (api *PVE) GetNodeAPTChangelog(node, name string, version *string) (string, error) {
+func (s *PVENodeAPTService) GetChangelog(node, name string, version *string) (string, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/apt/changelog")
 
@@ -41,7 +51,7 @@ func (api *PVE) GetNodeAPTChangelog(node, name string, version *string) (string,
 	}
 
 	res := helpers.NewStr("")
-	err := api.httpClient.sendReq(method, path, payload, res)
+	err := s.api.client.sendReq(method, path, payload, res)
 
 	return *res, err
 }
@@ -96,20 +106,20 @@ type GetNodeAPTRepoInfo struct {
 	StdRepos []APTRepoInfoStdRepo `json:"standard-repos"` // List of standard repositories and their configuration status.
 }
 
-// GetNodeAPTRepoInfo returns APT repository information.
+// GetRepoInfo returns APT repository information.
 //
 // GET /nodes/:node/apt/repositories requires the "Sys.Audit" permission.
-func (api *PVE) GetNodeAPTRepoInfo(node string) (GetNodeAPTRepoInfo, error) {
+func (s *PVENodeAPTService) GetRepoInfo(node string) (GetNodeAPTRepoInfo, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/apt/repositories")
 
 	res := new(GetNodeAPTRepoInfo)
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
 
-// SetNodeAPTRepoProps changes the properties of a repository (currently only allows enabling/disabling).
+// SetRepoProps changes the properties of a repository (currently only allows enabling/disabling).
 //   - "index": Index within the file (starting from 0).
 //   - "node": Cluster node name.
 //   - "filePath": Path to the containing file.
@@ -117,7 +127,7 @@ func (api *PVE) GetNodeAPTRepoInfo(node string) (GetNodeAPTRepoInfo, error) {
 //   - "enabled": Whether the repository should be enabled or not.
 //
 // POST /nodes/:node/apt/repositoreies requires the "Sys.Modify" permission.
-func (api *PVE) SetNodeAPTRepoProps(index int, node, filePath string, digest *string, enabled *bool) error {
+func (s *PVENodeAPTService) SetRepoProps(index int, node, filePath string, digest *string, enabled *bool) error {
 	method := http.MethodPost
 	path := path.Join("/nodes", node, "/apt/repositories")
 
@@ -132,18 +142,18 @@ func (api *PVE) SetNodeAPTRepoProps(index int, node, filePath string, digest *st
 		payload.Add("enabled", fmt.Sprintf("%d", helpers.BoolToInt(*enabled)))
 	}
 
-	err := api.httpClient.sendReq(method, path, nil, nil)
+	err := s.api.client.sendReq(method, path, nil, nil)
 
 	return err
 }
 
-// AddNodeAPTStdRepo adds a standard repository to the configuration.
+// AddStdRepo adds a standard repository to the configuration.
 //   - node: Cluster node name.
 //   - handle: Handle that identifies a repository.
 //   - digest: Digest to detect modifications.
 //
 // PUT /nodes/:node/apt/repositoreies requires the "Sys.Modify" permission.
-func (api *PVE) AddNodeAPTStdRepo(node, handle string, digest *string) error {
+func (s *PVENodeAPTService) AddStdRepo(node, handle string, digest *string) error {
 	method := http.MethodPut
 	path := path.Join("/nodes", node, "/apt/repositories")
 
@@ -153,12 +163,12 @@ func (api *PVE) AddNodeAPTStdRepo(node, handle string, digest *string) error {
 		payload.Add("digest", *digest)
 	}
 
-	err := api.httpClient.sendReq(method, path, nil, nil)
+	err := s.api.client.sendReq(method, path, nil, nil)
 
 	return err
 }
 
-// ListAPTUpdates list available updates.
+// ListUpdates list available updates.
 //
 // TODO: [docs] lacks of response definition (map it).
 //   - node: Cluster node name.
@@ -166,34 +176,34 @@ func (api *PVE) AddNodeAPTStdRepo(node, handle string, digest *string) error {
 // GET /nodes/:node/apt/update requires the "Sys.Modify" permission.
 //
 // [docs]: https://pve.proxmox.com/pve-docs/api-viewer/index.html#/nodes/{node}/apt/update
-func (api *PVE) ListAPTUpdates(node string) (interface{}, error) {
+func (s *PVENodeAPTService) ListUpdates(node string) (interface{}, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/apt/update")
 
 	var res *interface{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return res, err
 }
 
-// ListAPTUpdates this is used to resynchronize the package index files from their sources (apt-get update).
+// UpdateIndex this is used to resynchronize the package index files from their sources (apt-get update).
 //
 //   - node: Cluster node name.
 //   - notify: Send notification about new packages.
 //   - quiet: Only produces output suitable for logging, omitting progress indicators.
 //
 // POST /nodes/:node/apt/update requires the "Sys.Modify" permission.
-func (api *PVE) UpdateAPTIndex(node string, notify, quiet bool) (string, error) {
+func (s *PVENodeAPTService) UpdateIndex(node string, notify, quiet bool) (string, error) {
 	method := http.MethodPost
 	path := path.Join("/nodes", node, "/apt/update")
 
 	res := ""
-	err := api.httpClient.sendReq(method, path, nil, &res)
+	err := s.api.client.sendReq(method, path, nil, &res)
 
 	return res, err
 }
 
-// GetPveAPTInfo get package information for important Proxmox packages.
+// GetPVEInfo get package information for important Proxmox packages.
 //
 // TODO: [docs] lacks of response definition (map it).
 //   - node: Cluster node name.
@@ -201,12 +211,12 @@ func (api *PVE) UpdateAPTIndex(node string, notify, quiet bool) (string, error) 
 // GET /nodes/:node/apt/versions requires the "Sys.Audit" permission.
 //
 // [docs]: https://pve.proxmox.com/pve-docs/api-viewer/index.html#/nodes/{node}/apt/versions
-func (api *PVE) GetPveAPTInfo(node string) (interface{}, error) {
+func (s *PVENodeAPTService) GetPVEInfo(node string) (interface{}, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/apt/versions")
 
 	var res *interface{}
-	err := api.httpClient.sendReq(method, path, nil, res)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return res, err
 }

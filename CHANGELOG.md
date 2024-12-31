@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
+
+## [v0.4.0]
+### Changed
+- Cluster endpoints implementations are now located under `PVE.Cluster` field.
+- Cluster Firewall endpoints implementations are now located under `PVE.Cluster.Firewall` field.
+- Node endpoints implementations are now located under `PVE.Node` field.
+- Node Firewall endpoints implementations are now located under `PVE.Node.Firewall` field.
+- Node APT endpoints implementations are now located under `PVE.Node.APT` field.
+- Node Storage endpoints implementations are now located under `PVE.Node.Storage` field.
+- LXC endpoints implementations are now located under `PVE.LXC` field.
+
 ## [v0.3.0]
 ### Added
 - Node's APT endpoints implementations.

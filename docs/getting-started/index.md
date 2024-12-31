@@ -1,7 +1,7 @@
 # Getting started
 ## Install
 ```bash 
-go install github.com/iolave/go-proxmox@v0.3.0
+go install github.com/iolave/go-proxmox@v0.4.0
 ```
 
 ## Environment variables
