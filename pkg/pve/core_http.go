@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 
 	"github.com/iolave/go-proxmox/errors"
@@ -94,26 +95,44 @@ func (c *httpClient) sendReq(method, path string, payload *url.Values, result an
 	if err != nil {
 		return err
 	}
+	b, err := io.ReadAll(res.Body)
 
 	if res.StatusCode != http.StatusOK {
 		return errors.NewHTTPErrorFromReponse(res)
 	}
 
-	b, err := io.ReadAll(res.Body)
-
 	if err != nil {
 		return err
 	}
 
-	pveRes := &pveResponse[any]{}
-	err = json.Unmarshal(b, pveRes)
+	switch t := reflect.TypeOf(result); t {
+	case reflect.TypeFor[*string]():
+		pveRes := &pveResponse[string]{}
+		err = json.Unmarshal(b, pveRes)
+		if err != nil {
+			return err
+		}
+		*result.(*string) = pveRes.Data
+		return nil
 
-	if err != nil {
-		return err
+	case reflect.TypeFor[*int]():
+		pveRes := &pveResponse[int]{}
+		err = json.Unmarshal(b, pveRes)
+		if err != nil {
+			return err
+		}
+		*result.(*int) = pveRes.Data
+		return nil
+	default:
+		pveRes := &pveResponse[any]{}
+		err = json.Unmarshal(b, pveRes)
+		if err != nil {
+			return err
+		}
+		b, _ := json.Marshal(pveRes.Data)
+		json.Unmarshal(b, result)
+		return nil
 	}
-
-	result = &pveRes.Data
-	return nil
 }
 
 func addPayloadValue[T string | bool | int](p *url.Values, key string, value *T, defaultValue *T) {

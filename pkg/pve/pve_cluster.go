@@ -1,7 +1,6 @@
 package pve
 
 import (
-	"errors"
 	"net/http"
 	"path"
 	"strconv"
@@ -24,16 +23,12 @@ func (s *PVEClusterService) GetNextVMID() (int, error) {
 	method := http.MethodGet
 	path := path.Join("/cluster", "/nextid")
 
-	res := new(string)
-	err := s.api.client.sendReq(method, path, nil, res)
+	result := ""
+	err := s.api.client.sendReq(method, path, nil, &result)
 
 	if err != nil {
 		return 0, err
 	}
 
-	if res == nil {
-		errors.New("GetNextVMID is trying to access a nil reference")
-	}
-
-	return strconv.Atoi(*res)
+	return strconv.Atoi(result)
 }

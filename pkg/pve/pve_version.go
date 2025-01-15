@@ -13,8 +13,8 @@ func (api *PVE) GetVersion() (GetVersionResponse, error) {
 	path := "/version"
 	method := http.MethodGet
 
-	res := &GetVersionResponse{}
-	err := api.client.sendReq(method, path, nil, res)
+	res := GetVersionResponse{}
+	err := api.client.sendReq(method, path, nil, &res)
 
-	return *res, err
+	return res, err
 }
