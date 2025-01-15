@@ -11,7 +11,7 @@ type GetVersionResponse struct {
 // GetVersion retrieves proxmox version.
 func (api *PVE) GetVersion() (GetVersionResponse, error) {
 	path := "/version"
-	method := http.MethodPost
+	method := http.MethodGet
 
 	res := &GetVersionResponse{}
 	err := api.client.sendReq(method, path, nil, res)
