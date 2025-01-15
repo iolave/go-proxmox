@@ -152,7 +152,7 @@ func (s *PVELxcService) GetAll(node string) ([]GetNodeLxcsResponse, error) {
 	path := path.Join("/nodes", node, "/lxc")
 
 	res := &[]GetNodeLxcsResponse{}
-	err := s.api.client.sendReq(method, path, nil, nil)
+	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
