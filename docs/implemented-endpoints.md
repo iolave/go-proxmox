@@ -357,7 +357,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/nodes/:node/lxc`                                          |:material-check-all:|:material-check:|
-| `/nodes/:node/lxc/:vmid`                                    |:material-close:| | |:material-close:|
+| `/nodes/:node/lxc/:vmid`                                    |:material-check-all:| | |:material-check-all:|
 | `/nodes/:node/lxc/:vmid/firewall`                           |:material-close:|
 | `/nodes/:node/lxc/:vmid/firewall/log`                       |:material-close:|
 | `/nodes/:node/lxc/:vmid/firewall/option`                    |:material-close:||:material-close:|

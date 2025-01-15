@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"strconv"
 
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
@@ -157,6 +158,23 @@ func (s *PVELxcService) GetAll(node string) ([]GetNodeLxcsResponse, error) {
 	return *res, err
 }
 
+// Get returns node's lxc index.
+//
+// GET /nodes/:node/lxc/:vmid accessible by all authenticated users.
+func (s *PVELxcService) Get(node string, vmid int) (
+	res []struct {
+		Subdir string `json:"subdir"`
+	},
+	err error,
+) {
+	method := http.MethodGet
+	path := path.Join("/nodes", node, "/lxc", strconv.Itoa(vmid))
+
+	err = s.api.client.sendReq(method, path, nil, &res)
+
+	return res, err
+}
+
 type CreateLxcRequest struct {
 	Node               string          // The cluster node name.
 	OSTemplate         string          // The OS template or backup file (in format "{STORAGE_ID}:{TYPE}/{TEMPLATE_NAME}", i.e. "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst")
@@ -288,4 +306,33 @@ func (s *PVELxcService) Create(req CreateLxcRequest) (CreateLxcResponse, error) 
 	}
 
 	return CreateLxcResponse{VMID: vmid}, nil
+}
+
+type DeleteLXCOptions struct {
+	DestroyUnreferencedDisks *bool // If set, destroy additionally all disks with the VMID from all enabled storages which are not referenced in the config.
+	Force                    *bool // Force destroy, even if running.
+	Purge                    *bool // Remove container from all related configurations. For example, backup jobs, replication jobs or HA. Related ACLs and Firewall entries will *always* be removed.
+}
+
+// Delete destroy the container (also delete all uses files).
+//
+//   - opts.Force default value is false.
+//   - opts.DestroyUnreferencedDisks default value is false.
+//
+// DELETE /nodes/:node/lxc/:vmid requires the "VM.Allocate" permission.
+func (s *PVELxcService) Delete(node string, vmid int, opts *DeleteLXCOptions) (res string, err error) {
+	method := http.MethodDelete
+	path := path.Join("/nodes", node, "/lxc", strconv.Itoa(vmid))
+
+	payload := &url.Values{}
+
+	if opts != nil {
+		addPayloadValue(payload, "force", opts.Force, nil)
+		addPayloadValue(payload, "purge", opts.Purge, nil)
+		addPayloadValue(payload, "destroy-unreferenced-disks", opts.DestroyUnreferencedDisks, nil)
+	}
+
+	err = s.api.client.sendReq(method, path, payload, &res)
+
+	return res, err
 }
