@@ -16,6 +16,7 @@ func main() {
 		"pve",
 		"helpers",
 		"cloudflare",
+		"errors",
 	}
 
 	for i := 0; i < len(packages); i++ {
@@ -49,7 +50,7 @@ func writePackageMd(pkgName string, md string) error {
 		return err
 	}
 
-	return os.WriteFile(fmt.Sprintf("%s/docs/reference/pkg/%s.md", wd, pkgName), []byte(md), 0644)
+	return os.WriteFile(fmt.Sprintf("%s/docs/go-client/pkg/%s.md", wd, pkgName), []byte(md), 0644)
 }
 
 func getPackageMd(pkgName string) (string, error) {

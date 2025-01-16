@@ -6,9 +6,11 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/iolave/go-proxmox/pkg/errors"
 )
 
-func (s *Server) sendPVERequest(sr *http.Request) (*http.Response, error) {
+func (s *Server) sendPVERequest(sr *http.Request) (*http.Response, *errors.HTTPError) {
 	pveUrl, err := url.Parse(fmt.Sprintf(
 		"https://%s:%d%s",
 		s.PVEHost,
@@ -17,12 +19,22 @@ func (s *Server) sendPVERequest(sr *http.Request) (*http.Response, error) {
 	))
 	b, err := io.ReadAll(sr.Body)
 	if err != nil {
-		return nil, err
+		return nil, &errors.HTTPError{
+			StatusCode: http.StatusInternalServerError,
+			Name:       "internal_server_error",
+			Message:    "unable to read request body",
+			Original:   err,
+		}
 	}
 
 	values, err := url.ParseQuery(string(b))
 	if err != nil {
-		return nil, err
+		return nil, &errors.HTTPError{
+			StatusCode: http.StatusBadRequest,
+			Name:       "bad_request_error",
+			Message:    "unable to parse url query",
+			Original:   err,
+		}
 	}
 
 	cr, err := http.NewRequest(
@@ -31,7 +43,12 @@ func (s *Server) sendPVERequest(sr *http.Request) (*http.Response, error) {
 		strings.NewReader(values.Encode()),
 	)
 	if err != nil {
-		return nil, err
+		return nil, &errors.HTTPError{
+			StatusCode: http.StatusInternalServerError,
+			Name:       "internal_server_error",
+			Message:    "unable to generate new request",
+			Original:   err,
+		}
 	}
 
 	for k, v := range sr.Header {
@@ -39,5 +56,15 @@ func (s *Server) sendPVERequest(sr *http.Request) (*http.Response, error) {
 	}
 
 	res, err := s.c.Do(cr)
-	return res, err
+
+	if err != nil {
+		return res, &errors.HTTPError{
+			StatusCode: http.StatusInternalServerError,
+			Name:       "internal_server_error",
+			Message:    "unable to send request to proxmox",
+			Original:   err,
+		}
+	}
+
+	return res, nil
 }

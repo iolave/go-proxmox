@@ -11,6 +11,7 @@ type Config struct {
 	Port               int
 	InsecureSkipVerify bool
 	CfServiceToken     *cloudflare.ServiceToken
+	APIWrapper         bool
 }
 
 type PVE struct {
@@ -40,6 +41,7 @@ func New(config Config) (*PVE, error) {
 			config.Host,
 			config.Port,
 			config.InsecureSkipVerify,
+			config.APIWrapper,
 		),
 	}
 
@@ -64,6 +66,7 @@ func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
 			config.Host,
 			config.Port,
 			config.InsecureSkipVerify,
+			config.APIWrapper,
 		),
 	}
 

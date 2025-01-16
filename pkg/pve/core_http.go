@@ -10,8 +10,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/iolave/go-proxmox/errors"
 	"github.com/iolave/go-proxmox/pkg/cloudflare"
+	"github.com/iolave/go-proxmox/pkg/errors"
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
 
@@ -21,9 +21,10 @@ type httpClient struct {
 	Host         string
 	Port         int
 	ServiceToken *cloudflare.ServiceToken
+	APIWrapper   bool
 }
 
-func newHttpClient(creds *Credentials, st *cloudflare.ServiceToken, host string, port int, insecureSkipVerify bool) *httpClient {
+func newHttpClient(creds *Credentials, st *cloudflare.ServiceToken, host string, port int, insecureSkipVerify bool, wrapper bool) *httpClient {
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: insecureSkipVerify,
@@ -36,6 +37,7 @@ func newHttpClient(creds *Credentials, st *cloudflare.ServiceToken, host string,
 		Host:         host,
 		Port:         port,
 		ServiceToken: st,
+		APIWrapper:   wrapper,
 	}
 }
 
@@ -80,9 +82,7 @@ func (c *httpClient) sendReq(method, path string, payload *url.Values, result an
 		return err
 	}
 
-	err = c.Creds.Set(req)
-
-	if err != nil {
+	if err := c.Creds.Set(req); err != nil {
 		return err
 	}
 
@@ -96,13 +96,22 @@ func (c *httpClient) sendReq(method, path string, payload *url.Values, result an
 		return err
 	}
 	b, err := io.ReadAll(res.Body)
-
-	if res.StatusCode != http.StatusOK {
-		return errors.NewHTTPErrorFromReponse(res)
-	}
-
 	if err != nil {
 		return err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		if !c.APIWrapper {
+			return errors.NewHTTPErrorFromResponse(res)
+		}
+
+		httpErr := new(errors.HTTPError)
+		if err := json.Unmarshal(b, httpErr); err != nil {
+			return err
+		}
+
+		return httpErr
+
 	}
 
 	switch t := reflect.TypeOf(result); t {

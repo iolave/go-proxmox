@@ -5,4 +5,4 @@ bin
 **/*.swp
 cover*
 site/
-docs/reference/pkg/*
+docs/go-client/pkg/*

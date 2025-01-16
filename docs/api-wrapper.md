@@ -1,7 +1,7 @@
 The pve api wrapper is an http server ment to be installed on the proxmox host server (but can definitely be installed somewhere else) that wraps the proxmox api and adds missing features to it.
 
 ## Features
-- Proper error responses on failed requests (not available yet),
+- Proper error responses on failed requests,
 - lxc exec command endpoint (not available yet).
 
 ## Installation

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### PVE API wrapper
 #### Added
 - new http server that redirects http requests to the desired proxmox instance.
+- proxmox error response wrapping into `pkg/errors.HTTPError`.  
 
 ### PVE API client
 #### Added
