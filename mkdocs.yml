@@ -73,6 +73,7 @@ nav:
         - go-client/pkg/cloudflare.md
         - go-client/pkg/helpers.md
         - go-client/pkg/pve.md
+        - go-client/pkg/errors.md
     - Implemented endpoints: go-client/implemented-endpoints.md
   - API Wrapper: api-wrapper.md
   - Changelog: changelog.md
