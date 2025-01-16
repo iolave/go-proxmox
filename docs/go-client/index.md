@@ -1,11 +1,11 @@
-# Getting started
+# Go client
 ## Install
 ```bash 
-go install github.com/iolave/go-proxmox@v0.4.0
+go get github.com/iolave/go-proxmox@v0.4.0
 ```
 
 ## Environment variables
-The following environment varaibles can be used to interact both with the cli and the golang pkg.
+The following environment variables can be used to interact both with the cli and the golang pkg.
 
 |VARIABLE           |DESCRIPTION                            |TOKEN|USR & PWD|
 |-------------------|---------------------------------------|:---:|:--------:|
@@ -14,7 +14,7 @@ The following environment varaibles can be used to interact both with the cli an
 |PROXMOX_TOKEN_NAME |Proxmox VE generated token name        |X    |-         |
 |PROXMOX_TOKEN      |Proxmox VE generated token             |X    |-         |
 
-## Golang package 
+## Getting started 
 First, import the [pve package]:
 ```go
 import "github.com/iolave/go-proxmox/pkg/pve"
@@ -70,7 +70,7 @@ config := pve.Config{
 ```
 
 
-[pve package]: https://go-proxmox.iolave.com/reference/pkg/pve/
-[credentials]: https://go-proxmox.iolave.com/reference/pkg/pve/#type-credentials
+[pve package]: https://go-proxmox.iolave.com/go-client/pkg/pve/
+[credentials]: https://go-proxmox.iolave.com/go-client/pkg/pve/#type-credentials
 [service token]: https://developers.cloudflare.com/cloudflare-one/identity/service-tokens
 [application]: https://developers.cloudflare.com/cloudflare-one/applications/

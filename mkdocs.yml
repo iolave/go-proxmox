@@ -1,4 +1,4 @@
-site_name: Proxmox API for Golang
+site_name: GO Proxmox
 site_url: https://go-proxmox.iolave.com/
 repo_url: https://github.com/iolave/go-proxmox
 repo_name: iolave/go-proxmox
@@ -23,7 +23,7 @@ markdown_extensions:
 theme: 
   name: material
   font: 
-    text: Roboto Mono
+    text: Open Sans 
     code: Roboto Mono
   features:
     - announce.dismiss
@@ -66,12 +66,13 @@ theme:
 nav:
   - Home:
     - index.md
-    - implemented-endpoints.md
-  - Getting started:
-    - getting-started/index.md
-  - Reference:
-    - pkg:
-      - reference/pkg/cloudflare.md
-      - reference/pkg/helpers.md
-      - reference/pkg/pve.md
+  - Go client:
+    - go-client/index.md
+    - Reference:
+      - pkg:
+        - go-client/pkg/cloudflare.md
+        - go-client/pkg/helpers.md
+        - go-client/pkg/pve.md
+    - Implemented endpoints: go-client/implemented-endpoints.md
+  - API Wrapper: api-wrapper.md
   - Changelog: changelog.md

@@ -316,6 +316,7 @@ type DeleteLXCOptions struct {
 
 // Delete destroy the container (also delete all uses files).
 //
+//   - if opts is set, the request might fail.
 //   - opts.Force default value is false.
 //   - opts.DestroyUnreferencedDisks default value is false.
 //
