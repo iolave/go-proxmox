@@ -9,7 +9,7 @@ import (
 	"github.com/iolave/go-proxmox/pkg/errors"
 )
 
-func getHandler(s *Server) http.HandlerFunc {
+func getHandler(s *server) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.Method, r.URL.Path, "started")
 		res, httpErr := s.sendPVERequest(r)

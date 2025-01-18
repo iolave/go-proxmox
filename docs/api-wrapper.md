@@ -1,4 +1,6 @@
-The pve api wrapper is an http server ment to be installed on the proxmox host server (but can definitely be installed somewhere else) that wraps the proxmox api and adds missing features to it.
+The pve api wrapper is an http server ment to be installed on the proxmox host server () that wraps the proxmox api and adds missing features to it.
+
+_pve-api-wrapper can definitely be installed somewhere else but some functionalities might not work._
 
 ## Features
 - Proper error responses on failed requests,
@@ -25,11 +27,18 @@ cd go-proxmox-latest
 make build
 ```
 
-
-## Serve
+## Usage
 ```bash
-pve-api-wrapper
+pve-api-wrapper [--version] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--crt CRT] [--key KEY]
 ```
+### Options
+- `--version` displays the program version.
+- `--pve-host` proxmox virtual environment host (env:`PVE_HOST`, default:`localhost`).
+- `--pve-port` proxmox virtual environment port (env:`PVE_PORT`, default:`8006`).
+- `--host` api wrapper host (env:`WRAPPER_HOST`, default:`localhost`).
+- `--port` api wrapper port (env:`WRAPPER_PORT`, default:`8443`).
+- `--crt` api wrapper tls crt path (default:`/etc/pve/local/pve-ssl.pem`).
+- `--key` api wrapper tls key path (default:`/etc/pve/local/pve-ssl.key`).
 
 [here]: https://github.com/iolave/go-proxmox/blob/latest/scripts/install.sh
 <!--
