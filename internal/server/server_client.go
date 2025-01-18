@@ -10,11 +10,11 @@ import (
 	"github.com/iolave/go-proxmox/pkg/errors"
 )
 
-func (s *Server) sendPVERequest(sr *http.Request) (*http.Response, *errors.HTTPError) {
+func (s *server) sendPVERequest(sr *http.Request) (*http.Response, *errors.HTTPError) {
 	pveUrl, err := url.Parse(fmt.Sprintf(
 		"https://%s:%d%s",
-		s.PVEHost,
-		s.PVEPort,
+		s.cfg.PVEHost,
+		s.cfg.PVEPort,
 		sr.URL.Path,
 	))
 	b, err := io.ReadAll(sr.Body)

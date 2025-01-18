@@ -1,7 +1,7 @@
 # Go client
 ## Install
 ```bash 
-go get github.com/iolave/go-proxmox@v0.4.0
+go get github.com/iolave/go-proxmox@v0.5.0
 ```
 
 ## Environment variables

@@ -2,11 +2,15 @@ module github.com/iolave/go-proxmox
 
 go 1.22.2
 
-require github.com/princjef/gomarkdoc v1.1.0
+require (
+	github.com/alexflint/go-arg v1.5.1
+	github.com/princjef/gomarkdoc v1.1.0
+)
 
 require (
 	github.com/Microsoft/go-winio v0.5.0 // indirect
 	github.com/VividCortex/ewma v1.2.0 // indirect
+	github.com/alexflint/go-scalar v1.2.0 // indirect
 	github.com/cheggaaa/pb/v3 v3.0.8 // indirect
 	github.com/emirpasic/gods v1.12.0 // indirect
 	github.com/fatih/color v1.11.0 // indirect
