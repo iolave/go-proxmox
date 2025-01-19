@@ -11,7 +11,7 @@ _pve-api-wrapper can definitely be installed somewhere else but some functionali
 The installation script installs the `pve-api-wrapper` binary into `/usr/local/bin`.
 
 ```bash
-curl https://raw.githubusercontent.com/iolave/go-proxmox/refs/tags/latest/scripts/install.sh | sh
+curl https://raw.githubusercontent.com/iolave/go-proxmox/refs/heads/master/scripts/install.sh | bash
 ```
 
 _Inspect the installation script code [here]._
@@ -40,7 +40,7 @@ pve-api-wrapper [--version] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--pve-h
 - `--crt` api wrapper tls crt path (default:`/etc/pve/local/pve-ssl.pem`).
 - `--key` api wrapper tls key path (default:`/etc/pve/local/pve-ssl.key`).
 
-[here]: https://github.com/iolave/go-proxmox/blob/latest/scripts/install.sh
+[here]: https://github.com/iolave/go-proxmox/blob/master/scripts/install.sh
 <!--
     TODO: host the shell script within the docs https://github.com/squidfunk/mkdocs-material/discussions/3458
 -->
