@@ -1,3 +1,5 @@
+#!/bin/bash
+
 os=""
 arch=""
 
@@ -34,5 +36,5 @@ if [[ "$status_code" != "200" ]]; then
 	exit 1
 fi
 
-sudo curl -L -o $bin $url 
+curl -L -o $bin $url 
 chmod +x $bin
