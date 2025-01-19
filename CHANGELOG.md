@@ -89,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proxmox api token credentials support.
 - Proxmox api version endpoint.
 
-[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.5.1...HEAD
+[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.5.1...staging
 [v0.5.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.5.1
 [v0.5.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.5.0
 [v0.4.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.4.0
