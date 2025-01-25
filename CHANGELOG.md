@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### PVE API client
 #### Added
 - `POST /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.NewRule`.
+- `GET /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.GetRule`.
 
 ## [v0.5.0]
 ### PVE API wrapper

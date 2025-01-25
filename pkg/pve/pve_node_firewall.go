@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"path"
 	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -19,7 +20,7 @@ func newPVENodeFirewallService(api *PVE) *PVENodeFirewallService {
 	return service
 }
 
-type GetNodeFirewallRulesResponse[Position interface{ int | string }] struct {
+type GetNodeFirewallRuleResponse[Position interface{ int | string }] struct {
 	Action          string           `json:"action"`
 	Comment         string           `json:"comment"`
 	Destination     string           `json:"dest"`
@@ -38,25 +39,67 @@ type GetNodeFirewallRulesResponse[Position interface{ int | string }] struct {
 }
 
 // GetRules retrieves node's firewall rules.
-func (s *PVENodeFirewallService) GetRules(node string) ([]GetNodeFirewallRulesResponse[int], error) {
+func (s *PVENodeFirewallService) GetRules(node string) ([]GetNodeFirewallRuleResponse[int], error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/firewall/rules")
 
-	res := &[]GetNodeFirewallRulesResponse[int]{}
+	res := &[]GetNodeFirewallRuleResponse[int]{}
 	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
 }
 
 // GetRulesByPos Retrieves a single node's firewall rule using rule's position (pos) as an index.
-func (s *PVENodeFirewallService) GetRulesByPos(node string, pos int) (GetNodeFirewallRulesResponse[string], error) {
+func (s *PVENodeFirewallService) GetRulesByPos(node string, pos int) (GetNodeFirewallRuleResponse[string], error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/firewall/rules", strconv.Itoa(pos))
 
-	res := &GetNodeFirewallRulesResponse[string]{}
+	res := &GetNodeFirewallRuleResponse[string]{}
 	err := s.api.client.sendReq(method, path, nil, res)
 
 	return *res, err
+}
+
+// GetRule finds a single node's firewall rule using it's custom id within the comment field. If the rule is not found, both result and error will be nil.
+//
+// GET /nodes/:node/firewall/rules requires the "Sys.Audit" permission.
+func (s *PVENodeFirewallService) GetRule(node string, id string) (*GetNodeFirewallRuleResponse[int], error) {
+	if err := uuid.Validate(id); err != nil {
+		return nil, err
+	}
+
+	rules, err := s.GetRules(node)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, rule := range rules {
+		idxStart := strings.IndexRune(rule.Comment, '[')
+		if idxStart != 0 {
+			continue
+		}
+		idxEnd := strings.IndexRune(rule.Comment, ']')
+		if idxEnd == -1 {
+			continue
+		}
+		substr := rule.Comment[idxStart+1 : idxEnd]
+		splitted := strings.Split(substr, "=")
+		if len(splitted) != 2 {
+			continue
+		}
+		if splitted[0] != "id" {
+			continue
+		}
+		if err := uuid.Validate(splitted[1]); err != nil {
+			continue
+		}
+		if id != splitted[1] {
+			continue
+		}
+		return &rule, nil
+	}
+
+	return nil, nil
 }
 
 type CreateNodeFirewallRuleRequest struct {
