@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/ggicci/httpin"
 	"github.com/iolave/go-proxmox/pkg/cloudflare"
 	"github.com/iolave/go-proxmox/pkg/errors"
 	"github.com/iolave/go-proxmox/pkg/helpers"
@@ -95,6 +96,82 @@ func (c *httpClient) sendReq(method, path string, payload *url.Values, result an
 	if err != nil {
 		return err
 	}
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		if !c.APIWrapper {
+			return errors.NewHTTPErrorFromResponse(res)
+		}
+
+		httpErr := new(errors.HTTPError)
+		if err := json.Unmarshal(b, httpErr); err != nil {
+			return err
+		}
+
+		return httpErr
+
+	}
+
+	switch t := reflect.TypeOf(result); t {
+	case reflect.TypeFor[*string]():
+		pveRes := &pveResponse[string]{}
+		err = json.Unmarshal(b, pveRes)
+		if err != nil {
+			return err
+		}
+		*result.(*string) = pveRes.Data
+		return nil
+
+	case reflect.TypeFor[*int]():
+		pveRes := &pveResponse[int]{}
+		err = json.Unmarshal(b, pveRes)
+		if err != nil {
+			return err
+		}
+		*result.(*int) = pveRes.Data
+		return nil
+	default:
+		pveRes := &pveResponse[any]{}
+		err = json.Unmarshal(b, pveRes)
+		if err != nil {
+			return err
+		}
+		b, _ := json.Marshal(pveRes.Data)
+		json.Unmarshal(b, result)
+		return nil
+	}
+}
+
+// sendReq2 sends an http request to the configured proxmox api.
+//
+// It stores the response value into the result parameter only
+// if no error has been returned. If an error is returned, the
+// passed result parameter will be intact.
+func (c *httpClient) sendReq2(method, path string, payload any, result any) error {
+	url := c.buildRequestUrl(path)
+
+	req, err := httpin.NewRequest(method, url, payload, httpin.Option.WithNestedDirectivesEnabled(true))
+
+	if err != nil {
+		return err
+	}
+
+	if err := c.Creds.Set(req); err != nil {
+		return err
+	}
+
+	if c.ServiceToken != nil {
+		c.ServiceToken.Set(req)
+	}
+
+	res, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+
 	b, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
