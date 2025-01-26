@@ -21,6 +21,7 @@ func newPVENodeFirewallService(api *PVE) *PVENodeFirewallService {
 }
 
 type GetNodeFirewallRuleResponse[Position interface{ int | string }] struct {
+	ID              string
 	Action          string           `json:"action"`
 	Comment         string           `json:"comment"`
 	Destination     string           `json:"dest"`
@@ -38,15 +39,43 @@ type GetNodeFirewallRuleResponse[Position interface{ int | string }] struct {
 	Type            string           `json:"type"`
 }
 
+func (r *GetNodeFirewallRuleResponse[any]) setIdFromComment() {
+	idxStart := strings.IndexRune(r.Comment, '[')
+	if idxStart != 0 {
+		return
+	}
+	idxEnd := strings.IndexRune(r.Comment, ']')
+	if idxEnd == -1 {
+		return
+	}
+	substr := r.Comment[idxStart+1 : idxEnd]
+	splitted := strings.Split(substr, "=")
+	if len(splitted) != 2 {
+		return
+	}
+	if splitted[0] != "id" {
+		return
+	}
+	if err := uuid.Validate(splitted[1]); err != nil {
+		return
+	}
+	r.ID = splitted[1]
+}
+
 // GetRules retrieves node's firewall rules.
 func (s *PVENodeFirewallService) GetRules(node string) ([]GetNodeFirewallRuleResponse[int], error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/firewall/rules")
 
-	res := &[]GetNodeFirewallRuleResponse[int]{}
-	err := s.api.client.sendReq(method, path, nil, res)
+	res := []GetNodeFirewallRuleResponse[int]{}
 
-	return *res, err
+	err := s.api.client.sendReq(method, path, nil, &res)
+
+	for i := 0; i < len(res); i++ {
+		res[i].setIdFromComment()
+	}
+
+	return res, err
 }
 
 // GetRulesByPos Retrieves a single node's firewall rule using rule's position (pos) as an index.
@@ -54,15 +83,16 @@ func (s *PVENodeFirewallService) GetRulesByPos(node string, pos int) (GetNodeFir
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/firewall/rules", strconv.Itoa(pos))
 
-	res := &GetNodeFirewallRuleResponse[string]{}
-	err := s.api.client.sendReq(method, path, nil, res)
+	res := GetNodeFirewallRuleResponse[string]{}
+	err := s.api.client.sendReq(method, path, nil, &res)
+	res.setIdFromComment()
 
-	return *res, err
+	return res, err
 }
 
 // GetRule finds a single node's firewall rule using it's custom id within the comment field. If the rule is not found, both result and error will be nil.
 //
-// GET /nodes/:node/firewall/rules requires the "Sys.Audit" permission.
+// GET /nodes/{node}/firewall/rules requires the "Sys.Audit" permission.
 func (s *PVENodeFirewallService) GetRule(node string, id string) (*GetNodeFirewallRuleResponse[int], error) {
 	if err := uuid.Validate(id); err != nil {
 		return nil, err
@@ -74,26 +104,7 @@ func (s *PVENodeFirewallService) GetRule(node string, id string) (*GetNodeFirewa
 	}
 
 	for _, rule := range rules {
-		idxStart := strings.IndexRune(rule.Comment, '[')
-		if idxStart != 0 {
-			continue
-		}
-		idxEnd := strings.IndexRune(rule.Comment, ']')
-		if idxEnd == -1 {
-			continue
-		}
-		substr := rule.Comment[idxStart+1 : idxEnd]
-		splitted := strings.Split(substr, "=")
-		if len(splitted) != 2 {
-			continue
-		}
-		if splitted[0] != "id" {
-			continue
-		}
-		if err := uuid.Validate(splitted[1]); err != nil {
-			continue
-		}
-		if id != splitted[1] {
+		if id != rule.ID {
 			continue
 		}
 		return &rule, nil
@@ -123,7 +134,7 @@ type CreateNodeFirewallRuleRequest struct {
 
 // NewRule creates a new node firewall rule. It adds metadata within the proxmox comment field with the format [id=uuid].
 //
-// POST /nodes/:node/firewall/rules requires the "Sys.Modify" permission.
+// POST /nodes/{node}/firewall/rules requires the "Sys.Modify" permission.
 func (s *PVENodeFirewallService) NewRule(req CreateNodeFirewallRuleRequest) (string, error) {
 	method := http.MethodPost
 	path := "/nodes/{node}/firewall/rules"
@@ -133,6 +144,47 @@ func (s *PVENodeFirewallService) NewRule(req CreateNodeFirewallRuleRequest) (str
 		return "", err
 	}
 	return uuid, nil
+}
+
+// DeleteRuleByPos deletes a node's firewall rule using it's position (pos).
+//
+//   - TODO: add digest support.
+//
+// DELETE /nodes/{node}/firewall/rules/{pos} requires the "Sys.Modify" permission.
+func (s *PVENodeFirewallService) DeleteRuleByPos(node string, pos int) error {
+	type request struct {
+		Node     string `in:"nonzero;path=node"`
+		Position int    `in:"path=pos"`
+	}
+	req := request{Node: node, Position: pos}
+	method := http.MethodDelete
+	path := "/nodes/{node}/firewall/rules/{pos}"
+
+	err := s.api.client.sendReq2(method, path, &req, nil)
+	return err
+}
+
+// DeleteRule deletes a node's firewall rule using it's id. If rule is not found, an error is returned.
+//
+//   - TODO: add digest support.
+//
+// DELETE /nodes/{node}/firewall/rules/{pos} requires the "Sys.Modify" permission.
+func (s *PVENodeFirewallService) DeleteRule(node, id string) error {
+	if err := uuid.Validate(id); err != nil {
+		return err
+	}
+
+	rules, err := s.GetRules(node)
+	if err != nil {
+		return err
+	}
+
+	for _, rule := range rules {
+		if rule.ID == id {
+			return s.DeleteRuleByPos(node, rule.Pos)
+		}
+	}
+	return fmt.Errorf("rule with id %s doesn't exist", id)
 }
 
 // ReadLog Retrieves node's firewall log entries.

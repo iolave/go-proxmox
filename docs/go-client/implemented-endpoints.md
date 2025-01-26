@@ -341,7 +341,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/nodes/:node/firewall`                                     |:material-close:|
 | `/nodes/:node/firewall/rules`                               |:material-check-all:|:material-check-all:|
-| `/nodes/:node/firewall/rules/:pos`                          |:material-check-all:||:material-close:|:material-close:|
+| `/nodes/:node/firewall/rules/:pos`                          |:material-check-all:||:material-close:|:material-check:|
 | `/nodes/:node/firewall/log`                                 |:material-check:|
 | `/nodes/:node/firewall/options`                             |:material-close:||:material-close:|
 
