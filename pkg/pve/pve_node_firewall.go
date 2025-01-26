@@ -164,7 +164,7 @@ func (s *PVENodeFirewallService) DeleteRuleByPos(node string, pos int) error {
 	return err
 }
 
-// DeleteRule deletes a node's firewall rule using it's id. If rule is not found, an error is returned.
+// DeleteRule deletes a node's firewall rule using it's id.
 //
 //   - TODO: add digest support.
 //
@@ -184,7 +184,7 @@ func (s *PVENodeFirewallService) DeleteRule(node, id string) error {
 			return s.DeleteRuleByPos(node, rule.Pos)
 		}
 	}
-	return fmt.Errorf("rule with id %s doesn't exist", id)
+	return nil
 }
 
 // ReadLog Retrieves node's firewall log entries.
