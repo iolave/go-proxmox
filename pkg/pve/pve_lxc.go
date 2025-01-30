@@ -337,3 +337,130 @@ func (s *PVELxcService) Delete(node string, vmid int, opts *DeleteLXCOptions) (r
 
 	return res, err
 }
+
+type LXCStartRequest struct {
+	Node     string `in:"nonzero;path=node"`       // The cluster node name.
+	ID       int    `in:"nonzero;path=id"`         // The (unique) ID of the VM.
+	Debug    int    `in:"omitempty;form=debug"`    // If set, enables very verbose debug log-level on start. Defaults to 0 (false).
+	SkipLock int    `in:"omitempty;form=skiplock"` // Ignore locks - only root is allowed to use this option.
+}
+
+// Start starts an lxc container.
+//
+// POST /nodes/{node}/lxc/{id}/status/start requires the "VM.PowerMgmt" permission.
+func (s *PVELxcService) Start(req LXCStartRequest) (string, error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{id}/status/start"
+
+	res := ""
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
+
+type LXCStopRequest struct {
+	Node             string `in:"nonzero;path=node"`                // The cluster node name.
+	ID               int    `in:"nonzero;path=id"`                  // The (unique) ID of the VM.
+	OverruleShutdown int    `in:"omitempty;form=overrule-shutdown"` // Try to abort active 'vzshutdown' tasks before stopping. Defaults to 0 (false).
+	SkipLock         int    `in:"omitempty;form=skiplock"`          // Ignore locks - only root is allowed to use this option.
+}
+
+// Stop stops an lxc container. This will abruptly stop all processes running in the container.
+//
+// POST /nodes/{node}/lxc/{id}/status/stop requires the "VM.PowerMgmt" permission.
+func (s *PVELxcService) Stop(req LXCStopRequest) (string, error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{id}/status/stop"
+
+	res := ""
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
+
+type LXCSuspendRequest struct {
+	Node string `in:"nonzero;path=node"` // The cluster node name.
+	ID   int    `in:"nonzero;path=id"`   // The (unique) ID of the VM.
+}
+
+// Suspend suspends an lxc. This is experimental.
+//
+// POST /nodes/{node}/lxc/{id}/status/suspend requires the "VM.PowerMgmt" permission.
+func (s *PVELxcService) Suspend(req LXCSuspendRequest) (string, error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{id}/status/suspend"
+
+	res := ""
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
+
+type LXCShutdownRequest struct {
+	Node    string `in:"nonzero;path=node"`        // The cluster node name.
+	ID      int    `in:"nonzero;path=id"`          // The (unique) ID of the VM.
+	Force   int    `in:"omitempty;form=forceStop"` // Make sure the Container stops. Defaults to 0 (false).
+	Timeout int    `in:"omitempty;path=timeout"`   // Wait maximal timeout seconds. Defaults to 60.
+}
+
+// Shutdown shutdowns an lxc. This will trigger a clean shutdown of the container, see lxc-stop(1) for details.
+//
+// POST /nodes/{node}/lxc/{id}/status/shutdown requires the "VM.PowerMgmt" permission.
+func (s *PVELxcService) Shutdown(req LXCShutdownRequest) (string, error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{id}/status/shutdown"
+
+	res := ""
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
+
+type LXCResumeRequest struct {
+	Node string `in:"nonzero;path=node"` // The cluster node name.
+	ID   int    `in:"nonzero;path=id"`   // The (unique) ID of the VM.
+}
+
+// Resume resumes an lxc.
+//
+// POST /nodes/{node}/lxc/{id}/status/resume requires the "VM.PowerMgmt" permission.
+func (s *PVELxcService) Resume(req LXCResumeRequest) (string, error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{id}/status/resume"
+
+	res := ""
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
+
+type LXCRebootRequest struct {
+	Node    string `in:"nonzero;path=node"`      // The cluster node name.
+	ID      int    `in:"nonzero;path=id"`        // The (unique) ID of the VM.
+	Timeout int    `in:"omitempty;path=timeout"` // Wait maximal timeout seconds.
+}
+
+// Reboot reboots an lxc by shutting it down, and starting it again. Applies pending changes.
+//
+// POST /nodes/{node}/lxc/{id}/status/reboot requires the "VM.PowerMgmt" permission.
+func (s *PVELxcService) Reboot(req LXCRebootRequest) (string, error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{id}/status/reboot"
+
+	res := ""
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return "", err
+	}
+
+	return res, nil
+}
