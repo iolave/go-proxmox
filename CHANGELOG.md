@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### PVE API client
 #### Added
+- `GET    /cluster/resources` implementation as `PVE.Cluster.GetVMIDs`, `PVE.Cluster.GetRandomVMID` and `PVE.Cluster.IsVMIDAvailable`.
 - `GET    /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.GetRule`.
 - `POST   /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.NewRule`.
 - `DELETE /nodes/{node}/firewall/rules/{pos}` implementation as `PVE.Node.Firewall.DeleteRule` and `PVE.Node.Firewall.DeleteRuleByPos`.
@@ -22,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `POST   /nodes/{node}/lxc/{id}/status/shutdown` implementation as `PVE.LXC.Shutdown`.
 - `POST   /nodes/{node}/lxc/{id}/status/start` implementation as `PVE.LXC.Start`.
 - `POST   /nodes/{node}/lxc/{id}/status/stop` implementation as `PVE.LXC.Stop`.
-- `POST   /nodes/{node}/lxc/{id}/status/suspend` implementation as `PVE.LXC.Suspend`.
 
 ## [v0.5.0]
 ### PVE API wrapper

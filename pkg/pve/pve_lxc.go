@@ -488,10 +488,8 @@ type GetLxcStatusResponse struct {
 
 // GetStatus gets an lxc status.
 //
-//   - If lxc is not found, both res and err will be nil
-//
 // POST /nodes/{node}/lxc/{id}/status/current requires the "VM.PowerMgmt" permission.
-func (s *PVELxcService) GetStatus(node string, id int) (res *GetLxcStatusResponse, err error) {
+func (s *PVELxcService) GetStatus(node string, id int) (res GetLxcStatusResponse, err error) {
 	method := http.MethodGet
 	path := "/nodes/{node}/lxc/{id}/status/current"
 
