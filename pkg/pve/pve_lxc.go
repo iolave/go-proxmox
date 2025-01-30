@@ -464,3 +464,48 @@ func (s *PVELxcService) Reboot(req LXCRebootRequest) (string, error) {
 
 	return res, nil
 }
+
+type GetLxcStatusResponse struct {
+	CPUs      int `json:"cpus"`      // Maximum usable CPUs.
+	Disk      int `json:"disk"`      // Root disk image space-usage in bytes.
+	DiskRead  int `json:"diskread"`  // The amount of bytes the guest read from it's block devices since the guest was started. (Note: This info is not available for all storage types.)
+	DiskWrite int `json:"diskwrite"` // The amount of bytes the guest wrote from it's block devices since the guest was started. (Note: This info is not available for all storage types.)
+	// TODO: add ha object support
+	//ha        object  // HA manager service status.
+	Lock     string `json:"lock"`     // The current config lock, if any.
+	MaxDisk  int    `json:"maxdisk"`  // Root disk image size in bytes.
+	MaxMem   int    `json:"maxmem"`   // Maximum memory in bytes.
+	MaxSwap  int    `json:"maxswap"`  // Maximum SWAP memory in bytes.
+	Name     string `json:"name"`     // Container name.
+	NetIn    int    `json:"netin"`    // The amount of traffic in bytes that was sent to the guest over the network since it was started.
+	NetOut   int    `json:"netout"`   // The amount of traffic in bytes that was sent from the guest over the network since it was started.
+	Status   string `json:"status"`   // LXC Container status.
+	Tags     string `json:"tags"`     // The current configured tags, if any.
+	Template int    `json:"template"` // Determines if the guest is a template.
+	Uptime   int    `json:"uptime"`   // Uptime in seconds.
+	ID       int    `json:"vmid"`     // The (unique) ID of the VM.
+}
+
+// GetStatus gets an lxc status.
+//
+//   - If lxc is not found, both res and err will be nil
+//
+// POST /nodes/{node}/lxc/{id}/status/current requires the "VM.PowerMgmt" permission.
+func (s *PVELxcService) GetStatus(node string, id int) (res *GetLxcStatusResponse, err error) {
+	method := http.MethodGet
+	path := "/nodes/{node}/lxc/{id}/status/current"
+
+	req := struct {
+		Node string `in:"nonzero;path=node"`
+		ID   int    `in:"nonzero;path=id"`
+	}{
+		Node: node,
+		ID:   id,
+	}
+
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
