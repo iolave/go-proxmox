@@ -265,7 +265,7 @@ func (s *PVELxcService) Create(req CreateLxcRequest) (CreateLxcResponse, error) 
 	addPayloadValue(p, "ignore-unpack-errors", req.IgnoreUnpackErrors, nil)
 	//addPayloadValue(p, "lock", req.Lock, nil)
 	addPayloadValue(p, "memory", req.Memory, nil)
-	addPayloadValue(p, "hostname", req.Nameserver, nil)
+	addPayloadValue(p, "hostname", req.Hostname, nil)
 	if req.Net != nil {
 		for i := 0; i < len(*req.Net); i++ {
 			content := (*req.Net)[i].String()

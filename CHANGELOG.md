@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `POST   /nodes/{node}/lxc/{id}/status/start` implementation as `PVE.LXC.Start`.
 - `POST   /nodes/{node}/lxc/{id}/status/stop` implementation as `PVE.LXC.Stop`.
 
+#### Fixed
+- `PVE.LXC.Create` hostname assignment.
+
+
 ## [v0.5.0]
 ### PVE API wrapper
 #### Added
