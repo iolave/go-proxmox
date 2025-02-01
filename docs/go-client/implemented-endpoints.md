@@ -16,7 +16,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/access/acl`                                               |:material-close:||:material-close:|
 | `/access/password`                                          |||:material-close:|
-| `/access/permissions`                                       |:material-close:|
+| `/access/permissions`                                       |:material-check-all:|
 | `/access/ticket`                                            |:material-close:|:material-close:|
 
 ### Users

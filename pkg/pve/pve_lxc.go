@@ -507,3 +507,26 @@ func (s *PVELxcService) GetStatus(node string, id int) (res GetLxcStatusResponse
 
 	return res, nil
 }
+
+// GetIP gets an lxc ip.
+//
+//   - If the lxc is not found an error will be returned.
+//
+// This is part of the custom features the go proxmox api wrapper
+// provides. It ONLY works if the api wrapper is installed in
+// a proxmox node instance.
+//
+// GET /custom-api/v1/lxc/{id}/ip requires the "VM.Audit" permission.
+func (s *PVELxcService) GetIP(id int) (ip string, err error) {
+	method := http.MethodGet
+	path := fmt.Sprintf("/custom-api/v1/lxc/%d/ip", id)
+
+	res := struct {
+		IP string `json:"ip"`
+	}{}
+	if err := s.api.client.sendCustomAPIRequest(method, path, nil, &res); err != nil {
+		return "", err
+	}
+
+	return res.IP, nil
+}

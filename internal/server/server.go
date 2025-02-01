@@ -43,6 +43,9 @@ func (s *server) Start() error {
 
 	mux := http.NewServeMux()
 
+	// Custom api routes
+	addCustomRoutes(mux, s)
+
 	// Proxmox api routes
 	mux.HandleFunc("/{any...}", getHandler(s))
 

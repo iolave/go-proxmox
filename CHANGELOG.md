@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 ### PVE API wrapper
+#### Added
+- `GET /custom-api/v1/lxc/{id}/ip` endpoint.
+
 #### Fixed
 - pve api wrapper host option is now `--host`.
 - pve api wrapper port option is now `--port`.
 
 ### PVE API client
 #### Added
+- `GET    /access/permissions` implementation as `PVE.Access.GetPermissions`.
 - `GET    /cluster/resources` implementation as `PVE.Cluster.GetVMIDs`, `PVE.Cluster.GetRandomVMID` and `PVE.Cluster.IsVMIDAvailable`.
 - `GET    /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.GetRule`.
 - `POST   /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.NewRule`.
@@ -23,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `POST   /nodes/{node}/lxc/{id}/status/shutdown` implementation as `PVE.LXC.Shutdown`.
 - `POST   /nodes/{node}/lxc/{id}/status/start` implementation as `PVE.LXC.Start`.
 - `POST   /nodes/{node}/lxc/{id}/status/stop` implementation as `PVE.LXC.Stop`.
+- `GET    /custom-api/v1/lxc/{id}/ip` implementation as `PVE.LXC.GetIP`.
 
 #### Fixed
 - `PVE.LXC.Create` hostname assignment.

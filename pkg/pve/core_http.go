@@ -1,6 +1,7 @@
 package pve
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -60,6 +61,22 @@ func (c *httpClient) buildRequestUrl(path string) string {
 	path = strings.TrimFunc(path, checkForwardSlashRune)
 
 	return fmt.Sprintf("https://%s:%d/api2/json/%s", c.Host, c.Port, path)
+}
+
+// buildCustomAPIUrl builds the proxmox custom api url based in the
+// given path and the configured api host and port.
+func (c *httpClient) buildCustomAPIUrl(path string) string {
+	checkForwardSlashRune := func(r rune) bool {
+		if r == '/' {
+			return true
+		}
+
+		return false
+	}
+
+	path = strings.TrimFunc(path, checkForwardSlashRune)
+
+	return fmt.Sprintf("https://%s:%d/%s", c.Host, c.Port, path)
 }
 
 // sendReq sends an http request to the configured proxmox api.
@@ -219,6 +236,55 @@ func (c *httpClient) sendReq2(method, path string, payload any, result any) erro
 		json.Unmarshal(b, result)
 		return nil
 	}
+}
+
+func (c *httpClient) sendCustomAPIRequest(method, path string, payload, result any) error {
+	url := c.buildCustomAPIUrl(path)
+
+	var b []byte
+	var err error
+	if payload != nil {
+		b, err = json.Marshal(payload)
+		if err != nil {
+			return err
+		}
+	}
+
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(b))
+	if err != nil {
+		return err
+	}
+	req.Header.Add("content-type", "application/json")
+
+	if err := c.Creds.Set(req); err != nil {
+		return err
+	}
+
+	if c.ServiceToken != nil {
+		c.ServiceToken.Set(req)
+	}
+
+	res, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	b, err = io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		httperr := errors.HTTPError{}
+		err = json.Unmarshal(b, &httperr)
+		if err != nil {
+			return errors.NewHTTPErrorFromResponse(res)
+		}
+
+		return httperr
+	}
+
+	return json.Unmarshal(b, &result)
 }
 
 func addPayloadValue[T string | bool | int](p *url.Values, key string, value *T, defaultValue *T) {
