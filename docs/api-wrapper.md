@@ -1,4 +1,4 @@
-The pve api wrapper is an http server ment to be installed on the proxmox host server () that wraps the proxmox api and adds missing features to it.
+The pve api wrapper is an http server ment to be installed on the proxmox host server that wraps the proxmox api and adds missing features to it.
 
 _pve-api-wrapper can definitely be installed somewhere else but some functionalities might not work._
 
@@ -29,7 +29,7 @@ make build
 
 ## Usage
 ```bash
-pve-api-wrapper [--version] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--crt CRT] [--key KEY]
+pve-api-wrapper [--version] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--host HOST] [--port PORT] [--crt CRT] [--key KEY]
 ```
 ### Options
 - `--version` displays the program version.

@@ -1,7 +1,12 @@
-VENV="/tmp/venv/go-proxmox"
+VENV="${TMPDIR}/venv/go-proxmox"
 mkdir -p $VENV
 
 python3 -m venv ${VENV}
-source /tmp/venv/go-proxmox/bin/activate
+source "${VENV}/bin/activate"
 
-pip3 install mkdocs mkdocs-material pymdown-extensions markdown-callouts
+pip3 install \
+    mkdocs \
+    mkdocs-material \
+    pymdown-extensions \
+    markdown-callouts \
+    mkdocs-render-swagger-plugin

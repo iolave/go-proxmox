@@ -14,8 +14,25 @@ func addCustomRoutes(m *http.ServeMux, s *server) {
 	m.HandleFunc("GET /custom-api/v1/lxc/{id}/ip", getLXCIPHandlerV1(s))
 }
 
+type getLXCIPResponse struct {
+	IP string `json:"ip" example:"10.10.10.10"`
+}
+
+// Get LXC IP godoc
+//
+//	@Tags			LXC
+//	@Summary		Get lxc assigned ip.
+//	@Description	Gets the assigned ip of an lxc by running the lxc-info command in the host machine.
+//	@Param			id	path	int	true	"vmid"
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	server.getLXCIPResponse
+//	@Failure		400	{object}	errors.HTTPError '{}'
+//	@Failure		401	{object}	errors.HTTPError
+//	@Failure		404	{object}	errors.HTTPError
+//	@Failure		500	{object}	errors.HTTPError
+//	@Router			/lxc/{id}/ip [get]
 func getLXCIPHandlerV1(s *server) http.HandlerFunc {
-	// lxc-info -i -n 100 | head -n 1 | awk '{print $2}'
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.Method, r.URL.Path, "started")
 		authorized, err := s.IsUserAuthorized(r, "VMS", "VM.Audit")
@@ -77,9 +94,7 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 			return
 		}
 
-		res := struct {
-			IP string `json:"ip"`
-		}{IP: ip}
+		res := getLXCIPResponse{IP: ip}
 		b, _ := json.Marshal(res)
 		w.WriteHeader(http.StatusOK)
 		w.Header().Add("content-type", "application/json")

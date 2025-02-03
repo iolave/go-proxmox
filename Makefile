@@ -22,15 +22,10 @@ coverage:
         ; exit $$rc
 
 generate-docs: install-docs-dependencies
-	source /tmp/venv/go-proxmox/bin/activate; \
-	rm -rf ./docs/go-client/pkg; \
-	mkdir -p ./docs/go-client/pkg/; \
-	go run ./cmd/gomarkdoc/main.go; \
-	mkdocs build
+	bash ./scripts/generate-docs.sh
 
-preview-docs: install-docs-dependencies
-	source /tmp/venv/go-proxmox/bin/activate; \
-	mkdocs serve
+preview-docs: install-docs-dependencies generate-docs
+	bash ./scripts/preview-docs.sh
 
 build:
 	$(eval $@GOOS = linux)
