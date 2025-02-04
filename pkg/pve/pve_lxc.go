@@ -7,6 +7,7 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/iolave/go-proxmox/internal/api_def"
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
 
@@ -564,4 +565,28 @@ func (s *PVELxcService) GetIP(id int) (ip string, err error) {
 	}
 
 	return res.IP, nil
+}
+
+// Exec executes a comand inside an lxc.
+//
+//   - If the lxc is not found an error will be returned.
+//   - If the client fails to execute the command, an error
+//     will be returned.
+//
+// This is part of the custom features the go proxmox api wrapper
+// provides. It ONLY works if the api wrapper is installed in
+// a proxmox node instance.
+//
+// POST /custom-api/v1/lxc/{id}/exec requires the "VM.Console" permission.
+func (s *PVELxcService) Exec(id int, shell string, cmd string) (out string, exitCode int, err error) {
+	method := http.MethodPost
+	path := fmt.Sprintf("/custom-api/v1/lxc/%d/exec", id)
+
+	req := apidef.PostLXCExecRequest{CMD: cmd, Shell: shell}
+	res := apidef.PostLXCExecResponse{}
+	if err := s.api.client.sendCustomAPIRequest(method, path, req, &res); err != nil {
+		return "", 0, err
+	}
+
+	return res.Output, res.ExitCode, nil
 }

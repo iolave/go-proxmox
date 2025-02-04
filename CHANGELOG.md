@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 ### PVE API wrapper
 #### Added
-- `GET /custom-api/v1/lxc/{id}/ip` endpoint.
+- `GET  /custom-api/v1/lxc/{id}/ip` endpoint.
+- `POST /custom-api/v1/lxc/{id}/exec` endpoint.
 
 #### Fixed
 - pve api wrapper host option is now `--host`.
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `POST   /nodes/{node}/lxc/{id}/status/start` implementation as `PVE.LXC.Start`.
 - `POST   /nodes/{node}/lxc/{id}/status/stop` implementation as `PVE.LXC.Stop`.
 - `GET    /custom-api/v1/lxc/{id}/ip` implementation as `PVE.LXC.GetIP`.
+- `POST   /custom-api/v1/lxc/{id}/exec` implementation as `PVE.LXC.Exec`.
 
 #### Fixed
 - `PVE.LXC.Create` hostname assignment.
