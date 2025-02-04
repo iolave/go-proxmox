@@ -1,10 +1,12 @@
 The pve api wrapper is an http server ment to be installed on the proxmox host server that wraps the proxmox api and adds missing features to it.
 
-_pve-api-wrapper can definitely be installed somewhere else but some functionalities might not work._
+
+> [!NOTE]
+> pve-api-wrapper can definitely be installed somewhere else by pointing to the corresponding pve host & port, but some functionalities might not work.
 
 ## Features
 - Proper error responses on failed requests,
-- lxc exec command endpoint (not available yet).
+- custom endpoints (for a full list see the [reference])
 
 ## Installation
 ### Latest release
@@ -41,6 +43,7 @@ pve-api-wrapper [--version] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--host 
 - `--key` api wrapper tls key path (default:`/etc/pve/local/pve-ssl.key`).
 
 [here]: https://github.com/iolave/go-proxmox/blob/latest/scripts/install.sh
+[reference]: https://go-proxmox.iolave.com/api-wrapper/reference/
 <!--
     TODO: host the shell script within the docs https://github.com/squidfunk/mkdocs-material/discussions/3458
 -->

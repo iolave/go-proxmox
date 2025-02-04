@@ -78,6 +78,6 @@ nav:
         - go-client/pkg/errors.md
     - Implemented endpoints: go-client/implemented-endpoints.md
   - API Wrapper:
-    - api-wrapper.md
-    - api-wrapper-ref.md
+    - api-wrapper/index.md
+    - api-wrapper/reference.md
   - Changelog: changelog.md

@@ -27,7 +27,7 @@ type getLXCIPResponse struct {
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	server.getLXCIPResponse
-//	@Failure		400	{object}	errors.HTTPError '{}'
+//	@Failure		400	{object}	errors.HTTPError
 //	@Failure		401	{object}	errors.HTTPError
 //	@Failure		404	{object}	errors.HTTPError
 //	@Failure		500	{object}	errors.HTTPError

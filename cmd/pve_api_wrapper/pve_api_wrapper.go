@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/alexflint/go-arg"
-	_ "github.com/iolave/go-proxmox/docs"
-	"github.com/iolave/go-proxmox/internal/server"
 	"log"
 	"os"
+
+	"github.com/alexflint/go-arg"
+	_ "github.com/iolave/go-proxmox/docs/api-wrapper"
+	"github.com/iolave/go-proxmox/internal/server"
 )
 
 // @title			Proxmox API Wrapper

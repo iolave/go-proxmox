@@ -6,5 +6,5 @@ bin
 cover*
 site/
 docs/go-client/pkg/*
-docs/swag*
-docs/docs.go
+docs/**/swag*
+docs/**/docs.go
