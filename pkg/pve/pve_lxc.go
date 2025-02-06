@@ -195,17 +195,15 @@ type pveCreateLxcRequest struct {
 	RootFS        string `in:"omitempty;form=rootfs;default=local-lvm:8"`
 	Searchdomain  string `in:"omitempty;form=searchdomain"`
 	SSHPublicKeys string `in:"omitempty;form=ssh-public-keys"`
-	// TODO: Check if it works
-	Start        int    `in:"omitempty;form=start"` // bool
-	Startup      string `in:"omitempty;form=startup"`
-	Storage      string `in:"omitempty;form=storage"`
-	Swap         int    `in:"omitempty;form=swap"`
-	Tags         string `in:"omitempty;form=tags"`
-	Template     int    `in:"omitempty;form=template"` // bool
-	Timezone     string `in:"omitempty;form=timezone"`
-	TTY          int    `in:"omitempty;form=tty"`
-	Unique       int    `in:"omitempty;form=unique"`       // bool
-	Unprivileged int    `in:"omitempty;form=unprivileged"` // bool
+	Startup       string `in:"omitempty;form=startup"`
+	Storage       string `in:"omitempty;form=storage"`
+	Swap          int    `in:"omitempty;form=swap"`
+	Tags          string `in:"omitempty;form=tags"`
+	Template      int    `in:"omitempty;form=template"` // bool
+	Timezone      string `in:"omitempty;form=timezone"`
+	TTY           int    `in:"omitempty;form=tty"`
+	Unique        int    `in:"omitempty;form=unique"`       // bool
+	Unprivileged  int    `in:"omitempty;form=unprivileged"` // bool
 	// unused[n] // Reference to unused volumes. This is used internally, and should not be modified manually.
 	// dev[n] string Device to pass through to the container
 	//mp Use volume as container mount point. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
@@ -242,7 +240,6 @@ type CreateLxcRequest struct {
 	RootFS             string         // Use volume as container root (in format "{STORAGE_ID}:{SIZE_IN_GIGS}", i.e. "local-lvm:8", if value not specified it defaults to "local-lvm:8", TODO: make this a struct).
 	Searchdomain       string         // Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
 	SSHPublicKeys      string         // Setup public SSH keys (one key per line, OpenSSH format).
-	Start              bool           // Start the CT after its creation finished successfully.
 	Startup            string         // make this a struct Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
 	Storage            string         // Default Storage.
 	Swap               int            // Amount of SWAP for the container in MB.
@@ -285,7 +282,6 @@ func (s *PVELxcService) Create(req CreateLxcRequest) (vmid int, err error) {
 	template := helpers.BoolToInt(req.Template)
 	unique := helpers.BoolToInt(req.Unique)
 	unprivileged := helpers.BoolToInt(req.Unprivileged)
-	start := helpers.BoolToInt(req.Start)
 
 	payload := pveCreateLxcRequest{
 		Node:               req.Node,
@@ -326,7 +322,6 @@ func (s *PVELxcService) Create(req CreateLxcRequest) (vmid int, err error) {
 		TTY:                req.TTY,
 		Unique:             unique,
 		Unprivileged:       unprivileged,
-		Start:              start,
 	}
 
 	for _, net := range req.Net {
