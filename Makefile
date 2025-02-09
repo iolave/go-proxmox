@@ -8,6 +8,10 @@ install-go-test-coverage:
 install-docs-dependencies:
 	./scripts/install-docs-deps.sh
 
+install-dependencies: install-docs-dependencies
+	go mod tidy
+
+
 .PHONY: coverage-check
 coverage-check: install-go-test-coverage
 	go test -v ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
@@ -27,7 +31,7 @@ generate-docs: install-docs-dependencies
 preview-docs: install-docs-dependencies generate-docs
 	bash ./scripts/preview-docs.sh
 
-build:
+build: install-dependencies
 	$(eval $@GOOS = linux)
 	$(eval $@GOARCH = amd64)
 	GOOS=$($@GOOS) GOARCH=$($@GOARCH) go build -o "bin/pve-api-wrapper-$($@GOOS)-$($@GOARCH)" ./cmd/pve_api_wrapper/pve_api_wrapper.go

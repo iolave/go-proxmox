@@ -184,26 +184,24 @@ type pveCreateLxcRequest struct {
 	Lock               string `in:"omitempty;form=lock"`
 	Memory             int    `in:"omitempty;form=memory"`
 	Nameserver         string `in:"omitempty;form=nameserver"`
-	// TODO: Add support for multiple nets
-	Net           string `in:"omitempty;form=net0"`
-	OnBoot        int    `in:"omitempty;form=onboot"` // bool
-	OSType        string `in:"omitempty;form=ostype"`
-	Password      string `in:"omitempty;form=password"`
-	Pool          string `in:"omitempty;form=pool"`
-	Protection    int    `in:"omitempty;form=protection"` // bool
-	Restore       int    `in:"omitempty;form=restore"`    // bool
-	RootFS        string `in:"omitempty;form=rootfs;default=local-lvm:8"`
-	Searchdomain  string `in:"omitempty;form=searchdomain"`
-	SSHPublicKeys string `in:"omitempty;form=ssh-public-keys"`
-	Startup       string `in:"omitempty;form=startup"`
-	Storage       string `in:"omitempty;form=storage"`
-	Swap          int    `in:"omitempty;form=swap"`
-	Tags          string `in:"omitempty;form=tags"`
-	Template      int    `in:"omitempty;form=template"` // bool
-	Timezone      string `in:"omitempty;form=timezone"`
-	TTY           int    `in:"omitempty;form=tty"`
-	Unique        int    `in:"omitempty;form=unique"`       // bool
-	Unprivileged  int    `in:"omitempty;form=unprivileged"` // bool
+	OnBoot             int    `in:"omitempty;form=onboot"` // bool
+	OSType             string `in:"omitempty;form=ostype"`
+	Password           string `in:"omitempty;form=password"`
+	Pool               string `in:"omitempty;form=pool"`
+	Protection         int    `in:"omitempty;form=protection"` // bool
+	Restore            int    `in:"omitempty;form=restore"`    // bool
+	RootFS             string `in:"omitempty;form=rootfs;default=local-lvm:8"`
+	Searchdomain       string `in:"omitempty;form=searchdomain"`
+	SSHPublicKeys      string `in:"omitempty;form=ssh-public-keys"`
+	Startup            string `in:"omitempty;form=startup"`
+	Storage            string `in:"omitempty;form=storage"`
+	Swap               int    `in:"omitempty;form=swap"`
+	Tags               string `in:"omitempty;form=tags"`
+	Template           int    `in:"omitempty;form=template"` // bool
+	Timezone           string `in:"omitempty;form=timezone"`
+	TTY                int    `in:"omitempty;form=tty"`
+	Unique             int    `in:"omitempty;form=unique"`       // bool
+	Unprivileged       int    `in:"omitempty;form=unprivileged"` // bool
 	// unused[n] // Reference to unused volumes. This is used internally, and should not be modified manually.
 	// dev[n] string Device to pass through to the container
 	//mp Use volume as container mount point. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
@@ -324,13 +322,12 @@ func (s *PVELxcService) Create(req CreateLxcRequest) (vmid int, err error) {
 		Unprivileged:       unprivileged,
 	}
 
-	for _, net := range req.Net {
-		payload.Net = net.String()
-		// TODO: DO NOT break when multiple nets are supported
-		break
+	netValues := map[string]string{}
+	for i, net := range req.Net {
+		netValues[fmt.Sprintf("net%d", i)] = net.String()
 	}
 
-	err = s.api.client.sendReq2(method, path, &payload, nil)
+	err = s.api.client.sendReq3(method, path, &payload, netValues, nil)
 
 	if err != nil {
 		return 0, err

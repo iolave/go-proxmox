@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Fixed
 - `PVE.LXC.Create` hostname assignment.
 - `PVE.LXC.Create` net assignment.
+- `PVE.LXC.Create` multiple networks support.
 
 
 ## [v0.5.0]

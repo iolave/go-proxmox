@@ -10,3 +10,6 @@ pip3 install \
     pymdown-extensions \
     markdown-callouts \
     mkdocs-render-swagger-plugin
+
+go install github.com/swaggo/swag/cmd/swag@latest
+
