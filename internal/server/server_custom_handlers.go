@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -42,7 +43,8 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 				err,
 			)
 			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -53,7 +55,8 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 				err,
 			)
 			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -65,8 +68,8 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 				"id property from path is not a number",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -77,8 +80,8 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 				"failed to retrieve ip",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", fmt.Sprintf("ip=%s", ip), fmt.Sprintf("err=%s", string(b)))
 			return
 		}
 
@@ -88,8 +91,8 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 				"lxc not found",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -128,8 +131,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"unable to authorize request",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -139,8 +142,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"unauthorized",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -152,8 +155,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"id property from path is not a number",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -164,8 +167,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"missing request body",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 		in := apidef.PostLXCExecRequest{}
@@ -175,8 +178,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"invalid request body",
 				err,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -186,8 +189,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"found empty or missing .cmd property",
 				nil,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -198,8 +201,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"failed to execute command",
 				map[string]string{"error": err.Error()},
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
@@ -209,8 +212,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 				"lxc not found",
 				nil,
 			)
-			httperr.WriteResponse(w)
-			log.Println(r.Method, r.URL.Path, "failed", httperr.Message)
+			b, _ := httperr.Marshall()
+			log.Println(r.Method, r.URL.Path, "failed", string(b))
 			return
 		}
 
