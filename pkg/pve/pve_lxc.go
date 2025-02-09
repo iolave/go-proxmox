@@ -536,29 +536,6 @@ func (s *PVELxcService) GetStatus(node string, id int) (res GetLxcStatusResponse
 	return res, nil
 }
 
-// GetIP gets an lxc ip.
-//
-//   - If the lxc is not found an error will be returned.
-//
-// This is part of the custom features the go proxmox api wrapper
-// provides. It ONLY works if the api wrapper is installed in
-// a proxmox node instance.
-//
-// GET /custom-api/v1/lxc/{id}/ip requires the "VM.Audit" permission.
-func (s *PVELxcService) GetIP(id int) (ip string, err error) {
-	method := http.MethodGet
-	path := fmt.Sprintf("/custom-api/v1/lxc/%d/ip", id)
-
-	res := struct {
-		IP string `json:"ip"`
-	}{}
-	if err := s.api.client.sendCustomAPIRequest(method, path, nil, &res); err != nil {
-		return "", err
-	}
-
-	return res.IP, nil
-}
-
 // Exec executes a comand inside an lxc.
 //
 //   - If the lxc is not found an error will be returned.
@@ -582,3 +559,55 @@ func (s *PVELxcService) Exec(id int, shell string, cmd string) (out string, exit
 
 	return res.Output, res.ExitCode, nil
 }
+
+type GetLxcInterfaceResponse struct {
+	Name      string `json:"name"`
+	HWAddress string `json:"hwaddr"`
+	IPv4      string `json:"inet"`
+	IPv6      string `json:"inet6"`
+}
+
+// GetInterfaces gets all lxc interfaces. If the lxc status
+// is stopped or it doesnt exist, both res and err will be nil.
+//
+// GET /nodes/{node}/lxc/{id}/interfaces requires the "VM.Audit" permission.
+func (s *PVELxcService) GetInterfaces(node string, id int) (res []GetLxcInterfaceResponse, err error) {
+	method := http.MethodGet
+	path := "/nodes/{node}/lxc/{id}/interfaces"
+
+	req := struct {
+		Node string `in:"nonzero;path=node"`
+		ID   int    `in:"nonzero;path=id"`
+	}{
+		Node: node,
+		ID:   id,
+	}
+
+	if err := s.api.client.sendReq2(method, path, &req, &res); err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+// GetInterfaceByName gets an specific lxc interface by name.
+// If the lxc status is stopped, both res and err will be nil.
+// If the interface name is not found, an error will be returned.
+//
+// GET /nodes/{node}/lxc/{id}/interfaces requires the "VM.Audit" permission.
+func (s *PVELxcService) GetInterfaceByName(node string, id int, name string) (res GetLxcInterfaceResponse, err error) {
+	ifaces, err := s.api.LXC.GetInterfaces(node, id)
+	if err != nil {
+		return res, err
+	}
+
+	for _, iface := range ifaces {
+		if iface.Name != name {
+			continue
+		}
+		return iface, nil
+
+	}
+	return res, fmt.Errorf("vmid '%d' or interface '%s' not found", id, name)
+}
+

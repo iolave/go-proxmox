@@ -384,7 +384,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | `/nodes/:node/lxc/:vmid/clone`                              ||:material-close:|
 | `/nodes/:node/lxc/:vmid/config`                             |:material-close:||:material-close:|
 | `/nodes/:node/lxc/:vmid/feature`                            |:material-close:|
-| `/nodes/:node/lxc/:vmid/interfaces`                         |:material-close:|
+| `/nodes/:node/lxc/:vmid/interfaces`                         |:material-check-all:|
 | `/nodes/:node/lxc/:vmid/migrate`                            ||:material-close:|
 | `/nodes/:node/lxc/:vmid/move_volume`                        ||:material-close:|
 | `/nodes/:node/lxc/:vmid/mtunnel`                            ||:material-close:|
