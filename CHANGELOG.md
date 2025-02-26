@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PVE.LXC.Create` net assignment.
 - `PVE.LXC.Create` multiple networks support.
 
+#### Changed
+- `PVE.LXC.Create` request's `Features` property is now a struct.
 
 ## [v0.5.0]
 ### PVE API wrapper

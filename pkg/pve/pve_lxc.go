@@ -122,6 +122,38 @@ func (n *LxcNet) String() string {
 	return s
 }
 
+// TODO: Add mount support
+// mount
+type LXCFeatures struct {
+	ForceRWSys bool
+	Fuse       bool
+	KeyCTL     bool
+	MKNod      bool
+	Nesting    bool
+	// TODO:   Mount
+}
+
+func (f *LXCFeatures) String() string {
+	s := ""
+	var intbool int
+	intbool = helpers.BoolToInt(f.ForceRWSys)
+	s = fmt.Sprintf("%s,force_rw_sys=%d", s, intbool)
+
+	intbool = helpers.BoolToInt(f.Fuse)
+	s = fmt.Sprintf("%s,fuse=%d", s, intbool)
+
+	intbool = helpers.BoolToInt(f.KeyCTL)
+	s = fmt.Sprintf("%s,keyctl=%d", s, intbool)
+
+	intbool = helpers.BoolToInt(f.MKNod)
+	s = fmt.Sprintf("%s,mknod=%d", s, intbool)
+
+	intbool = helpers.BoolToInt(f.Nesting)
+	s = fmt.Sprintf("%s,nesting=%d", s, intbool)
+
+	return s
+}
+
 type GetNodeLxcsResponse struct {
 	Status  LxcStatus `json:"status"`
 	VMID    int       `json:"vmid"`
@@ -220,7 +252,7 @@ type CreateLxcRequest struct {
 	CPUUnits           int            // CPU weight for a container. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this container gets. Number is relative to the weights of all the other running guests.
 	Debug              bool           // Try to be more verbose. For now this only enables debug log-level on start.
 	Desc               string         // Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
-	Features           string         // Allow containers access to advanced features.
+	Features           LXCFeatures    // Allow containers access to advanced features.
 	Force              bool           // Allow to overwrite existing container.
 	Hookscript         string         // Script that will be exectued during various steps in the containers lifetime.
 	Hostname           string         // Set a host name for the container.
@@ -250,7 +282,6 @@ type CreateLxcRequest struct {
 	// unused[n] // Reference to unused volumes. This is used internally, and should not be modified manually.
 	// dev[n] string Device to pass through to the container
 	//mp Use volume as container mount point. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
-
 }
 
 // Create creates an LXC container and return useful information to interact with it after it's creation. If VMID property is lower than 100 a VMID will be generated automatically.
@@ -294,7 +325,7 @@ func (s *PVELxcService) Create(req CreateLxcRequest) (vmid int, err error) {
 		CPUUnits:           req.CPUUnits,
 		Debug:              debug,
 		Desc:               req.Desc,
-		Features:           req.Features,
+		Features:           req.Features.String(),
 		Force:              force,
 		Hookscript:         req.Hookscript,
 		Hostname:           req.Hostname,
