@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v0.6.0]
+### PVE API wrapper
+#### Added
+- `GET  /custom-api/v1/lxc/{id}/ip` endpoint.
+- `POST /custom-api/v1/lxc/{id}/exec` endpoint.
+
+#### Fixed
+- pve api wrapper host option is now `--host`.
+- pve api wrapper port option is now `--port`.
+
+### PVE API client
+#### Added
+- `GET    /access/permissions` implementation as `PVE.Access.GetPermissions`.
+- `GET    /cluster/resources` implementation as `PVE.Cluster.GetVMIDs`, `PVE.Cluster.GetRandomVMID` and `PVE.Cluster.IsVMIDAvailable`.
+- `GET    /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.GetRule`.
+- `POST   /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.NewRule`.
+- `DELETE /nodes/{node}/firewall/rules/{pos}` implementation as `PVE.Node.Firewall.DeleteRule` and `PVE.Node.Firewall.DeleteRuleByPos`.
+- `GET    /nodes/{node}/lxc/{id}/interfaces` implementation as `PVE.LXC.GetInterfaces` and `PVE.LXC.GetInterface` .
+- `GET    /nodes/{node}/lxc/{id}/status/current` implementation as `PVE.LXC.GetStatus`.
+- `POST   /nodes/{node}/lxc/{id}/status/reboot` implementation as `PVE.LXC.Reboot`.
+- `POST   /nodes/{node}/lxc/{id}/status/resume` implementation as `PVE.LXC.Resume`.
+- `POST   /nodes/{node}/lxc/{id}/status/shutdown` implementation as `PVE.LXC.Shutdown`.
+- `POST   /nodes/{node}/lxc/{id}/status/start` implementation as `PVE.LXC.Start`.
+- `POST   /nodes/{node}/lxc/{id}/status/stop` implementation as `PVE.LXC.Stop`.
+- `POST   /custom-api/v1/lxc/{id}/exec` implementation as `PVE.LXC.Exec`.
+
+#### Fixed
+- `PVE.LXC.Create` hostname assignment.
+- `PVE.LXC.Create` net assignment.
+- `PVE.LXC.Create` multiple networks support.
+
+#### Changed
+- `PVE.LXC.Create` request's `Features` property is now a struct.
+
 ## [v0.5.0]
 ### PVE API wrapper
 #### Added
@@ -83,7 +117,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proxmox api token credentials support.
 - Proxmox api version endpoint.
 
-[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.6.0...staging
+[v0.6.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.6.0
+[v0.5.1]: https://github.com/iolave/go-proxmox/releases/tag/v0.5.1
 [v0.5.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.5.0
 [v0.4.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.4.0
 [v0.3.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.3.0

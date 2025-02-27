@@ -20,6 +20,7 @@ type PVE struct {
 	client *httpClient
 
 	// PVE API implementations
+	Access  *PVEAccessService
 	Node    *PVENodeService
 	Cluster *PVEClusterService
 	LXC     *PVELxcService
@@ -82,6 +83,7 @@ func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
 }
 
 func initializeServices(api *PVE) {
+	api.Access = newPVEAccessService(api)
 	api.Node = newPVENodeService(api)
 	api.Cluster = newPVEClusterService(api)
 	api.LXC = newPVELxcService(api)

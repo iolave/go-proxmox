@@ -16,7 +16,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/access/acl`                                               |:material-close:||:material-close:|
 | `/access/password`                                          |||:material-close:|
-| `/access/permissions`                                       |:material-close:|
+| `/access/permissions`                                       |:material-check-all:|
 | `/access/ticket`                                            |:material-close:|:material-close:|
 
 ### Users
@@ -69,7 +69,7 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | `/cluster/log`                                              |:material-close:|
 | `/cluster/nextid`                                           |:material-check-all:|
 | `/cluster/options`                                          |:material-close:||:material-close:|
-| `/cluster/resources`                                        |:material-close:|
+| `/cluster/resources`                                        |:material-check:|
 | `/cluster/status`                                           |:material-close:|
 | `/cluster/tasks`                                            |:material-close:|
 
@@ -340,8 +340,8 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/nodes/:node/firewall`                                     |:material-close:|
-| `/nodes/:node/firewall/rules`                               |:material-check-all:|:material-close:|
-| `/nodes/:node/firewall/rules/:pos`                          |:material-check-all:||:material-close:|:material-close:|
+| `/nodes/:node/firewall/rules`                               |:material-check-all:|:material-check-all:|
+| `/nodes/:node/firewall/rules/:pos`                          |:material-check-all:||:material-close:|:material-check:|
 | `/nodes/:node/firewall/log`                                 |:material-check:|
 | `/nodes/:node/firewall/options`                             |:material-close:||:material-close:|
 
@@ -374,17 +374,17 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | `/nodes/:node/lxc/:vmid/snapshot/:name/config`              |:material-close:||:material-close:|
 | `/nodes/:node/lxc/:vmid/snapshot/:name/rollback`            ||:material-close:|
 | `/nodes/:node/lxc/:vmid/status`                             |:material-close:|
-| `/nodes/:node/lxc/:vmid/status/current`                     |:material-close:|
-| `/nodes/:node/lxc/:vmid/status/reboot`                      ||:material-close:|
-| `/nodes/:node/lxc/:vmid/status/resume`                      ||:material-close:|
-| `/nodes/:node/lxc/:vmid/status/shutdown`                    ||:material-close:|
-| `/nodes/:node/lxc/:vmid/status/start`                       ||:material-close:|
-| `/nodes/:node/lxc/:vmid/status/stop`                        ||:material-close:|
-| `/nodes/:node/lxc/:vmid/status/suspend`                     ||:material-close:|
+| `/nodes/:node/lxc/:vmid/status/current`                     |:material-check-all:|
+| `/nodes/:node/lxc/:vmid/status/reboot`                      ||:material-check-all:|
+| `/nodes/:node/lxc/:vmid/status/resume`                      ||:material-check-all:|
+| `/nodes/:check-all/lxc/:vmid/status/shutdown`               ||:material-check-all:|
+| `/nodes/:node/lxc/:vmid/status/start`                       ||:material-check-all:|
+| `/nodes/:check-all/lxc/:vmid/status/stop`                   ||:material-check-all:|
+| `/nodes/:node/lxc/:vmid/status/suspend`                     ||:material-check-all:|
 | `/nodes/:node/lxc/:vmid/clone`                              ||:material-close:|
 | `/nodes/:node/lxc/:vmid/config`                             |:material-close:||:material-close:|
 | `/nodes/:node/lxc/:vmid/feature`                            |:material-close:|
-| `/nodes/:node/lxc/:vmid/interfaces`                         |:material-close:|
+| `/nodes/:node/lxc/:vmid/interfaces`                         |:material-check-all:|
 | `/nodes/:node/lxc/:vmid/migrate`                            ||:material-close:|
 | `/nodes/:node/lxc/:vmid/move_volume`                        ||:material-close:|
 | `/nodes/:node/lxc/:vmid/mtunnel`                            ||:material-close:|

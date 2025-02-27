@@ -6,9 +6,23 @@ import (
 	"os"
 
 	"github.com/alexflint/go-arg"
+	_ "github.com/iolave/go-proxmox/docs/api-wrapper"
 	"github.com/iolave/go-proxmox/internal/server"
 )
 
+// @title			Proxmox API Wrapper
+// @version			1.0
+// @description			Proxmox api wrapper that provides custom features.
+//
+// @contact.name		Ignacio Olave
+// @contact.url			http://www.github.com/iolave/go-proxmox/issues
+// @contact.email		contact@iolave.com
+// @license.name		Apache 2.0
+// @license.url			http://www.apache.org/licenses/LICENSE-2.0.html
+// @host			localhost:8443
+// @BasePath			/custom-api/v1
+// @externalDocs.description	go-promox docs
+// @externalDocs.url		https://go-proxmox.iolave.com
 func main() {
 	var app server.App
 

@@ -1,7 +1,9 @@
-site_name: GO Proxmox
+site_name: go-proxmox
 site_url: https://go-proxmox.iolave.com/
 repo_url: https://github.com/iolave/go-proxmox
 repo_name: iolave/go-proxmox
+plugins:
+  - render_swagger
 markdown_extensions:
   - abbr
   - attr_list
@@ -57,8 +59,8 @@ theme:
     repo: fontawesome/brands/github
   palette: 
     # Palette toggle for dark mode
-    scheme: slate
-    primary: black
+    scheme: default
+    primary: deep orange
     accent: deep orange
     toggle:
       icon: material/brightness-4
@@ -75,5 +77,7 @@ nav:
         - go-client/pkg/pve.md
         - go-client/pkg/errors.md
     - Implemented endpoints: go-client/implemented-endpoints.md
-  - API Wrapper: api-wrapper.md
+  - API Wrapper:
+    - api-wrapper/index.md
+    - api-wrapper/reference.md
   - Changelog: changelog.md

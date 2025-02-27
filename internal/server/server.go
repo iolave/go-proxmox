@@ -40,9 +40,18 @@ func New(cfg serverConfig) *server {
 
 func (s *server) Start() error {
 	log.Println("starting server")
+
+	mux := http.NewServeMux()
+
+	// Custom api routes
+	addCustomRoutes(mux, s)
+
+	// Proxmox api routes
+	mux.HandleFunc("/{any...}", getHandler(s))
+
 	s.s = &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port),
-		Handler: getHandler(s),
+		Handler: mux,
 	}
 	defer s.s.Close()
 	return s.s.ListenAndServeTLS(s.cfg.TLSCrt, s.cfg.TLSKey)
