@@ -8,7 +8,7 @@ import (
 const (
 	NAME = "pve-api-wrapper"
 	// TODO: read and implement this https://akrabat.com/setting-the-version-of-a-go-application-when-building/
-	VERSION = "v0.5.1"
+	VERSION = "v0.6.1"
 )
 
 type App struct {

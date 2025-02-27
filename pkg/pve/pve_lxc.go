@@ -125,31 +125,42 @@ func (n *LxcNet) String() string {
 // TODO: Add mount support
 // mount
 type LXCFeatures struct {
-	ForceRWSys bool
-	Fuse       bool
-	KeyCTL     bool
-	MKNod      bool
-	Nesting    bool
+	ForceRWSys *bool
+	Fuse       *bool
+	KeyCTL     *bool
+	MKNod      *bool
+	Nesting    *bool
 	// TODO:   Mount
 }
 
 func (f *LXCFeatures) String() string {
 	s := ""
 	var intbool int
-	intbool = helpers.BoolToInt(f.ForceRWSys)
-	s = fmt.Sprintf("%s,force_rw_sys=%d", s, intbool)
 
-	intbool = helpers.BoolToInt(f.Fuse)
-	s = fmt.Sprintf("%s,fuse=%d", s, intbool)
+	if f.ForceRWSys != nil {
+		intbool = helpers.BoolToInt(*f.ForceRWSys)
+		s = fmt.Sprintf("%s,force_rw_sys=%d", s, intbool)
+	}
 
-	intbool = helpers.BoolToInt(f.KeyCTL)
-	s = fmt.Sprintf("%s,keyctl=%d", s, intbool)
+	if f.Fuse != nil {
+		intbool = helpers.BoolToInt(*f.Fuse)
+		s = fmt.Sprintf("%s,fuse=%d", s, intbool)
+	}
 
-	intbool = helpers.BoolToInt(f.MKNod)
-	s = fmt.Sprintf("%s,mknod=%d", s, intbool)
+	if f.KeyCTL != nil {
+		intbool = helpers.BoolToInt(*f.KeyCTL)
+		s = fmt.Sprintf("%s,keyctl=%d", s, intbool)
+	}
 
-	intbool = helpers.BoolToInt(f.Nesting)
-	s = fmt.Sprintf("%s,nesting=%d", s, intbool)
+	if f.MKNod != nil {
+		intbool = helpers.BoolToInt(*f.MKNod)
+		s = fmt.Sprintf("%s,mknod=%d", s, intbool)
+	}
+
+	if f.Nesting != nil {
+		intbool = helpers.BoolToInt(*f.Nesting)
+		s = fmt.Sprintf("%s,nesting=%d", s, intbool)
+	}
 
 	return s
 }
@@ -641,4 +652,3 @@ func (s *PVELxcService) GetInterfaceByName(node string, id int, name string) (re
 	}
 	return res, fmt.Errorf("vmid '%d' or interface '%s' not found", id, name)
 }
-
