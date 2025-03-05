@@ -13,3 +13,7 @@ type PostLXCExecResponse struct {
 	Output   string `json:"output" example:"ls: cannot access '/unknowndir': No such file or directory"`
 	ExitCode int    `json:"exitCode" example:"2"`
 }
+
+type PostLXCExecAsyncResponse struct {
+	ID string `json:"id"`
+}

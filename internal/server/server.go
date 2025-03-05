@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/iolave/go-proxmox/internal/models"
 )
 
 type server struct {
-	c   *http.Client
-	s   *http.Server
-	cfg serverConfig
+	c      *http.Client
+	s      *http.Server
+	cfg    serverConfig
+	models *models.Models
 }
 
 type serverConfig struct {
@@ -39,8 +42,14 @@ func New(cfg serverConfig) *server {
 }
 
 func (s *server) Start() error {
-	log.Println("starting server")
+	log.Println("initializing sqlite")
+	models, err := models.Initialize()
+	if err != nil {
+		return err
+	}
+	s.models = models
 
+	log.Println("starting server")
 	mux := http.NewServeMux()
 
 	// Custom api routes
