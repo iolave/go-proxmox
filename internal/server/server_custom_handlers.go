@@ -99,8 +99,8 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 
 		res := apidef.GetLXCIPResponse{IP: ip}
 		b, _ := json.Marshal(res)
-		w.WriteHeader(http.StatusOK)
 		w.Header().Add("content-type", "application/json")
+		w.WriteHeader(http.StatusOK)
 		w.Write(b)
 		log.Println(r.Method, r.URL.Path, "succeeded")
 		return
@@ -220,8 +220,8 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 
 		res := apidef.PostLXCExecResponse{Output: out, ExitCode: exitCode}
 		b, _ = json.Marshal(res)
-		w.WriteHeader(http.StatusOK)
 		w.Header().Add("content-type", "application/json")
+		w.WriteHeader(http.StatusOK)
 		w.Write(b)
 		log.Println(r.Method, r.URL.Path, "succeeded")
 		return
@@ -331,8 +331,8 @@ func postLXCCMDAsyncHandlerV1(s *server) http.HandlerFunc {
 
 		res := apidef.PostLXCExecAsyncResponse{ID: execId}
 		b, _ = json.Marshal(res)
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Header().Add("content-type", "application/json")
 		w.Write(b)
 		log.Println(r.Method, r.URL.Path, "succeeded")
 		go func() {
@@ -364,6 +364,5 @@ func postLXCCMDAsyncHandlerV1(s *server) http.HandlerFunc {
 			log.Println(r.Method, r.URL.Path, "succeeded_async")
 			return
 		}()
-
 	})
 }

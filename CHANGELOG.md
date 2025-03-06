@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 - `POST /custom-api/v1/lxc/{id}/exec-async` endpoint.
 
+#### Fixed
+- custom handlers header content type.
+
 ## [v0.6.1]
 ### PVE API client
 #### Fixed
