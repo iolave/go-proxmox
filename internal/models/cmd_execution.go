@@ -1,6 +1,11 @@
 package models
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"fmt"
+
+	"github.com/google/uuid"
+)
 
 type CMDExecutionStatus string
 
@@ -15,6 +20,7 @@ type CMDExecution struct {
 	Status   CMDExecutionStatus `json:"status"`
 	ExitCode *int               `json:"exitCode"`
 	Output   *string            `json:"output"`
+	Error    *string            `json:"error"`
 }
 
 type CMDExecutionModel struct {
@@ -85,4 +91,41 @@ func (s *CMDExecutionModel) SetSucceeded(
 	exitCode int,
 ) error {
 	return s.upsert(id, CMD_EXEC_STATUS_SUCCEEDED, &exitCode, &output, nil)
+}
+
+func (s *CMDExecutionModel) Get(id string) (result *CMDExecution, err error) {
+	if id == "" {
+		return result, errors.New(`please provide a valid id`)
+	}
+
+	stmt := fmt.Sprintf(`SELECT
+		id,
+		status,
+		exit_code,
+		output,
+		error
+	FROM cmd_execution
+	WHERE id = "%s"
+	`, id)
+	rows, err := s.models.db.Query(stmt)
+	if err != nil {
+		return result, err
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return nil, nil
+	}
+	result = new(CMDExecution)
+	if err := rows.Scan(
+		&result.ID,
+		&result.Status,
+		&result.ExitCode,
+		&result.Output,
+		&result.Error,
+	); err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

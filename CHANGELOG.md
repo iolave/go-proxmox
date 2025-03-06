@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### PVE API wrapper
 #### Added
 - `POST /custom-api/v1/lxc/{id}/exec-async` endpoint.
+- `GET  /custom-api/v1/cmd/{id}` endpoint.
 
 #### Fixed
 - custom handlers header content type.
+- missing custom handlers write response call on errors.
 
 ## [v0.6.1]
 ### PVE API client
