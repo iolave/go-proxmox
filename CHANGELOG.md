@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - custom handlers header content type.
 - missing custom handlers write response call on errors.
 
+### PVE API client
+#### Added
+- `POST   /custom-api/v1/lxc/{id}/exec-async` implementation as `PVE.LXC.ExecAsync`.
+
 ## [v0.6.1]
 ### PVE API client
 #### Fixed

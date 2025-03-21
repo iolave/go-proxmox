@@ -578,7 +578,7 @@ func (s *PVELxcService) GetStatus(node string, id int) (res GetLxcStatusResponse
 	return res, nil
 }
 
-// Exec executes a comand inside an lxc.
+// Exec executes a command inside an lxc.
 //
 //   - If the lxc is not found an error will be returned.
 //   - If the client fails to execute the command, an error
@@ -600,6 +600,26 @@ func (s *PVELxcService) Exec(id int, shell string, cmd string) (out string, exit
 	}
 
 	return res.Output, res.ExitCode, nil
+}
+
+// ExecAsync executes a command inside an lxc asynchronously.
+//
+// This is part of the custom features the go proxmox api wrapper
+// provides. It ONLY works if the api wrapper is installed in
+// a proxmox node instance.
+//
+// POST /custom-api/v1/lxc/{id}/exec-async requires the "VM.Console" permission.
+func (s *PVELxcService) ExecAsync(id int, shell string, cmd string) (execId string, err error) {
+	method := http.MethodPost
+	path := fmt.Sprintf("/custom-api/v1/lxc/%d/exec-async", id)
+
+	req := apidef.PostLXCExecRequest{CMD: cmd, Shell: shell}
+	res := apidef.PostLXCExecAsyncResponse{}
+	if err := s.api.client.sendCustomAPIRequest(method, path, req, &res); err != nil {
+		return "", err
+	}
+
+	return res.ID, nil
 }
 
 type GetLxcInterfaceResponse struct {
