@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/iolave/go-proxmox/internal/api_def"
+	"github.com/iolave/go-proxmox/internal/models"
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
 
@@ -620,6 +621,25 @@ func (s *PVELxcService) ExecAsync(id int, shell string, cmd string) (execId stri
 	}
 
 	return res.ID, nil
+}
+
+// GetCMDResult retrieves an async command result.
+//
+// This is part of the custom features the go proxmox api wrapper
+// provides. It ONLY works if the api wrapper is installed in
+// a proxmox node instance.
+//
+// POST /custom-api/v1/cmd/{id} requires the "VM.Audit" permission.
+func (s *PVELxcService) GetCMDResult(id int, shell string, cmd string) (result models.CMDExecution, err error) {
+	method := http.MethodGet
+	path := fmt.Sprintf("/custom-api/v1/cmd/%d", id)
+
+	res := models.CMDExecution{}
+	if err := s.api.client.sendCustomAPIRequest(method, path, nil, &res); err != nil {
+		return res, err
+	}
+
+	return res, nil
 }
 
 type GetLxcInterfaceResponse struct {
