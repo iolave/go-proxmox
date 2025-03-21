@@ -630,7 +630,7 @@ func (s *PVELxcService) ExecAsync(id int, shell string, cmd string) (execId stri
 // a proxmox node instance.
 //
 // POST /custom-api/v1/cmd/{id} requires the "VM.Audit" permission.
-func (s *PVELxcService) GetCMDResult(id int, shell string, cmd string) (result models.CMDExecution, err error) {
+func (s *PVELxcService) GetCMDResult(id int) (result models.CMDExecution, err error) {
 	method := http.MethodGet
 	path := fmt.Sprintf("/custom-api/v1/cmd/%d", id)
 
