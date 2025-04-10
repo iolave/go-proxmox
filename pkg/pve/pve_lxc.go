@@ -179,7 +179,9 @@ type GetNodeLxcsResponse struct {
 	Uptime  *int      `json:"uptime"`
 }
 
-// GetAll returns node's lxc index per node.
+// GetAll returns node's lxcs.
+//
+// GET /nodes/{node}/lxc only list CTs where you have VM.Audit permission on.
 func (s *PVELxcService) GetAll(node string) ([]GetNodeLxcsResponse, error) {
 	method := http.MethodGet
 	path := path.Join("/nodes", node, "/lxc")
@@ -190,9 +192,31 @@ func (s *PVELxcService) GetAll(node string) ([]GetNodeLxcsResponse, error) {
 	return *res, err
 }
 
+// GetByID returns node's lxc.
+//
+//   - If the lxc is not found both "lxc" and "err" are going to be nil.
+//
+// GET /nodes/{node}/lxc only list CTs where you have VM.Audit permission on.
+func (s *PVELxcService) GetByID(node string, vmid int) (lxc *GetNodeLxcsResponse, err error) {
+	res, err := s.GetAll(node)
+	if err != nil {
+		return nil, err
+	}
+
+	resFiltered := helpers.FilterSlice(res, func(lxc GetNodeLxcsResponse) bool {
+		return lxc.VMID == vmid
+	})
+
+	if len(resFiltered) == 0 {
+		return nil, nil
+	}
+
+	return &resFiltered[0], nil
+}
+
 // Get returns node's lxc index.
 //
-// GET /nodes/:node/lxc/:vmid accessible by all authenticated users.
+// GET /nodes/{node}/lxc/{vmid} accessible by all authenticated users.
 func (s *PVELxcService) Get(node string, vmid int) (
 	res []struct {
 		Subdir string `json:"subdir"`
@@ -391,7 +415,7 @@ type DeleteLXCOptions struct {
 //   - opts.Force default value is false.
 //   - opts.DestroyUnreferencedDisks default value is false.
 //
-// DELETE /nodes/:node/lxc/:vmid requires the "VM.Allocate" permission.
+// DELETE /nodes/{node}/lxc/{vmid} requires the "VM.Allocate" permission.
 func (s *PVELxcService) Delete(node string, vmid int, opts *DeleteLXCOptions) (res string, err error) {
 	method := http.MethodDelete
 	path := path.Join("/nodes", node, "/lxc", strconv.Itoa(vmid))
