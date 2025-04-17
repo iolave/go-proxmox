@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 - `POST   /custom-api/v1/lxc/{id}/exec-async` implementation as `PVE.LXC.ExecAsync`.
 - `GET    /custom-api/v1/cmd/{id}` implementation as `PVE.LXC.GetCMDResult`.
+- `GET    /nodes/{node}/lxc/{id}/config` implementation as `PVE.LXC.Update`.
 
 ## [v0.6.1]
 ### PVE API client
@@ -43,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `GET    /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.GetRule`.
 - `POST   /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.NewRule`.
 - `DELETE /nodes/{node}/firewall/rules/{pos}` implementation as `PVE.Node.Firewall.DeleteRule` and `PVE.Node.Firewall.DeleteRuleByPos`.
-- `GET    /nodes/{node}/lxc/{id}/interfaces` implementation as `PVE.LXC.GetInterfaces` and `PVE.LXC.GetInterface` .
+- `GET    /nodes/{node}/lxc/{id}/interfaces` implementation as `PVE.LXC.GetInterfaces` and `PVE.LXC.GetInterface`.
 - `GET    /nodes/{node}/lxc/{id}/status/current` implementation as `PVE.LXC.GetStatus`.
 - `POST   /nodes/{node}/lxc/{id}/status/reboot` implementation as `PVE.LXC.Reboot`.
 - `POST   /nodes/{node}/lxc/{id}/status/resume` implementation as `PVE.LXC.Resume`.
