@@ -41,5 +41,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	app.Start()
+	switch {
+	case app.Service != nil:
+		switch {
+		case app.Service.Install != nil:
+			app.Service.Install.Install()
+		}
+	default:
+		app.Start()
+	}
 }

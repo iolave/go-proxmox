@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 ### PVE API wrapper
 #### Added
+- `service install` command to install a services that runs the server automatically.
 - `POST /custom-api/v1/lxc/{id}/exec-async` endpoint.
 - `GET  /custom-api/v1/cmd/{id}` endpoint.
 

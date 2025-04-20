@@ -1,0 +1,11 @@
+[Unit]
+Description=Proxmox API Wrapper
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=WRAPPER_HOST=0.0.0.0 pve-api-wrapper 
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
