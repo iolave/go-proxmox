@@ -845,3 +845,15 @@ func (s *PVELxcService) Update(req UpdateLxcRequest) (err error) {
 
 	return nil
 }
+
+func (s *PVELxcService) CreateTemplate(node string, vmid int) (err error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{vmid}/template"
+	payload := struct {
+		Node string `in:"nonzero;path=node"`
+		VMID int    `in:"nonzero;path=vmid"`
+	}{
+		Node: node, VMID: vmid,
+	}
+	return s.api.client.sendReq3(method, path, &payload, nil, nil)
+}

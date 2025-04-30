@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `POST   /custom-api/v1/lxc/{id}/exec-async` implementation as `PVE.LXC.ExecAsync`.
 - `GET    /custom-api/v1/cmd/{id}` implementation as `PVE.LXC.GetCMDResult`.
 - `GET    /nodes/{node}/lxc/{id}/config` implementation as `PVE.LXC.Update`.
+- `POST   /nodes/{node}/lxc/{vmid}/template` implementation as `PVE.LXC.CreateTemplate`.
 
 ## [v0.6.1]
 ### PVE API client
