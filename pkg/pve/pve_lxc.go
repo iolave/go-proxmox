@@ -846,6 +846,78 @@ func (s *PVELxcService) Update(req UpdateLxcRequest) (err error) {
 	return nil
 }
 
+type pveLXCCloneRequest struct {
+	Node     string `in:"nonzero;path=node"`
+	VMID     int    `in:"nonzero;path=vmid"`
+	NewVMID  int    `in:"nonzero;form=newid"`
+	BWLimit  int    `in:"omitempty;form=bwlimit"`
+	Desc     string `in:"omitempty;form=description"`
+	Full     int    `in:"omitempty;form=full"` // bool
+	Hostname string `in:"omitempty;form=hostname"`
+	Pool     string `in:"omitempty;form=pool"`
+	Snapname string `in:"omitempty;form=snapname"`
+	Storage  string `in:"omitempty;form=storage"`
+	Target   string `in:"omitempty;form=target"`
+}
+
+type CloneLxcRequest struct {
+	Node     string // The cluster node name.
+	VMID     int    // The (unique) ID of the source VM.
+	NewVMID  int    // The (unique) ID of the target VM (if not set, the next available VMID will be used).
+	BWLimit  int    // Override I/O bandwidth limit (in KiB/s).
+	Desc     string // Description for the Container.
+	Full     bool   // Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
+	Hostname string // Set a host name for the container.
+	Pool     string // Add the VM to the specified pool.
+	Snapname string // The name of the snapshot.
+	Storage  string // Target storage for full clone.
+	Target   string // Target node. Only allowed if the original VM is on shared storage.
+}
+
+// Clone creates a clone or copy of an existing LXC container.
+//
+// POST /nodes/{node}/lxc/{vmid}/clone needs 'VM.Clone' permissions
+// on /vms/{vmid}, and 'VM.Allocate' permissions on /vms/{newid}
+// (or on the VM pool /pool/{pool}). You also need
+// 'Datastore.AllocateSpace' on any used storage, and 'SDN.Use'
+// on any bridge.
+func (s *PVELxcService) Clone(req CloneLxcRequest) (newVMID int, err error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{vmid}/clone"
+
+	if req.VMID == 0 {
+		return 0, fmt.Errorf("rep.VMID is required")
+	}
+
+	if req.NewVMID == 0 {
+		if req.NewVMID, err = s.api.Cluster.GetNextVMID(); err != nil {
+			return 0, err
+		}
+	}
+
+	// convert bool to int
+	full := helpers.BoolToInt(req.Full)
+
+	payload := pveLXCCloneRequest{
+		Node:     req.Node,
+		VMID:     req.VMID,
+		NewVMID:  req.NewVMID,
+		BWLimit:  req.BWLimit,
+		Desc:     req.Desc,
+		Full:     full,
+		Hostname: req.Hostname,
+		Pool:     req.Pool,
+		Snapname: req.Snapname,
+		Storage:  req.Storage,
+		Target:   req.Target,
+	}
+	if err = s.api.client.sendReq3(method, path, &payload, nil, nil); err != nil {
+		return 0, err
+	}
+
+	return req.NewVMID, nil
+}
+
 func (s *PVELxcService) CreateTemplate(node string, vmid int) (err error) {
 	method := http.MethodPost
 	path := "/nodes/{node}/lxc/{vmid}/template"
