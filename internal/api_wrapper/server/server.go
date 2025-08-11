@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/iolave/go-proxmox/internal/models"
+	"github.com/iolave/go-proxmox/internal/api_wrapper/models"
 )
 
 type server struct {

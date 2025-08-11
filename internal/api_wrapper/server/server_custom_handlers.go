@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strconv"
 
-	apidef "github.com/iolave/go-proxmox/internal/api_def"
-	"github.com/iolave/go-proxmox/internal/pve_utils"
+	apidef "github.com/iolave/go-proxmox/internal/api_wrapper/api_def"
+	"github.com/iolave/go-proxmox/internal/api_wrapper/pve_utils"
 	"github.com/iolave/go-proxmox/pkg/errors"
 )
 

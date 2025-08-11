@@ -7,8 +7,8 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/iolave/go-proxmox/internal/api_def"
-	"github.com/iolave/go-proxmox/internal/models"
+	"github.com/iolave/go-proxmox/internal/api_wrapper/api_def"
+	"github.com/iolave/go-proxmox/internal/api_wrapper/models"
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
 
