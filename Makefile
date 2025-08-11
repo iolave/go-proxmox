@@ -17,7 +17,7 @@ preview-docs:
 	./scripts/generate-docs.sh -p
 
 .PHONY: build
-build: install-dependencies
+build: 
 	$(eval $@GOOS = linux)
 	$(eval $@GOARCH = amd64)
 	CGO_ENABLED=0 GOOS=$($@GOOS) GOARCH=$($@GOARCH) go build -ldflags="-extldflags=-static" -o "bin/pve-api-wrapper-$($@GOOS)-$($@GOARCH)" ./cmd/pve_api_wrapper/pve_api_wrapper.go
