@@ -157,7 +157,7 @@ func TestBuildHttpRequestUrl(t *testing.T) {
 	}
 
 	for i := 0; i < len(testCases); i++ {
-		result := api.httpClient.buildRequestUrl(testCases[i])
+		result := api.client.buildRequestUrl(testCases[i])
 
 		if result != expected {
 			t.Fatalf(`buildRequestUrl("%s"), expected "%s", got "%s"`, testCases[i], expected, result)
