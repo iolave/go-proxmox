@@ -3,7 +3,9 @@ package pve
 import (
 	"fmt"
 
+	apiclient "github.com/iolave/go-proxmox/internal/api_client"
 	"github.com/iolave/go-proxmox/pkg/cloudflare"
+	"github.com/iolave/go-proxmox/pkg/pve/core"
 )
 
 type Config struct {
@@ -15,6 +17,10 @@ type Config struct {
 }
 
 type PVE struct {
+	// httpc is the underlying http client used
+	// to send requests to the proxmox api.
+	httpc *apiclient.HTTPClient
+
 	config Config
 	creds  *Credentials
 	client *httpClient
@@ -24,16 +30,44 @@ type PVE struct {
 	Node    *PVENodeService
 	Cluster *PVEClusterService
 	LXC     *PVELxcService
+
+	// v1.0.0 API implementations
+	Core core.Service
 }
 
 func New(config Config) (*PVE, error) {
 	creds, err := NewEnvCreds()
+	if err != nil {
+		return nil, err
+	}
+	return NewWithCredentials(config, creds)
 
+}
+
+func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
+	httpc, err := apiclient.NewHTTPClient(
+		"https",
+		config.Host,
+		config.Port,
+		config.InsecureSkipVerify,
+	)
 	if err != nil {
 		return nil, err
 	}
 
+	auth, err := creds.getAuthorization()
+	if err != nil {
+		return nil, err
+	}
+	httpc.CustomHeaders.Set("Authorization", auth)
+
+	if config.CfServiceToken != nil {
+		httpc.CustomHeaders.Set("CF-Access-Client-Id", config.CfServiceToken.ClientId)
+		httpc.CustomHeaders.Set("CF-Access-Client-Secret", config.CfServiceToken.ClientSecret)
+	}
+
 	api := &PVE{
+		httpc:  httpc,
 		config: config,
 		creds:  creds,
 		client: newHttpClient(
@@ -46,38 +80,14 @@ func New(config Config) (*PVE, error) {
 		),
 	}
 
-	_, err = api.GetVersion()
+	initializeServices(api)
 
+	api.Core = core.New(api.httpc)
+
+	_, err = api.Core.GetVersion()
 	if err != nil {
 		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
 	}
-
-	initializeServices(api)
-
-	return api, nil
-}
-
-func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
-	api := &PVE{
-		config: config,
-		creds:  creds,
-		client: newHttpClient(
-			creds,
-			config.CfServiceToken,
-			config.Host,
-			config.Port,
-			config.InsecureSkipVerify,
-			config.APIWrapper,
-		),
-	}
-
-	_, err := api.GetVersion()
-
-	if err != nil {
-		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
-	}
-
-	initializeServices(api)
 
 	return api, nil
 }

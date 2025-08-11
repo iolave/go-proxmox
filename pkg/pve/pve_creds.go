@@ -31,6 +31,24 @@ type Credentials struct {
 	token     string
 }
 
+// getAuthorization builds the authorization header based on the
+// credentials type.
+//
+// It returns an error if the credentials type is not supported.
+func (c Credentials) getAuthorization() (string, error) {
+	switch c.credType {
+	case CREDENTIALS_TOKEN:
+		auth := fmt.Sprintf("PVEAPIToken=%s!%s=%s",
+			c.username,
+			c.tokenName,
+			c.token,
+		)
+		return auth, nil
+	default:
+		return "", errors.New(CREDENTIALS_NOT_SUPPORTED_ERROR)
+	}
+}
+
 // Set adds the corresponding PVE authorization headers
 // to the req parameter.
 //

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### PVE API client
+#### Added
+- Added a Core Service to the client:
+    - Implements `GET /api2/json/version` as `GetVersion`.
+
+#### Removed
+- Removed client `GetVersion` method.
+
 
 ## [v0.7.1]
 ### PVE API client
