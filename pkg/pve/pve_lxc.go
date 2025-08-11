@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"slices"
 	"strconv"
 
 	"github.com/iolave/go-proxmox/internal/api_def"
