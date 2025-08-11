@@ -3,7 +3,7 @@ site_url: https://go-proxmox.iolave.com/
 repo_url: https://github.com/iolave/go-proxmox
 repo_name: iolave/go-proxmox
 plugins:
-  - render_swagger
+  - render_swagger:
 markdown_extensions:
   - abbr
   - attr_list
