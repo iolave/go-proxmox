@@ -30,10 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install docs dependencies
-        run: make install-docs-dependencies
       - name: Generate docs
-        run: make generate-docs
+        run: make docs
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
