@@ -7,10 +7,10 @@ import (
 )
 
 type PVENodeStorageService struct {
-	api *PVE
+	api *Client
 }
 
-func newPVENodeStorageService(api *PVE) *PVENodeStorageService {
+func newPVENodeStorageService(api *Client) *PVENodeStorageService {
 	service := new(PVENodeStorageService)
 	service.api = api
 	return service

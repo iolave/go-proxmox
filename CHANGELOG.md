@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a Core Service to the client:
     - Implements `GET /api2/json/version` as `GetVersion`.
 
+#### Changed
+- Renamed `pve.PVE` to `pve.Client`.
+
 #### Removed
 - Removed client `GetVersion` method.
 

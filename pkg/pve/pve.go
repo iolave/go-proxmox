@@ -16,7 +16,7 @@ type Config struct {
 	APIWrapper         bool
 }
 
-type PVE struct {
+type Client struct {
 	// httpc is the underlying http client used
 	// to send requests to the proxmox api.
 	httpc *apiclient.HTTPClient
@@ -35,7 +35,7 @@ type PVE struct {
 	Core core.Service
 }
 
-func New(config Config) (*PVE, error) {
+func New(config Config) (*Client, error) {
 	creds, err := NewEnvCreds()
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func New(config Config) (*PVE, error) {
 
 }
 
-func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
+func NewWithCredentials(config Config, creds *Credentials) (*Client, error) {
 	httpc, err := apiclient.NewHTTPClient(
 		"https",
 		config.Host,
@@ -66,7 +66,7 @@ func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
 		httpc.CustomHeaders.Set("CF-Access-Client-Secret", config.CfServiceToken.ClientSecret)
 	}
 
-	api := &PVE{
+	api := &Client{
 		httpc:  httpc,
 		config: config,
 		creds:  creds,
@@ -92,7 +92,7 @@ func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
 	return api, nil
 }
 
-func initializeServices(api *PVE) {
+func initializeServices(api *Client) {
 	api.Access = newPVEAccessService(api)
 	api.Node = newPVENodeService(api)
 	api.Cluster = newPVEClusterService(api)

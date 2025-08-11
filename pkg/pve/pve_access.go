@@ -5,10 +5,10 @@ import (
 )
 
 type PVEAccessService struct {
-	api *PVE
+	api *Client
 }
 
-func newPVEAccessService(api *PVE) *PVEAccessService {
+func newPVEAccessService(api *Client) *PVEAccessService {
 	service := new(PVEAccessService)
 	service.api = api
 	return service

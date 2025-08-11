@@ -6,13 +6,13 @@ import (
 )
 
 type PVENodeService struct {
-	api      *PVE
+	api      *Client
 	APT      *PVENodeAPTService
 	Firewall *PVENodeFirewallService
 	Storage  *PVENodeStorageService
 }
 
-func newPVENodeService(api *PVE) *PVENodeService {
+func newPVENodeService(api *Client) *PVENodeService {
 	service := new(PVENodeService)
 	service.api = api
 	service.APT = newPVENodeAPTService(api)

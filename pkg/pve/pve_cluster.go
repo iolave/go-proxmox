@@ -8,11 +8,11 @@ import (
 )
 
 type PVEClusterService struct {
-	api      *PVE
+	api      *Client
 	Firewall *PVEClusterFirewallService
 }
 
-func newPVEClusterService(api *PVE) *PVEClusterService {
+func newPVEClusterService(api *Client) *PVEClusterService {
 	service := new(PVEClusterService)
 	service.api = api
 	service.Firewall = newPVEClusterFirewallService(api)

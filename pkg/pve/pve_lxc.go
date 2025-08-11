@@ -13,10 +13,10 @@ import (
 )
 
 type PVELxcService struct {
-	api *PVE
+	api *Client
 }
 
-func newPVELxcService(api *PVE) *PVELxcService {
+func newPVELxcService(api *Client) *PVELxcService {
 	service := new(PVELxcService)
 	service.api = api
 	return service

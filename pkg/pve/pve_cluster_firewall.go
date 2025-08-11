@@ -7,10 +7,10 @@ import (
 )
 
 type PVEClusterFirewallService struct {
-	api *PVE
+	api *Client
 }
 
-func newPVEClusterFirewallService(api *PVE) *PVEClusterFirewallService {
+func newPVEClusterFirewallService(api *Client) *PVEClusterFirewallService {
 	service := new(PVEClusterFirewallService)
 	service.api = api
 	return service

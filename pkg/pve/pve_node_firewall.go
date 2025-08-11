@@ -11,10 +11,10 @@ import (
 )
 
 type PVENodeFirewallService struct {
-	api *PVE
+	api *Client
 }
 
-func newPVENodeFirewallService(api *PVE) *PVENodeFirewallService {
+func newPVENodeFirewallService(api *Client) *PVENodeFirewallService {
 	service := new(PVENodeFirewallService)
 	service.api = api
 	return service
