@@ -5,7 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [Unreleased]
+
+## [v0.7.0]
+### PVE API wrapper
+#### Added
+- `service install` command to install a services that runs the server automatically.
+- `POST /custom-api/v1/lxc/{id}/exec-async` endpoint.
+- `GET  /custom-api/v1/cmd/{id}` endpoint.
+
+#### Fixed
+- custom handlers header content type.
+- missing custom handlers write response call on errors.
+
+### PVE API client
+#### Added
+- `POST   /custom-api/v1/lxc/{id}/exec-async` implementation as `PVE.LXC.ExecAsync`.
+- `GET    /custom-api/v1/cmd/{id}` implementation as `PVE.LXC.GetCMDResult`.
+- `GET    /nodes/{node}/lxc/{id}/config` implementation as `PVE.LXC.Update`.
+- `POST   /nodes/{node}/lxc/{vmid}/clone` implementation as `PVE.LXC.Clone`.
+- `POST   /nodes/{node}/lxc/{vmid}/template` implementation as `PVE.LXC.CreateTemplate`.
 
 ## [v0.6.1]
 ### PVE API client
@@ -30,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `GET    /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.GetRule`.
 - `POST   /nodes/{node}/firewall/rules` implementation as `PVE.Node.Firewall.NewRule`.
 - `DELETE /nodes/{node}/firewall/rules/{pos}` implementation as `PVE.Node.Firewall.DeleteRule` and `PVE.Node.Firewall.DeleteRuleByPos`.
-- `GET    /nodes/{node}/lxc/{id}/interfaces` implementation as `PVE.LXC.GetInterfaces` and `PVE.LXC.GetInterface` .
+- `GET    /nodes/{node}/lxc/{id}/interfaces` implementation as `PVE.LXC.GetInterfaces` and `PVE.LXC.GetInterface`.
 - `GET    /nodes/{node}/lxc/{id}/status/current` implementation as `PVE.LXC.GetStatus`.
 - `POST   /nodes/{node}/lxc/{id}/status/reboot` implementation as `PVE.LXC.Reboot`.
 - `POST   /nodes/{node}/lxc/{id}/status/resume` implementation as `PVE.LXC.Resume`.
@@ -123,8 +142,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proxmox api token credentials support.
 - Proxmox api version endpoint.
 
-[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.6.1...staging
-[v0.6.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.6.1
+[unreleased]: https://github.com/iolave/go-proxmox/compare/v0.7.0...staging
+[v0.7.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.7.0
+[v0.6.1]: https://github.com/iolave/go-proxmox/releases/tag/v0.6.1
 [v0.6.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.6.0
 [v0.5.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.5.0
 [v0.4.0]: https://github.com/iolave/go-proxmox/releases/tag/v0.4.0

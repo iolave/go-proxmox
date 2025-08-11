@@ -1,0 +1,14 @@
+[Unit]
+Description=Proxmox API Wrapper
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/bin/bash -c 'WRAPPER_HOST=0.0.0.0 pve-api-wrapper &>> /var/log/pve-api-wrapper.log' 
+
+[Install]
+WantedBy=multi-user.target

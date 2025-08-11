@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/iolave/go-proxmox/internal/api_def"
+	"github.com/iolave/go-proxmox/internal/models"
 	"github.com/iolave/go-proxmox/pkg/helpers"
 )
 
@@ -603,7 +604,7 @@ func (s *PVELxcService) GetStatus(node string, id int) (res GetLxcStatusResponse
 	return res, nil
 }
 
-// Exec executes a comand inside an lxc.
+// Exec executes a command inside an lxc.
 //
 //   - If the lxc is not found an error will be returned.
 //   - If the client fails to execute the command, an error
@@ -625,6 +626,45 @@ func (s *PVELxcService) Exec(id int, shell string, cmd string) (out string, exit
 	}
 
 	return res.Output, res.ExitCode, nil
+}
+
+// ExecAsync executes a command inside an lxc asynchronously.
+//
+// This is part of the custom features the go proxmox api wrapper
+// provides. It ONLY works if the api wrapper is installed in
+// a proxmox node instance.
+//
+// POST /custom-api/v1/lxc/{id}/exec-async requires the "VM.Console" permission.
+func (s *PVELxcService) ExecAsync(id int, shell string, cmd string) (execId string, err error) {
+	method := http.MethodPost
+	path := fmt.Sprintf("/custom-api/v1/lxc/%d/exec-async", id)
+
+	req := apidef.PostLXCExecRequest{CMD: cmd, Shell: shell}
+	res := apidef.PostLXCExecAsyncResponse{}
+	if err := s.api.client.sendCustomAPIRequest(method, path, req, &res); err != nil {
+		return "", err
+	}
+
+	return res.ID, nil
+}
+
+// GetCMDResult retrieves an async command result.
+//
+// This is part of the custom features the go proxmox api wrapper
+// provides. It ONLY works if the api wrapper is installed in
+// a proxmox node instance.
+//
+// POST /custom-api/v1/cmd/{id} requires the "VM.Audit" permission.
+func (s *PVELxcService) GetCMDResult(id string) (result models.CMDExecution, err error) {
+	method := http.MethodGet
+	path := fmt.Sprintf("/custom-api/v1/cmd/%s", id)
+
+	res := models.CMDExecution{}
+	if err := s.api.client.sendCustomAPIRequest(method, path, nil, &res); err != nil {
+		return res, err
+	}
+
+	return res, nil
 }
 
 type GetLxcInterfaceResponse struct {
@@ -676,4 +716,217 @@ func (s *PVELxcService) GetInterfaceByName(node string, id int, name string) (re
 
 	}
 	return res, fmt.Errorf("vmid '%d' or interface '%s' not found", id, name)
+}
+
+type pveUpdateLxcRequest struct {
+	Node     string `in:"nonzero;path=node"`
+	VMID     int    `in:"nonzero;path=vmid"`
+	Arch     string `in:"omitempty;form=arch"`
+	CMode    string `in:"omitempty;form=cmode"`
+	Console  int    `in:"omitempty;form=console"` // bool
+	Cores    int    `in:"omitempty;form=cores"`
+	CPULimit int    `in:"omitempty;form=cpulimit"`
+	CPUUnits int    `in:"omitempty;form=cpuunits"`
+	Debug    int    `in:"omitempty;form=debug"` // bool
+	Desc     string `in:"omitempty;form=description"`
+	// dev[n] string Device to pass through to the container
+	Features   string `in:"omitempty;form=features"`
+	Hookscript string `in:"omitempty;form=hookscript"`
+	Hostname   string `in:"omitempty;form=hostname"`
+	Lock       string `in:"omitempty;form=lock"`
+	Memory     int    `in:"omitempty;form=memory"`
+	//mp Use volume as container mount point. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+	Nameserver   string `in:"omitempty;form=nameserver"`
+	OnBoot       int    `in:"omitempty;form=onboot"` // bool
+	OSType       string `in:"omitempty;form=ostype"`
+	Protection   int    `in:"omitempty;form=protection"` // bool
+	RootFS       string `in:"omitempty;form=rootfs"`
+	Searchdomain string `in:"omitempty;form=searchdomain"`
+	Startup      string `in:"omitempty;form=startup"`
+	Swap         int    `in:"omitempty;form=swap"`
+	Tags         string `in:"omitempty;form=tags"`
+	Template     int    `in:"omitempty;form=template"` // bool
+	Timezone     string `in:"omitempty;form=timezone"`
+	TTY          int    `in:"omitempty;form=tty"`
+	Unprivileged int    `in:"omitempty;form=unprivileged"` // bool
+	// unused[n] // Reference to unused volumes. This is used internally, and should not be modified manually.
+}
+
+type UpdateLxcRequest struct {
+	Node         string         // The cluster node name.
+	VMID         int            // The (unique) ID of the VM.
+	Arch         LxcArch        // OS architecture type.
+	CMode        LxcConsoleMode // Console mode. By default, the console command tries to open a connection to one of the available tty devices. By setting cmode to 'console' it tries to attach to /dev/console instead. If you set cmode to 'shell', it simply invokes a shell inside the container (no login).
+	Console      bool           // Attach a console device (/dev/console) to the container.
+	Cores        int            // The number of cores assigned to the container. A container can use all available cores by default.
+	CPULimit     int            // Limit of CPU usage. NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
+	CPUUnits     int            // CPU weight for a container. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this container gets. Number is relative to the weights of all the other running guests.
+	Debug        bool           // Try to be more verbose. For now this only enables debug log-level on start.
+	Desc         string         // Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
+	Features     LXCFeatures    // Allow containers access to advanced features.
+	Hookscript   string         // Script that will be exectued during various steps in the containers lifetime.
+	Hostname     string         // Set a host name for the container.
+	Lock         LxcLock        // Lock/unlock the container.
+	Memory       int            // Amount of RAM for the container in MB.
+	Nameserver   string         // Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
+	Net          []LxcNet       // Specifies network interfaces for the container.
+	OnBoot       bool           // Specifies whether a container will be started during system bootup.
+	OSType       string         // OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/<ostype>.common.conf. Value 'unmanaged' can be used to skip and OS specific setup. debian | devuan | ubuntu | centos | fedora | opensuse | archlinux | alpine | gentoo | nixos | unmanaged
+	Protection   bool           // Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
+	RootFS       string         // Use volume as container root (in format "{STORAGE_ID}:{SIZE_IN_GIGS}", i.e. "local-lvm:8", if value not specified it defaults to "local-lvm:8", TODO: make this a struct).
+	Searchdomain string         // Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
+	Startup      string         // make this a struct Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
+	Swap         int            // Amount of SWAP for the container in MB.
+	Tags         string         // Tags of the Container. This is only meta information.
+	Template     bool           // Enable/disable Template.
+	Timezone     string         // Time zone to use in the container. If option isn't set, then nothing will be done. Can be set to 'host' to match the host time zone, or an arbitrary time zone option from /usr/share/zoneinfo/zone.tab
+	TTY          int            // Specify the number of tty available to the container.
+	Unprivileged bool           // Makes the container run as unprivileged user. (Should not be modified manually.)
+	// unused[n] // Reference to unused volumes. This is used internally, and should not be modified manually.
+	// dev[n] string Device to pass through to the container
+	//mp Use volume as container mount point. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+}
+
+// Update updates an existing LXC container.
+//
+// PUT /nodes/{node}/lxc/{vmid}/config requires VM.Config.Disk, VM.Config.CPU, VM.Config.Memory, VM.Config.Network, VM.Config.Options permissions.
+func (s *PVELxcService) Update(req UpdateLxcRequest) (err error) {
+	method := http.MethodPut
+	path := "/nodes/{node}/lxc/{vmid}/config"
+
+	// convert bool to int
+	console := helpers.BoolToInt(req.Console)
+	debug := helpers.BoolToInt(req.Debug)
+	onBoot := helpers.BoolToInt(req.OnBoot)
+	protection := helpers.BoolToInt(req.Protection)
+	template := helpers.BoolToInt(req.Template)
+	unprivileged := helpers.BoolToInt(req.Unprivileged)
+
+	payload := pveUpdateLxcRequest{
+		Node:         req.Node,
+		VMID:         req.VMID,
+		Arch:         string(req.Arch),
+		CMode:        string(req.CMode),
+		Console:      console,
+		Cores:        req.Cores,
+		CPULimit:     req.CPULimit,
+		CPUUnits:     req.CPUUnits,
+		Debug:        debug,
+		Desc:         req.Desc,
+		Features:     req.Features.String(),
+		Hookscript:   req.Hookscript,
+		Hostname:     req.Hostname,
+		Lock:         string(req.Lock),
+		Memory:       req.Memory,
+		Nameserver:   req.Nameserver,
+		OnBoot:       onBoot,
+		OSType:       req.OSType,
+		Protection:   protection,
+		RootFS:       req.RootFS,
+		Searchdomain: req.Searchdomain,
+		Startup:      req.Startup,
+		Swap:         req.Swap,
+		Tags:         req.Tags,
+		Template:     template,
+		Timezone:     req.Timezone,
+		TTY:          req.TTY,
+		Unprivileged: unprivileged,
+	}
+
+	netValues := map[string]string{}
+	for i, net := range req.Net {
+		netValues[fmt.Sprintf("net%d", i)] = net.String()
+	}
+
+	err = s.api.client.sendReq3(method, path, &payload, netValues, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type pveLXCCloneRequest struct {
+	Node     string `in:"nonzero;path=node"`
+	VMID     int    `in:"nonzero;path=vmid"`
+	NewVMID  int    `in:"nonzero;form=newid"`
+	BWLimit  int    `in:"omitempty;form=bwlimit"`
+	Desc     string `in:"omitempty;form=description"`
+	Full     int    `in:"omitempty;form=full"` // bool
+	Hostname string `in:"omitempty;form=hostname"`
+	Pool     string `in:"omitempty;form=pool"`
+	Snapname string `in:"omitempty;form=snapname"`
+	Storage  string `in:"omitempty;form=storage"`
+	Target   string `in:"omitempty;form=target"`
+}
+
+type CloneLxcRequest struct {
+	Node     string // The cluster node name.
+	VMID     int    // The (unique) ID of the source VM.
+	NewVMID  int    // The (unique) ID of the target VM (if not set, the next available VMID will be used).
+	BWLimit  int    // Override I/O bandwidth limit (in KiB/s).
+	Desc     string // Description for the Container.
+	Full     bool   // Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
+	Hostname string // Set a host name for the container.
+	Pool     string // Add the VM to the specified pool.
+	Snapname string // The name of the snapshot.
+	Storage  string // Target storage for full clone.
+	Target   string // Target node. Only allowed if the original VM is on shared storage.
+}
+
+// Clone creates a clone or copy of an existing LXC container.
+//
+// POST /nodes/{node}/lxc/{vmid}/clone needs 'VM.Clone' permissions
+// on /vms/{vmid}, and 'VM.Allocate' permissions on /vms/{newid}
+// (or on the VM pool /pool/{pool}). You also need
+// 'Datastore.AllocateSpace' on any used storage, and 'SDN.Use'
+// on any bridge.
+func (s *PVELxcService) Clone(req CloneLxcRequest) (newVMID int, err error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{vmid}/clone"
+
+	if req.VMID == 0 {
+		return 0, fmt.Errorf("rep.VMID is required")
+	}
+
+	if req.NewVMID == 0 {
+		if req.NewVMID, err = s.api.Cluster.GetNextVMID(); err != nil {
+			return 0, err
+		}
+	}
+
+	// convert bool to int
+	full := helpers.BoolToInt(req.Full)
+
+	payload := pveLXCCloneRequest{
+		Node:     req.Node,
+		VMID:     req.VMID,
+		NewVMID:  req.NewVMID,
+		BWLimit:  req.BWLimit,
+		Desc:     req.Desc,
+		Full:     full,
+		Hostname: req.Hostname,
+		Pool:     req.Pool,
+		Snapname: req.Snapname,
+		Storage:  req.Storage,
+		Target:   req.Target,
+	}
+	if err = s.api.client.sendReq3(method, path, &payload, nil, nil); err != nil {
+		return 0, err
+	}
+
+	return req.NewVMID, nil
+}
+
+func (s *PVELxcService) CreateTemplate(node string, vmid int) (err error) {
+	method := http.MethodPost
+	path := "/nodes/{node}/lxc/{vmid}/template"
+	payload := struct {
+		Node string `in:"nonzero;path=node"`
+		VMID int    `in:"nonzero;path=vmid"`
+	}{
+		Node: node, VMID: vmid,
+	}
+	return s.api.client.sendReq3(method, path, &payload, nil, nil)
 }

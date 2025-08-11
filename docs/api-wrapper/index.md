@@ -42,6 +42,15 @@ pve-api-wrapper [--version] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--host 
 - `--crt` api wrapper tls crt path (default:`/etc/pve/local/pve-ssl.pem`).
 - `--key` api wrapper tls key path (default:`/etc/pve/local/pve-ssl.key`).
 
+### Commands
+- `service` API wrapper service tools.
+    - `install` installs the service.
+
+## Installing pve-api-wrapper as a service
+```bash
+sudo pve-api-wrapper service install
+```
+
 [here]: https://github.com/iolave/go-proxmox/blob/latest/scripts/install.sh
 [reference]: https://go-proxmox.iolave.com/api-wrapper/reference/
 <!--
