@@ -11,6 +11,8 @@ import (
 
 	"github.com/ggicci/httpin"
 	"github.com/go-playground/validator/v10"
+	errors "github.com/iolave/go-errors"
+	strutils "github.com/iolave/go-proxmox/internal/str_utils"
 )
 
 // HTTPClient is the http client used to send requests
@@ -46,6 +48,10 @@ type HTTPClient struct {
 // It returns an error when the proto is not
 // supported or when the host or port is not
 // set/valid.
+//
+// Any error returned is of type [errors].Error.
+//
+// [errors]: https://pkg.go.dev/github.com/iolave/go-errors
 func NewHTTPClient(
 	proto string,
 	host string,
@@ -71,7 +77,11 @@ func NewHTTPClient(
 		validator.WithRequiredStructEnabled(),
 	)
 	if err := validate.Struct(c); err != nil {
-		return nil, err
+		return nil, errors.NewWithNameAndErr(
+			"validation error",
+			"config contains invalid values",
+			err,
+		)
 	}
 
 	return c, nil
@@ -109,11 +119,18 @@ type PVERequest struct {
 
 // SendPVERequest sends a request to the proxmox api. It returns
 // an error when the request fails.
+//
+// Any error returned is of type [errors].*HTTPError.
+//
+// [errors]: https://pkg.go.dev/github.com/iolave/go-errors
 func (c HTTPClient) SendPVERequest(pvereq PVERequest) error {
 	base := fmt.Sprintf("%s://%s:%d", c.Proto, c.Host, c.Port)
 	url, err := url.JoinPath(base, pvereq.Path)
 	if err != nil {
-		return err
+		return errors.NewInternalServerError(
+			"failed to build request url",
+			err,
+		)
 	}
 
 	if pvereq.Payload == nil {
@@ -125,7 +142,10 @@ func (c HTTPClient) SendPVERequest(pvereq PVERequest) error {
 		httpin.Option.WithNestedDirectivesEnabled(true),
 	)
 	if err != nil {
-		return err
+		return errors.NewInternalServerError(
+			"failed to create request",
+			err,
+		)
 	}
 
 	// Add the custom headers to the request
@@ -144,7 +164,10 @@ func (c HTTPClient) SendPVERequest(pvereq PVERequest) error {
 		reqClone := req.Clone(ctx)
 		err := reqClone.ParseForm()
 		if err != nil {
-			return err
+			return errors.NewInternalServerError(
+				"failed to parse form data to add additional payload",
+				err,
+			)
 		}
 
 		for k, v := range pvereq.AdditionalPayload {
@@ -158,16 +181,27 @@ func (c HTTPClient) SendPVERequest(pvereq PVERequest) error {
 	// Send the request
 	res, err := c.httpc.Do(req)
 	if err != nil {
-		return err
+		return errors.NewInternalServerError(
+			"failed to send request",
+			err,
+		)
 	}
 
 	b, err := io.ReadAll(res.Body)
 	if err != nil {
-		return err
+		return errors.NewInternalServerError(
+			"failed to read response body",
+			err,
+		)
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("%s", res.Status)
+		return errors.NewHTTPError(
+			res.StatusCode,
+			fmt.Sprintf("%s_error", strutils.ToSnakeCase(http.StatusText(res.StatusCode))),
+			string(b),
+			nil,
+		)
 	}
 
 	if pvereq.Result == nil {
@@ -179,7 +213,10 @@ func (c HTTPClient) SendPVERequest(pvereq PVERequest) error {
 	}{}
 	err = json.Unmarshal(b, &pveres)
 	if err != nil {
-		return err
+		return errors.NewInternalServerError(
+			"failed to unmarshal response body",
+			err,
+		)
 	}
 
 	b, _ = json.Marshal(pveres.Data)

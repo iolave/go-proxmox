@@ -1,6 +1,8 @@
 module github.com/iolave/go-proxmox
 
-go 1.22.2
+go 1.24.4
+
+toolchain go1.24.6
 
 require (
 	github.com/alexflint/go-arg v1.5.1
@@ -35,6 +37,7 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
+	github.com/iolave/go-errors v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
@@ -53,6 +56,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/theothertomelliott/acyclic v0.0.1 // indirect
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	golang.org/x/crypto v0.33.0 // indirect

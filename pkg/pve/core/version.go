@@ -19,6 +19,10 @@ type GetVersionResponse struct {
 
 // GetVersion returns API version details, including some
 // parts of the global datacenter config.
+//
+// Any error returned is of type [errors].*HTTPError.
+//
+// [errors]: https://pkg.go.dev/github.com/iolave/go-errors
 func (s Service) GetVersion() (GetVersionResponse, error) {
 	res := GetVersionResponse{}
 	err := s.httpc.SendPVERequest(apiclient.PVERequest{
