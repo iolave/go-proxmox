@@ -9,6 +9,7 @@ require (
 	github.com/ggicci/httpin v0.19.0
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/google/uuid v1.6.0
+	github.com/iolave/go-errors v1.0.0
 	github.com/princjef/gomarkdoc v1.1.0
 	github.com/swaggo/swag v1.16.4
 	modernc.org/sqlite v1.36.0
@@ -37,7 +38,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/iolave/go-errors v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect

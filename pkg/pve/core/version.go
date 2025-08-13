@@ -1,17 +1,11 @@
 package core
 
-import (
-	"net/http"
-
-	apiclient "github.com/iolave/go-proxmox/internal/api_client"
-)
-
 type GetVersionResponse struct {
 	// The current Proxmox VE point release in `x.y` format.
 	Release string `json:"release"`
 
 	// The short git revision from which this version was build.
-	RepoID string `json:"repoid"`
+	RepoID string `json:"repoId"`
 
 	// The full pve-manager package version of this node.
 	Version string `json:"version"`
@@ -24,12 +18,14 @@ type GetVersionResponse struct {
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
 func (s Service) GetVersion() (GetVersionResponse, error) {
-	res := GetVersionResponse{}
-	err := s.httpc.SendPVERequest(apiclient.PVERequest{
-		Path:   "/api2/json/version",
-		Method: http.MethodGet,
-		Result: &res,
-	})
+	res, err := s.c.CoreGetVersion()
+	if err != nil {
+		return GetVersionResponse{}, err
+	}
 
-	return res, err
+	return GetVersionResponse{
+		Release: res.Release,
+		RepoID:  res.RepoID,
+		Version: res.Version,
+	}, nil
 }

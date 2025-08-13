@@ -117,13 +117,13 @@ type PVERequest struct {
 	Result any
 }
 
-// SendPVERequest sends a request to the proxmox api. It returns
+// sendPVERequest sends a request to the proxmox api. It returns
 // an error when the request fails.
 //
 // Any error returned is of type [errors].*HTTPError.
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
-func (c HTTPClient) SendPVERequest(pvereq PVERequest) error {
+func (c HTTPClient) sendPVERequest(pvereq PVERequest) error {
 	base := fmt.Sprintf("%s://%s:%d", c.Proto, c.Host, c.Port)
 	url, err := url.JoinPath(base, pvereq.Path)
 	if err != nil {
