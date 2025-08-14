@@ -7,7 +7,7 @@ func (c HTTPClient) CoreGetVersion() (res struct {
 	RepoID  string `json:"repoid"`
 	Version string `json:"version"`
 }, err error) {
-	err = c.sendPVERequest(PVERequest{
+	err = c.SendPVERequest(PVERequest{
 		Path:   "/api2/json/version",
 		Method: http.MethodGet,
 		Result: &res,

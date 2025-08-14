@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### PVE API wrapper
+
+#### Fixed
+- PVE original passthrough handler now properly includes the request query params (resolves [#4](https://github.com/iolave/go-proxmox/issues/4)).
+
 ### PVE API client
 #### Added
 - Added a Core Service to the client:

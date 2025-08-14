@@ -19,7 +19,8 @@ type Config struct {
 type Client struct {
 	// httpc is the underlying http client used
 	// to send requests to the proxmox api.
-	httpc *apiclient.HTTPClient
+	APIClient *apiclient.HTTPClient
+	httpc     *apiclient.HTTPClient
 
 	config Config
 	creds  *Credentials
@@ -67,9 +68,10 @@ func NewWithCredentials(config Config, creds *Credentials) (*Client, error) {
 	}
 
 	api := &Client{
-		httpc:  httpc,
-		config: config,
-		creds:  creds,
+		httpc:     httpc,
+		APIClient: httpc,
+		config:    config,
+		creds:     creds,
 		client: newHttpClient(
 			creds,
 			config.CfServiceToken,

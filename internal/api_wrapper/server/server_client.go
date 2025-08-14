@@ -12,10 +12,11 @@ import (
 
 func (s *server) sendPVERequest(sr *http.Request) (*http.Response, *errors.HTTPError) {
 	pveUrl, err := url.Parse(fmt.Sprintf(
-		"https://%s:%d%s",
+		"https://%s:%d%s?%s",
 		s.cfg.PVEHost,
 		s.cfg.PVEPort,
 		sr.URL.Path,
+		sr.URL.RawQuery,
 	))
 	b, err := io.ReadAll(sr.Body)
 	if err != nil {

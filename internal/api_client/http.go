@@ -123,7 +123,7 @@ type PVERequest struct {
 // Any error returned is of type [errors].*HTTPError.
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
-func (c HTTPClient) sendPVERequest(pvereq PVERequest) error {
+func (c HTTPClient) SendPVERequest(pvereq PVERequest) error {
 	base := fmt.Sprintf("%s://%s:%d", c.Proto, c.Host, c.Port)
 	url, err := url.JoinPath(base, pvereq.Path)
 	if err != nil {
@@ -132,13 +132,13 @@ func (c HTTPClient) sendPVERequest(pvereq PVERequest) error {
 			err,
 		)
 	}
-
 	if pvereq.Payload == nil {
 		pvereq.Payload = struct{}{}
 	}
 	req, err := httpin.NewRequest(
 		pvereq.Method,
-		url, pvereq.Payload,
+		url,
+		pvereq.Payload,
 		httpin.Option.WithNestedDirectivesEnabled(true),
 	)
 	if err != nil {
