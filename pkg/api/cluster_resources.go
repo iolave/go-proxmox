@@ -3,6 +3,9 @@ package api
 import "net/http"
 
 type ClusterGetResourcesRequest struct {
+	// Resource type.
+	//
+	// 	vm | storage | node | sdn
 	Type string `in:"query=type"`
 }
 

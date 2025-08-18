@@ -8,6 +8,7 @@ import (
 )
 
 type ClusterGetNextIDRequest struct {
+	// The (unique) ID of the VM.
 	VMID int `in:"query=vmid;omitempty"`
 }
 
