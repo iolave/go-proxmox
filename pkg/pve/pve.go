@@ -3,7 +3,7 @@ package pve
 import (
 	"fmt"
 
-	apiclient "github.com/iolave/go-proxmox/internal/api_client"
+	"github.com/iolave/go-proxmox/pkg/api"
 	"github.com/iolave/go-proxmox/pkg/cloudflare"
 	"github.com/iolave/go-proxmox/pkg/pve/core"
 )
@@ -19,7 +19,8 @@ type Config struct {
 type Client struct {
 	// httpc is the underlying http client used
 	// to send requests to the proxmox api.
-	httpc *apiclient.HTTPClient
+	APIClient *api.API
+	httpc     *api.API
 
 	config Config
 	creds  *Credentials
@@ -45,7 +46,7 @@ func New(config Config) (*Client, error) {
 }
 
 func NewWithCredentials(config Config, creds *Credentials) (*Client, error) {
-	httpc, err := apiclient.NewHTTPClient(
+	httpc, err := api.New(
 		"https",
 		config.Host,
 		config.Port,
@@ -67,9 +68,10 @@ func NewWithCredentials(config Config, creds *Credentials) (*Client, error) {
 	}
 
 	api := &Client{
-		httpc:  httpc,
-		config: config,
-		creds:  creds,
+		httpc:     httpc,
+		APIClient: httpc,
+		config:    config,
+		creds:     creds,
 		client: newHttpClient(
 			creds,
 			config.CfServiceToken,

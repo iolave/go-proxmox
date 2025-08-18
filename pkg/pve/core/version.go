@@ -18,7 +18,7 @@ type GetVersionResponse struct {
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
 func (s Service) GetVersion() (GetVersionResponse, error) {
-	res, err := s.c.CoreGetVersion()
+	res, err := s.api.CoreGetVersion()
 	if err != nil {
 		return GetVersionResponse{}, err
 	}

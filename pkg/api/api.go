@@ -1,4 +1,4 @@
-package apiclient
+package api
 
 import (
 	"crypto/tls"
@@ -15,9 +15,9 @@ import (
 	strutils "github.com/iolave/go-proxmox/internal/str_utils"
 )
 
-// HTTPClient is the http client used to send requests
+// API is an http client used to send requests
 // to the proxmox api.
-type HTTPClient struct {
+type API struct {
 	// httpc is the underlying http client used
 	// to send requests to the proxmox api.
 	httpc *http.Client
@@ -40,7 +40,7 @@ type HTTPClient struct {
 	Port int `validate:"required"`
 }
 
-// NewHTTPClient returns a new HTTPClient.
+// New returns a new HTTPClient.
 //
 // proto is the protocol used to send requests
 // and it's allowed values are http or https.
@@ -52,12 +52,12 @@ type HTTPClient struct {
 // Any error returned is of type [errors].Error.
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
-func NewHTTPClient(
+func New(
 	proto string,
 	host string,
 	port int,
 	insecureSkipVerify bool,
-) (*HTTPClient, error) {
+) (*API, error) {
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: insecureSkipVerify,
@@ -65,7 +65,7 @@ func NewHTTPClient(
 	}
 	httpc := &http.Client{Transport: transport}
 
-	c := &HTTPClient{
+	c := &API{
 		httpc:         httpc,
 		CustomHeaders: http.Header{},
 		Proto:         proto,
@@ -123,7 +123,7 @@ type PVERequest struct {
 // Any error returned is of type [errors].*HTTPError.
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
-func (c HTTPClient) sendPVERequest(pvereq PVERequest) error {
+func (c API) SendPVERequest(pvereq PVERequest) error {
 	base := fmt.Sprintf("%s://%s:%d", c.Proto, c.Host, c.Port)
 	url, err := url.JoinPath(base, pvereq.Path)
 	if err != nil {
@@ -132,13 +132,13 @@ func (c HTTPClient) sendPVERequest(pvereq PVERequest) error {
 			err,
 		)
 	}
-
 	if pvereq.Payload == nil {
 		pvereq.Payload = struct{}{}
 	}
 	req, err := httpin.NewRequest(
 		pvereq.Method,
-		url, pvereq.Payload,
+		url,
+		pvereq.Payload,
 		httpin.Option.WithNestedDirectivesEnabled(true),
 	)
 	if err != nil {

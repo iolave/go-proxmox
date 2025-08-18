@@ -1,13 +1,13 @@
 package core
 
-import apiclient "github.com/iolave/go-proxmox/internal/api_client"
+import "github.com/iolave/go-proxmox/pkg/api"
 
 type Service struct {
-	c *apiclient.HTTPClient
+	api *api.API
 }
 
-func New(httpclient *apiclient.HTTPClient) Service {
+func New(api *api.API) Service {
 	return Service{
-		c: httpclient,
+		api: api,
 	}
 }
