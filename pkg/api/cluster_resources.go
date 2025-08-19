@@ -10,6 +10,10 @@ type ClusterGetResourcesRequest struct {
 }
 
 // ClusterGetResources Resources index (cluster wide).
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
 func (c API) ClusterGetResources(req ClusterGetResourcesRequest) (res []struct {
 	ID         string  `json:"id"`
 	Type       string  `json:"type"`

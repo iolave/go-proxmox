@@ -14,6 +14,10 @@ type ClusterGetNextIDRequest struct {
 
 // ClusterGetNextID Get next free VMID. Pass a VMID
 // to assert that its free (at time of check).
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
 func (c API) ClusterGetNextID(req ClusterGetNextIDRequest) (int, error) {
 	res := ""
 

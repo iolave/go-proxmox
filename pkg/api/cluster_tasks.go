@@ -3,6 +3,10 @@ package api
 import "net/http"
 
 // ClusterGetTasks List recent tasks (cluster wide).
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
 func (c API) ClusterGetTasks() (res []struct {
 	UpID      string  `json:"upid"`
 	Node      *string `json:"node"`

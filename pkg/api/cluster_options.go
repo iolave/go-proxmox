@@ -4,6 +4,10 @@ import "net/http"
 
 // ClusterGetOptions Get datacenter options. Without 'Sys.Audit'
 // on '/' not all options are returned.
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
 func (c API) ClusterGetOptions() (res struct {
 	MigrationUnsecure *int      `json:"migration_unsecure"`
 	Keyboard          *string   `json:"keyboard"`
@@ -185,6 +189,10 @@ type ClusterPutOptionsRequest struct {
 }
 
 // ClusterPutOptions Set datacenter options.
+//
+// Required permissions:
+//
+//	Check: ["perm","/",["Sys.Modify"]]
 func (c API) ClusterPutOptions(req ClusterPutOptionsRequest) (err error) {
 	err = c.SendPVERequest(PVERequest{
 		Path:    "/api2/json/cluster/options",

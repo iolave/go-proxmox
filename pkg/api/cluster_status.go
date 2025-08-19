@@ -3,6 +3,10 @@ package api
 import "net/http"
 
 // ClusterGetStatus Get cluster status information.
+//
+// Required permissions:
+//
+//	Check: ["perm","/",["Sys.Audit"]]
 func (c API) ClusterGetStatus() (res []struct {
 	ID      string  `json:"id"`
 	Name    string  `json:"name"`

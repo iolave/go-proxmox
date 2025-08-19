@@ -8,6 +8,10 @@ type ClusterGetLogRequest struct {
 }
 
 // ClusterGetLog Read cluster log.
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
 func (c API) ClusterGetLog(req ClusterGetLogRequest) (res []struct {
 	ID      string `json:"id"`
 	Message string `json:"msg"`
