@@ -51,6 +51,8 @@ type API struct {
 //
 // Any error returned is of type [errors].Error.
 //
+// It also initializes custom httpin directives.
+//
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
 func New(
 	proto string,
@@ -58,6 +60,8 @@ func New(
 	port int,
 	insecureSkipVerify bool,
 ) (*API, error) {
+	httpinInit()
+
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: insecureSkipVerify,
