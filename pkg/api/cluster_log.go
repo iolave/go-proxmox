@@ -4,7 +4,7 @@ import "net/http"
 
 type ClusterGetLogRequest struct {
 	// Maximum number of entries (1 - N)
-	MaxEntries int `in:"query=max;omitempty"`
+	MaxEntries *int `in:"query=max;omitempty"`
 }
 
 // ClusterGetLog Read cluster log.

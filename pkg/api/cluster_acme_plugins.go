@@ -86,7 +86,7 @@ type ClusterACMEPostPluginRequest struct {
 	// Flag to disable the config.
 	//
 	// 	1 | 0
-	Disable int `in:"query=disable;omitempty"`
+	Disable *int `in:"query=disable;omitempty"`
 
 	// List of cluster node names.
 	//
@@ -96,7 +96,7 @@ type ClusterACMEPostPluginRequest struct {
 	// Extra delay in seconds to wait before requesting validation. Allows to cope with a long TTL of DNS records.
 	//
 	// 	0 - 172800
-	ValidationDelay int `in:"query=validation-delay;omitempty"`
+	ValidationDelay *int `in:"query=validation-delay;omitempty"`
 }
 
 // ClusterACMEPostPlugin Add ACME plugin configuration.
@@ -154,7 +154,7 @@ type ClusterACMEUpdatePluginRequest struct {
 	// Flag to disable the config.
 	//
 	// 	1 | 0
-	Disable int `in:"query=disable;omitempty"`
+	Disable *int `in:"query=disable;omitempty"`
 
 	// List of cluster node names.
 	//
@@ -164,7 +164,7 @@ type ClusterACMEUpdatePluginRequest struct {
 	// Extra delay in seconds to wait before requesting validation. Allows to cope with a long TTL of DNS records.
 	//
 	// 	0 - 172800
-	ValidationDelay int `in:"query=validation-delay;omitempty"`
+	ValidationDelay *int `in:"query=validation-delay;omitempty"`
 
 	// Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
 	Digest string `in:"query=digest;omitempty"`
