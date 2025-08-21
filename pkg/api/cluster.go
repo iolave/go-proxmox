@@ -1,6 +1,146 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/iolave/go-errors"
+)
+
+type ClusterGetLogRequest struct {
+	// Maximum number of entries (1 - N)
+	MaxEntries *int `in:"query=max;omitempty"`
+}
+
+// ClusterGetLog Read cluster log.
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
+func (c API) ClusterGetLog(req ClusterGetLogRequest) (res []struct {
+	ID      string `json:"id"`
+	Message string `json:"msg"`
+	UID     string `json:"uid"`
+	Time    int    `json:"time"`
+	Node    string `json:"node"`
+	PID     int    `json:"pid"`
+	Pri     int    `json:"pri"`
+	User    string `json:"user"`
+	Tag     string `json:"tag"`
+}, err error) {
+	err = c.SendPVERequest(PVERequest{
+		Path:    "/api2/json/cluster/log",
+		Method:  http.MethodGet,
+		Payload: &req,
+		Result:  &res,
+	})
+
+	return res, err
+}
+
+// ClusterGetTasks List recent tasks (cluster wide).
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
+func (c API) ClusterGetTasks() (res []struct {
+	UpID      string  `json:"upid"`
+	Node      *string `json:"node"`
+	Status    *string `json:"status"`
+	ID        *string `json:"id"`
+	StartTime *int    `json:"starttime"`
+	Saved     *string `json:"saved"`
+	User      *string `json:"user"`
+	EndTime   *int    `json:"endtime"`
+	Type      *string `json:"type"`
+}, err error) {
+	err = c.SendPVERequest(PVERequest{
+		Path:   "/api2/json/cluster/tasks",
+		Method: http.MethodGet,
+		Result: &res,
+	})
+
+	return res, err
+}
+
+// ClusterGetStatus Get cluster status information.
+//
+// Required permissions:
+//
+//	Check: ["perm","/",["Sys.Audit"]]
+func (c API) ClusterGetStatus() (res []struct {
+	ID      string  `json:"id"`
+	Name    string  `json:"name"`
+	Type    string  `json:"type"`
+	IP      *string `json:"ip"`
+	Level   *string `json:"level"`
+	Local   *int    `json:"local"`
+	NodeID  *int    `json:"nodeid"`
+	Nodes   *int    `json:"nodes"`
+	Online  *int    `json:"online"`
+	QuoRate *int    `json:"quorate"`
+	Version *int    `json:"version"`
+}, err error) {
+	err = c.SendPVERequest(PVERequest{
+		Path:   "/api2/json/cluster/status",
+		Method: http.MethodGet,
+		Result: &res,
+	})
+
+	return res, err
+}
+
+type ClusterGetResourcesRequest struct {
+	// Resource type.
+	//
+	// 	vm | storage | node | sdn
+	Type string `in:"query=type"`
+}
+
+// ClusterGetResources Resources index (cluster wide).
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
+func (c API) ClusterGetResources(req ClusterGetResourcesRequest) (res []struct {
+	ID         string  `json:"id"`
+	Type       string  `json:"type"`
+	CGroupMode *int    `json:"cgroup-mode"`
+	Content    *string `json:"content"`
+	CPU        *int    `json:"cpu"`
+	Disk       *int    `json:"disk"`
+	DiskRead   *int    `json:"diskread"`
+	DiskWrite  *int    `json:"diskwrite"`
+	HAState    *string `json:"hastate"`
+	Level      *string `json:"level"`
+	Lock       *string `json:"lock"`
+	MaxCPU     *int    `json:"maxcpu"`
+	MaxDisk    *int    `json:"maxdisk"`
+	MaxMem     *int    `json:"maxmem"`
+	Mem        *int    `json:"mem"`
+	MemHost    *int    `json:"memhost"`
+	Name       *string `json:"name"`
+	NetIn      *int    `json:"netin"`
+	NetOut     *int    `json:"netout"`
+	Node       *string `json:"node"`
+	PluginType *string `json:"plugintype"`
+	Pool       *string `json:"pool"`
+	Status     *string `json:"status"`
+	Storage    *string `json:"storage"`
+	Tags       *string `json:"tags"`
+	Template   *int    `json:"template"`
+	Uptime     *int    `json:"uptime"`
+	VMID       *int    `json:"vmid"`
+}, err error) {
+	err = c.SendPVERequest(PVERequest{
+		Path:    "/api2/json/cluster/resources",
+		Method:  http.MethodGet,
+		Result:  &res,
+		Payload: &req,
+	})
+
+	return res, err
+}
 
 // ClusterGetOptions Get datacenter options. Without 'Sys.Audit'
 // on '/' not all options are returned.
@@ -201,4 +341,36 @@ func (c API) ClusterPutOptions(req ClusterPutOptionsRequest) (err error) {
 	})
 
 	return err
+}
+
+type ClusterGetNextIDRequest struct {
+	// The (unique) ID of the VM.
+	VMID int `in:"query=vmid;omitempty"`
+}
+
+// ClusterGetNextID Get next free VMID. Pass a VMID
+// to assert that its free (at time of check).
+//
+// Required permissions:
+//
+//	Accessible by all authenticated users.
+func (c API) ClusterGetNextID(req ClusterGetNextIDRequest) (int, error) {
+	res := ""
+
+	err := c.SendPVERequest(PVERequest{
+		Path:    "/api2/json/cluster/nextid",
+		Method:  http.MethodGet,
+		Payload: &req,
+		Result:  &res,
+	})
+
+	vmid, err := strconv.Atoi(res)
+	if err != nil {
+		return 0, errors.NewInternalServerError(
+			"failed to parse response",
+			err,
+		)
+	}
+
+	return vmid, err
 }
