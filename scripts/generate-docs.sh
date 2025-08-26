@@ -57,6 +57,7 @@ python3 -m venv ${VENV}
 source "${VENV}/bin/activate"
 
 PIP_DEPS=" \
+	mkdocs \
 	mkdocs-material \
 	pymdown-extensions \
 	markdown-callouts \
