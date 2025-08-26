@@ -101,7 +101,7 @@ type ClusterFirewallGroupsNewRuleRequest struct {
 	// Rule type.
 	//
 	// 	in | out | forward | group
-	Type string `in:"query=type;nonzero"`
+	Type string `in:"query=type;omitempty"`
 
 	// Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
 	Action string `in:"query=action;nonzero"`
