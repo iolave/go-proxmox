@@ -18,13 +18,17 @@ import (
 // API is an http client used to send requests
 // to the proxmox api.
 type API struct {
+	// cfg is the proxmox api configuration.
+	cfg Config
+
 	// httpc is the underlying http client used
 	// to send requests to the proxmox api.
 	httpc *http.Client
+}
 
+type Config struct {
 	// CustomHeaders is a map of custom headers
-	// to be sent with each request, authorization
-	// should be added to this map.
+	// to be sent with each request.
 	CustomHeaders http.Header
 
 	// Proto is the protocol used to send requests
@@ -38,43 +42,41 @@ type API struct {
 	// Port is the port used to send requests
 	// to the proxmox api.
 	Port int `validate:"required"`
+
+	// Credentials is the proxmox api credentials.
+	Credentials *Credentials `validate:"required"`
+
+	// InsecureSkipVerify is a flag that indicates
+	// whether the client should skip verifying the
+	// server's certificate chain and host name.
+	// It is used to disable SSL certificate verification.
+	InsecureSkipVerify bool
 }
 
-// New returns a new HTTPClient.
+// New returns a new Proxmox API client. It returns an
+// error when the config is invalid.
 //
-// proto is the protocol used to send requests
-// and it's allowed values are http or https.
-//
-// It returns an error when the proto is not
-// supported or when the host or port is not
-// set/valid.
-//
-// Any error returned is of type [errors].Error.
-//
-// It also initializes custom httpin directives.
+// - Any error returned is of type [errors].Error.
+// - It also initializes custom httpin directives.
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
-func New(
-	proto string,
-	host string,
-	port int,
-	insecureSkipVerify bool,
-) (*API, error) {
+func New(cfg Config) (*API, error) {
 	httpinInit()
 
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: insecureSkipVerify,
+			InsecureSkipVerify: cfg.InsecureSkipVerify,
 		},
 	}
 	httpc := &http.Client{Transport: transport}
 
+	if cfg.CustomHeaders == nil {
+		cfg.CustomHeaders = http.Header{}
+	}
+
 	c := &API{
-		httpc:         httpc,
-		CustomHeaders: http.Header{},
-		Proto:         proto,
-		Host:          host,
-		Port:          port,
+		httpc: httpc,
+		cfg:   cfg,
 	}
 
 	validate := validator.New(
@@ -121,14 +123,14 @@ type PVERequest struct {
 	Result any
 }
 
-// sendPVERequest sends a request to the proxmox api. It returns
+// SendPVERequest sends a request to the proxmox api. It returns
 // an error when the request fails.
 //
 // Any error returned is of type [errors].*HTTPError.
 //
 // [errors]: https://pkg.go.dev/github.com/iolave/go-errors
 func (c API) SendPVERequest(pvereq PVERequest) error {
-	base := fmt.Sprintf("%s://%s:%d", c.Proto, c.Host, c.Port)
+	base := fmt.Sprintf("%s://%s:%d", c.cfg.Proto, c.cfg.Host, c.cfg.Port)
 	url, err := url.JoinPath(base, pvereq.Path)
 	if err != nil {
 		return errors.NewInternalServerError(
@@ -153,9 +155,18 @@ func (c API) SendPVERequest(pvereq PVERequest) error {
 	}
 
 	// Add the custom headers to the request
-	for k, v := range c.CustomHeaders {
+	for k, v := range c.cfg.CustomHeaders {
 		req.Header[k] = v
 	}
+
+	auth, err := c.cfg.Credentials.getAuthorization()
+	if err != nil {
+		return errors.NewInternalServerError(
+			"failed to get authorization header",
+			err,
+		)
+	}
+	req.Header.Set("Authorization", auth)
 
 	// If the request has additional payload,
 	// a clone of the request is created in

@@ -71,9 +71,10 @@ nav:
   - Go client:
     - go-client/index.md
     - Reference:
-      - pkg/api: go-client/pkg/api.md
-      - pkg/pve: go-client/pkg/pve.md
-      - pkg/helpers: go-client/pkg/helpers.md
+      - pkg:
+        - api: go-client/pkg/api.md
+        - pve: go-client/pkg/pve.md
+        - helpers: go-client/pkg/helpers.md
     - Implemented endpoints: go-client/implemented-endpoints.md
   - API Wrapper:
     - api-wrapper/index.md
