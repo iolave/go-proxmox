@@ -6,22 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+<!-- ################# 
+     # PVE API Wrapper
+     ################# -->
 ### PVE API wrapper
 
 #### Fixed
 - PVE original passthrough handler now properly includes the request query params (resolves [#4](https://github.com/iolave/go-proxmox/issues/4)).
 
+<!-- ################ 
+     # PVE API client
+     ################ -->
 ### PVE API client
+
 #### Added
-- Added a Core Service to the client:
-    - Implements `GET /api2/json/version` as `GetVersion`.
+- Added the `api` package that contains raw proxmox api implementations for:
+    - `/api2/json/access`
+    - `/api2/json/cluster`
 
 #### Changed
 - Renamed `pve.PVE` to `pve.Client`.
-
-#### Removed
-- Removed client `GetVersion` method.
-
+- Moved the `GetVersion` method from `pkg/pve` to `pkg/pve/core`.
 
 ## [v0.7.1]
 ### PVE API client

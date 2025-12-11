@@ -71,11 +71,9 @@ nav:
   - Go client:
     - go-client/index.md
     - Reference:
-      - pkg:
-        - go-client/pkg/cloudflare.md
-        - go-client/pkg/helpers.md
-        - go-client/pkg/pve.md
-        - go-client/pkg/errors.md
+      - pkg/api: go-client/pkg/api.md
+      - pkg/pve: go-client/pkg/pve.md
+      - pkg/helpers: go-client/pkg/helpers.md
     - Implemented endpoints: go-client/implemented-endpoints.md
   - API Wrapper:
     - api-wrapper/index.md
