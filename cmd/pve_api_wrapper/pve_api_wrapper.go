@@ -7,7 +7,7 @@ import (
 
 	"github.com/alexflint/go-arg"
 	_ "github.com/iolave/go-proxmox/docs/api-wrapper"
-	"github.com/iolave/go-proxmox/internal/server"
+	"github.com/iolave/go-proxmox/internal/api_wrapper/server"
 )
 
 // @title			Proxmox API Wrapper

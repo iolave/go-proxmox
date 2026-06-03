@@ -3,7 +3,7 @@ site_url: https://go-proxmox.iolave.com/
 repo_url: https://github.com/iolave/go-proxmox
 repo_name: iolave/go-proxmox
 plugins:
-  - render_swagger
+  - render_swagger:
 markdown_extensions:
   - abbr
   - attr_list
@@ -72,10 +72,9 @@ nav:
     - go-client/index.md
     - Reference:
       - pkg:
-        - go-client/pkg/cloudflare.md
-        - go-client/pkg/helpers.md
-        - go-client/pkg/pve.md
-        - go-client/pkg/errors.md
+        - api: go-client/pkg/api.md
+        - pve: go-client/pkg/pve.md
+        - helpers: go-client/pkg/helpers.md
     - Implemented endpoints: go-client/implemented-endpoints.md
   - API Wrapper:
     - api-wrapper/index.md

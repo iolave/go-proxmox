@@ -10,10 +10,10 @@ The pve api wrapper is an http server ment to be installed on the proxmox host s
 
 ## Installation
 ### Latest release
-The installation script installs the `pve-api-wrapper` binary into `/usr/local/bin`.
+The installation script installs the latest `pve-api-wrapper` binary into `/usr/local/bin`.
 
 ```bash
-curl https://raw.githubusercontent.com/iolave/go-proxmox/refs/tags/latest/scripts/install.sh | bash
+curl https://raw.githubusercontent.com/iolave/go-proxmox/refs/tags/latest/scripts/install-paw.sh | bash
 ```
 
 _Inspect the installation script code [here]._
@@ -51,7 +51,7 @@ pve-api-wrapper [--version] [--pve-host PVE-HOST] [--pve-port PVE-PORT] [--host 
 sudo pve-api-wrapper service install
 ```
 
-[here]: https://github.com/iolave/go-proxmox/blob/latest/scripts/install.sh
+[here]: https://github.com/iolave/go-proxmox/blob/latest/scripts/install-paw.sh
 [reference]: https://go-proxmox.iolave.com/api-wrapper/reference/
 <!--
     TODO: host the shell script within the docs https://github.com/squidfunk/mkdocs-material/discussions/3458

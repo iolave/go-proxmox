@@ -13,10 +13,9 @@ import (
 
 func main() {
 	packages := []string{
+		"api",
 		"pve",
 		"helpers",
-		"cloudflare",
-		"errors",
 	}
 
 	for i := 0; i < len(packages); i++ {

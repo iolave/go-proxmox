@@ -1,22 +1,21 @@
-This is a development-purposed list to keep track of the implemented proxmox [endpoints](https://pve.proxmox.com/pve-docs/api-viewer/) as a callable golang func but **not** necessarily as a CLI command.
+This is a development-purposed list to keep track of the implemented proxmox [endpoints](https://pve.proxmox.com/pve-docs/api-viewer/) as a callable golang func within the `pkg/api` package.
 
 | Symbol | Description |
 |:------:|:-----------:|
 |:material-close:|Not implemented|
-|:material-check:|Partially implemented (notes will be added in the docs)|
-|:material-check-all:|Fully implemented|
+|:material-check:|Implemented|
 
 ## PVE Core
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/version`                                                  |:material-check-all:|
+| `/version`                                                  |:material-check:|
 
 ## Access
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/access/acl`                                               |:material-close:||:material-close:|
 | `/access/password`                                          |||:material-close:|
-| `/access/permissions`                                       |:material-check-all:|
+| `/access/permissions`                                       |:material-close:|
 | `/access/ticket`                                            |:material-close:|:material-close:|
 
 ### Users
@@ -65,171 +64,171 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 ## Cluster
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster`                                                  |:material-close:|
-| `/cluster/log`                                              |:material-close:|
-| `/cluster/nextid`                                           |:material-check-all:|
-| `/cluster/options`                                          |:material-close:||:material-close:|
+| `/cluster`                                                  |:material-check:|
+| `/cluster/log`                                              |:material-check:|
+| `/cluster/nextid`                                           |:material-check:|
+| `/cluster/options`                                          |:material-check:||:material-check:|
 | `/cluster/resources`                                        |:material-check:|
-| `/cluster/status`                                           |:material-close:|
-| `/cluster/tasks`                                            |:material-close:|
+| `/cluster/status`                                           |:material-check:|
+| `/cluster/tasks`                                            |:material-check:|
 
 ### Acme
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/acme`                                             |:material-close:|
-| `/cluster/acme/challenge-schema`                            |:material-close:|
-| `/cluster/acme/directories`                                 |:material-close:|
-| `/cluster/acme/meta`                                        |:material-close:|
-| `/cluster/acme/tos`                                         |:material-close:|
-| `/cluster/acme/account`                                     |:material-close:|:material-close:|
-| `/cluster/acme/account/:name`                               |:material-close:||:material-close:|:material-close:|
-| `/cluster/acme/plugins`                                     |:material-close:|:material-close:|
-| `/cluster/acme/plugins/:id`                                 |:material-close:||:material-close:|:material-close:|
+| `/cluster/acme`                                             |:material-check:|
+| `/cluster/acme/challenge-schema`                            |:material-check:|
+| `/cluster/acme/directories`                                 |:material-check:|
+| `/cluster/acme/meta`                                        |:material-check:|
+| `/cluster/acme/tos`                                         |:material-check:|
+| `/cluster/acme/account`                                     |:material-check:|:material-check:|
+| `/cluster/acme/account/:name`                               |:material-check:||:material-check:|:material-check:|
+| `/cluster/acme/plugins`                                     |:material-check:|:material-check:|
+| `/cluster/acme/plugins/:id`                                 |:material-check:||:material-check:|:material-check:|
 
 
 ### Backup
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/backup`                                           |:material-close:|:material-close:|
-| `/cluster/backup/:id`                                       |:material-close:||:material-close:|:material-close:|
-| `/cluster/backup/:id/included_volumes`                      |:material-close:|
+| `/cluster/backup`                                           |:material-check:|:material-check:|
+| `/cluster/backup/:id`                                       |:material-check:||:material-check:|:material-check:|
+| `/cluster/backup/:id/included_volumes`                      |:material-check:|
 
 ### Backup info
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/backup-info`                                      |:material-close:|
-| `/cluster/backup-info/not-backed-up`                        |:material-close:|
+| `/cluster/backup-info`                                      |:material-check:|
+| `/cluster/backup-info/not-backed-up`                        |:material-check:|
 
 ### Ceph
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/ceph`                                             |:material-close:|
-| `/cluster/ceph/metadata`                                    |:material-close:|
-| `/cluster/ceph/status`                                      |:material-close:|
-| `/cluster/ceph/flags`                                       |:material-close:||:material-close:|
-| `/cluster/ceph/flags/:flag`                                 |:material-close:||:material-close:|
+| `/cluster/ceph`                                             |:material-check:|
+| `/cluster/ceph/metadata`                                    |:material-check:|
+| `/cluster/ceph/status`                                      |:material-check:|
+| `/cluster/ceph/flags`                                       |:material-check:||:material-check:|
+| `/cluster/ceph/flags/:flag`                                 |:material-check:||:material-check:|
 
 ### Config
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/config`                                           |:material-close:|:material-close:|
-| `/cluster/config/apiversion`                                |:material-close:|
-| `/cluster/config/join`                                      |:material-close:|:material-close:|
-| `/cluster/config/qdevice`                                   |:material-close:|:material-close:|
-| `/cluster/config/totem`                                     |:material-close:|
-| `/cluster/config/nodes`                                     |:material-close:|
-| `/cluster/config/nodes/:node`                               ||:material-close:||:material-close:|
+| `/cluster/config`                                           |:material-check:|:material-check:|
+| `/cluster/config/apiversion`                                |:material-check:|
+| `/cluster/config/join`                                      |:material-check:|:material-check:|
+| `/cluster/config/qdevice`                                   |:material-check:|:material-check:|
+| `/cluster/config/totem`                                     |:material-check:|
+| `/cluster/config/nodes`                                     |:material-check:|
+| `/cluster/config/nodes/:node`                               ||:material-check:||:material-check:|
 
 ### Firewall
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/firewall`                                         |:material-close:|
-| `/cluster/firewall/macros`                                  |:material-close:|
-| `/cluster/firewall/options`                                 |:material-close:||:material-close:|
-| `/cluster/firewall/refs`                                    |:material-close:|
-| `/cluster/firewall/aliases`                                 |:material-check-all:|:material-check-all:|
-| `/cluster/firewall/aliases/:name`                           |:material-check-all:||:material-check-all:|:material-check-all:|
-| `/cluster/firewall/groups`                                  |:material-close:|:material-close:|
-| `/cluster/firewall/groups/:group`                           |:material-close:|:material-close:||:material-close:|
-| `/cluster/firewall/groups/:group/:pos`                      |:material-close:||:material-close:|:material-close:|
-| `/cluster/firewall/ipset`                                   |:material-check-all:|:material-close:|
-| `/cluster/firewall/ipset/:name`                             |:material-close:|:material-close:||:material-close:|
-| `/cluster/firewall/ipset/:name/:cidr`                       |:material-close:||:material-close:|:material-close:|
-| `/cluster/firewall/rules`                                   |:material-check-all:|:material-close:|
-| `/cluster/firewall/rules/:pos`                              |:material-close:||:material-close:|:material-close:|
+| `/cluster/firewall`                                         |:material-check:|
+| `/cluster/firewall/macros`                                  |:material-check:|
+| `/cluster/firewall/options`                                 |:material-check:||:material-check:|
+| `/cluster/firewall/refs`                                    |:material-check:|
+| `/cluster/firewall/aliases`                                 |:material-check:|:material-check:|
+| `/cluster/firewall/aliases/:name`                           |:material-check:||:material-check:|:material-check:|
+| `/cluster/firewall/groups`                                  |:material-check:|:material-check:|
+| `/cluster/firewall/groups/:group`                           |:material-check:|:material-check:||:material-check:|
+| `/cluster/firewall/groups/:group/:pos`                      |:material-check:||:material-check:|:material-check:|
+| `/cluster/firewall/ipset`                                   |:material-check:|:material-check:|
+| `/cluster/firewall/ipset/:name`                             |:material-check:|:material-check:||:material-check:|
+| `/cluster/firewall/ipset/:name/:cidr`                       |:material-check:||:material-check:|:material-check:|
+| `/cluster/firewall/rules`                                   |:material-check:|:material-check:|
+| `/cluster/firewall/rules/:pos`                              |:material-check:||:material-check:|:material-check:|
 
 ### High availability
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/ha`                                               |:material-close:|
-| `/cluster/ha/groups`                                        |:material-close:|:material-close:|
-| `/cluster/ha/groups/:group`                                 |:material-close:||:material-close:|:material-close:|
-| `/cluster/ha/resources`                                     |:material-close:|:material-close:|
-| `/cluster/ha/resources/:sid`                                |:material-close:||:material-close:|:material-close:|
-| `/cluster/ha/resources/:sid/migrate`                        ||:material-close:|
-| `/cluster/ha/resources/:sid/relocate`                       ||:material-close:|
-| `/cluster/ha/status`                                        |:material-close:|
-| `/cluster/ha/status/current`                                |:material-close:|
-| `/cluster/ha/status/manager_status`                         |:material-close:|
+| `/cluster/ha`                                               |:material-check:|
+| `/cluster/ha/groups`                                        |:material-check:|:material-check:|
+| `/cluster/ha/groups/:group`                                 |:material-check:||:material-check:|:material-check:|
+| `/cluster/ha/resources`                                     |:material-check:|:material-check:|
+| `/cluster/ha/resources/:sid`                                |:material-check:||:material-check:|:material-check:|
+| `/cluster/ha/resources/:sid/migrate`                        ||:material-check:|
+| `/cluster/ha/resources/:sid/relocate`                       ||:material-check:|
+| `/cluster/ha/status`                                        |:material-check:|
+| `/cluster/ha/status/current`                                |:material-check:|
+| `/cluster/ha/status/manager_status`                         |:material-check:|
 
 ### Jobs
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/jobs`                                             |:material-close:|
-| `/cluster/jobs/schedule-analyze`                            |:material-close:|
-| `/cluster/jobs/realm-sync`                                  |:material-close:|
-| `/cluster/jobs/realm-sync/:id`                              |:material-close:|:material-close:|:material-close:|:material-close:|
+| `/cluster/jobs`                                             |:material-check:|
+| `/cluster/jobs/schedule-analyze`                            |:material-check:|
+| `/cluster/jobs/realm-sync`                                  |:material-check:|
+| `/cluster/jobs/realm-sync/:id`                              |:material-check:|:material-check:|:material-check:|:material-check:|
 
 ### Mapping
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/mapping`                                          |:material-close:|
-| `/cluster/mapping/pci`                                      |:material-close:|:material-close:|
-| `/cluster/mapping/pci/:id`                                  |:material-close:||:material-close:|:material-close:|
-| `/cluster/mapping/usb`                                      |:material-close:|:material-close:|
-| `/cluster/mapping/usb/:id`                                  |:material-close:||:material-close:|:material-close:|
+| `/cluster/mapping`                                          |:material-check:|
+| `/cluster/mapping/pci`                                      |:material-check:|:material-check:|
+| `/cluster/mapping/pci/:id`                                  |:material-check:||:material-check:|:material-check:|
+| `/cluster/mapping/usb`                                      |:material-check:|:material-check:|
+| `/cluster/mapping/usb/:id`                                  |:material-check:||:material-check:|:material-check:|
 
 ### Metrics
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/metrics`                                          |:material-close:|
-| `/cluster/metrics/export`                                   |:material-close:|
-| `/cluster/metrics/server`                                   |:material-close:|
-| `/cluster/metrics/server/:id`                               |:material-close:|:material-close:|:material-close:|:material-close:|
+| `/cluster/metrics`                                          |:material-check:|
+| `/cluster/metrics/export`                                   |:material-check:|
+| `/cluster/metrics/server`                                   |:material-check:|
+| `/cluster/metrics/server/:id`                               |:material-check:|:material-check:|:material-check:|:material-check:|
 
 ### Notifications
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/notifications`                                    |:material-close:|
-| `/cluster/notifications/matcher-field-values`               |:material-close:|
-| `/cluster/notifications/matcher-fields`                     |:material-close:|
-| `/cluster/notifications/endpoints`                          |:material-close:|
-| `/cluster/notifications/endpoints/gotify`                   |:material-close:|:material-close:|
-| `/cluster/notifications/endpoints/gotify/:name`             |:material-close:||:material-close:|:material-close:|
-| `/cluster/notifications/endpoints/sendmail`                 |:material-close:|:material-close:|
-| `/cluster/notifications/endpoints/sendmail/:name`           |:material-close:||:material-close:|:material-close:|
-| `/cluster/notifications/endpoints/smpt`                     |:material-close:|:material-close:|
-| `/cluster/notifications/endpoints/smpt/:name`               |:material-close:||:material-close:|:material-close:|
-| `/cluster/notifications/endpoints/webhook`                  |:material-close:|:material-close:|
-| `/cluster/notifications/endpoints/webhook/:name`            |:material-close:||:material-close:|:material-close:|
-| `/cluster/notifications/matchers`                           |:material-close:|:material-close:|
-| `/cluster/notifications/matchers/:name`                     |:material-close:||:material-close:|:material-close:|
-| `/cluster/notifications/targets`                            |:material-close:|
-| `/cluster/notifications/targets/:name`                      |:material-close:||:material-close:|:material-close:|
+| `/cluster/notifications`                                    |:material-check:|
+| `/cluster/notifications/matcher-field-values`               |:material-check:|
+| `/cluster/notifications/matcher-fields`                     |:material-check:|
+| `/cluster/notifications/endpoints`                          |:material-check:|
+| `/cluster/notifications/endpoints/gotify`                   |:material-check:|:material-check:|
+| `/cluster/notifications/endpoints/gotify/:name`             |:material-check:||:material-check:|:material-check:|
+| `/cluster/notifications/endpoints/sendmail`                 |:material-check:|:material-check:|
+| `/cluster/notifications/endpoints/sendmail/:name`           |:material-check:||:material-check:|:material-check:|
+| `/cluster/notifications/endpoints/smpt`                     |:material-check:|:material-check:|
+| `/cluster/notifications/endpoints/smpt/:name`               |:material-check:||:material-check:|:material-check:|
+| `/cluster/notifications/endpoints/webhook`                  |:material-check:|:material-check:|
+| `/cluster/notifications/endpoints/webhook/:name`            |:material-check:||:material-check:|:material-check:|
+| `/cluster/notifications/matchers`                           |:material-check:|:material-check:|
+| `/cluster/notifications/matchers/:name`                     |:material-check:||:material-check:|:material-check:|
+| `/cluster/notifications/targets`                            |:material-check:|
+| `/cluster/notifications/targets/:name`                      |:material-check:||:material-check:|:material-check:|
 
 ### Replication
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/replication`                                      |:material-close:|:material-close:|
-| `/cluster/replication/:id`                                  |:material-close:||:material-close:|:material-close:|
+| `/cluster/replication`                                      |:material-check:|:material-check:|
+| `/cluster/replication/:id`                                  |:material-check:||:material-check:|:material-check:|
 
 ### SDN
 | path                                                        | get                | post           | put | delete |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/cluster/sdn`                                              |:material-close:||:material-close:|
-| `/cluster/sdn/controllers`                                  |:material-close:|:material-close:|
-| `/cluster/sdn/controllers/:controller`                      |:material-close:||:material-close:|:material-close:|
-| `/cluster/sdn/dns`                                          |:material-close:|:material-close:|
-| `/cluster/sdn/dns/:dns`                                     |:material-close:||:material-close:|:material-close:|
-| `/cluster/sdn/ipams`                                        |:material-close:|:material-close:|
-| `/cluster/sdn/ipams/:ipam`                                  |:material-close:||:material-close:|:material-close:|
-| `/cluster/sdn/vnets`                                        |:material-close:|:material-close:|
-| `/cluster/sdn/vnets/:vnet`                                  |:material-close:||:material-close:|:material-close:|
-| `/cluster/sdn/vnets/:vnet/ips`                              ||:material-close:|:material-close:|:material-close:|
-| `/cluster/sdn/vnets/:vnet/firewall`                         |:material-close:|
-| `/cluster/sdn/vnets/:vnet/firewall/options`                 |:material-close:||:material-close:|
-| `/cluster/sdn/vnets/:vnet/firewall/rules`                   |:material-close:|:material-close:|
-| `/cluster/sdn/vnets/:vnet/firewall/rules/:pos`              |:material-close:||:material-close:|:material-close:|
-| `/cluster/sdn/vnets/:vnet/subnets`                          |:material-close:|:material-close:|
-| `/cluster/sdn/vnets/:vnet/subnets/:subnet`                  |:material-close:||:material-close:|:material-close:|
-| `/cluster/sdn/zones`                                        |:material-close:|:material-close:|
-| `/cluster/sdn/zones/:zone`                                  |:material-close:||:material-close:|:material-close:|
+| `/cluster/sdn`                                              |:material-check:||:material-check:|
+| `/cluster/sdn/controllers`                                  |:material-check:|:material-check:|
+| `/cluster/sdn/controllers/:controller`                      |:material-check:||:material-check:|:material-check:|
+| `/cluster/sdn/dns`                                          |:material-check:|:material-check:|
+| `/cluster/sdn/dns/:dns`                                     |:material-check:||:material-check:|:material-check:|
+| `/cluster/sdn/ipams`                                        |:material-check:|:material-check:|
+| `/cluster/sdn/ipams/:ipam`                                  |:material-check:||:material-check:|:material-check:|
+| `/cluster/sdn/vnets`                                        |:material-check:|:material-check:|
+| `/cluster/sdn/vnets/:vnet`                                  |:material-check:||:material-check:|:material-check:|
+| `/cluster/sdn/vnets/:vnet/ips`                              ||:material-check:|:material-check:|:material-check:|
+| `/cluster/sdn/vnets/:vnet/firewall`                         |:material-check:|
+| `/cluster/sdn/vnets/:vnet/firewall/options`                 |:material-check:||:material-check:|
+| `/cluster/sdn/vnets/:vnet/firewall/rules`                   |:material-check:|:material-check:|
+| `/cluster/sdn/vnets/:vnet/firewall/rules/:pos`              |:material-check:||:material-check:|:material-check:|
+| `/cluster/sdn/vnets/:vnet/subnets`                          |:material-check:|:material-check:|
+| `/cluster/sdn/vnets/:vnet/subnets/:subnet`                  |:material-check:||:material-check:|:material-check:|
+| `/cluster/sdn/zones`                                        |:material-check:|:material-check:|
+| `/cluster/sdn/zones/:zone`                                  |:material-check:||:material-check:|:material-check:|
 
 ## Nodes
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/nodes`                                                    |:material-check-all:|
-| `/nodes/:node`                                              |:material-check-all:|
+| `/nodes`                                                    |:material-close:|
+| `/nodes/:node`                                              |:material-close:|
 | `/nodes/:node/aplinfo`                                      |:material-close:|:material-close:|
 | `/nodes/:node/config`                                       |:material-close:||:material-close:|
 | `/nodes/:node/dns`                                          |:material-close:||:material-close:|
@@ -259,11 +258,11 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 ### Node: apt
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/nodes/:node/apt`                                          |:material-check-all:|
-| `/nodes/:node/apt/changelog`                                |:material-check-all:|
-| `/nodes/:node/apt/repositories`                             |:material-check-all:|:material-check-all:|:material-check-all:|
-| `/nodes/:node/apt/update`                                   |:material-check:|:material-check-all:|
-| `/nodes/:node/apt/versions`                                 |:material-check:|
+| `/nodes/:node/apt`                                          |:material-close:|
+| `/nodes/:node/apt/changelog`                                |:material-close:|
+| `/nodes/:node/apt/repositories`                             |:material-close:|:material-close:|:material-close:|
+| `/nodes/:node/apt/update`                                   |:material-close:|:material-close:|
+| `/nodes/:node/apt/versions`                                 |:material-close:|
 
 ### Node: Capabilities
 | Path                                                        | GET                | POST           | PUT | DELETE |
@@ -340,9 +339,9 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
 | `/nodes/:node/firewall`                                     |:material-close:|
-| `/nodes/:node/firewall/rules`                               |:material-check-all:|:material-check-all:|
-| `/nodes/:node/firewall/rules/:pos`                          |:material-check-all:||:material-close:|:material-check:|
-| `/nodes/:node/firewall/log`                                 |:material-check:|
+| `/nodes/:node/firewall/rules`                               |:material-close:|:material-close:|
+| `/nodes/:node/firewall/rules/:pos`                          |:material-close:||:material-close:|:material-close:|
+| `/nodes/:node/firewall/log`                                 |:material-close:|
 | `/nodes/:node/firewall/options`                             |:material-close:||:material-close:|
 
 ### Node: Hardware
@@ -356,8 +355,8 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 ### Node: lxc
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/nodes/:node/lxc`                                          |:material-check-all:|:material-check:|
-| `/nodes/:node/lxc/:vmid`                                    |:material-check-all:| | |:material-check-all:|
+| `/nodes/:node/lxc`                                          |:material-close:|:material-close:|
+| `/nodes/:node/lxc/:vmid`                                    |:material-close:| | |:material-close:|
 | `/nodes/:node/lxc/:vmid/firewall`                           |:material-close:|
 | `/nodes/:node/lxc/:vmid/firewall/log`                       |:material-close:|
 | `/nodes/:node/lxc/:vmid/firewall/option`                    |:material-close:||:material-close:|
@@ -374,17 +373,17 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 | `/nodes/:node/lxc/:vmid/snapshot/:name/config`              |:material-close:||:material-close:|
 | `/nodes/:node/lxc/:vmid/snapshot/:name/rollback`            ||:material-close:|
 | `/nodes/:node/lxc/:vmid/status`                             |:material-close:|
-| `/nodes/:node/lxc/:vmid/status/current`                     |:material-check-all:|
-| `/nodes/:node/lxc/:vmid/status/reboot`                      ||:material-check-all:|
-| `/nodes/:node/lxc/:vmid/status/resume`                      ||:material-check-all:|
-| `/nodes/:check-all/lxc/:vmid/status/shutdown`               ||:material-check-all:|
-| `/nodes/:node/lxc/:vmid/status/start`                       ||:material-check-all:|
-| `/nodes/:check-all/lxc/:vmid/status/stop`                   ||:material-check-all:|
-| `/nodes/:node/lxc/:vmid/status/suspend`                     ||:material-check-all:|
+| `/nodes/:node/lxc/:vmid/status/current`                     |:material-close:|
+| `/nodes/:node/lxc/:vmid/status/reboot`                      ||:material-close:|
+| `/nodes/:node/lxc/:vmid/status/resume`                      ||:material-close:|
+| `/nodes/:node/lxc/:vmid/status/shutdown`                    ||:material-close:|
+| `/nodes/:node/lxc/:vmid/status/start`                       ||:material-close:|
+| `/nodes/:node/lxc/:vmid/status/stop`                        ||:material-close:|
+| `/nodes/:node/lxc/:vmid/status/suspend`                     ||:material-close:|
 | `/nodes/:node/lxc/:vmid/clone`                              ||:material-close:|
 | `/nodes/:node/lxc/:vmid/config`                             |:material-close:||:material-close:|
 | `/nodes/:node/lxc/:vmid/feature`                            |:material-close:|
-| `/nodes/:node/lxc/:vmid/interfaces`                         |:material-check-all:|
+| `/nodes/:node/lxc/:vmid/interfaces`                         |:material-close:|
 | `/nodes/:node/lxc/:vmid/migrate`                            ||:material-close:|
 | `/nodes/:node/lxc/:vmid/move_volume`                        ||:material-close:|
 | `/nodes/:node/lxc/:vmid/mtunnel`                            ||:material-close:|
@@ -528,14 +527,14 @@ This is a development-purposed list to keep track of the implemented proxmox [en
 ### Node: Storage
 | Path                                                        | GET                | POST           | PUT | DELETE |
 |-------------------------------------------------------------|:------------------:|:--------------:|:-----:|:-:|
-| `/nodes/:node/storage`                                      |:material-check-all:|
+| `/nodes/:node/storage`                                      |:material-close:|
 | `/nodes/:node/storage/:storage`                             |:material-close:|
-| `/nodes/:node/storage/:storage/content`                     |:material-close:|:material-check-all:|
+| `/nodes/:node/storage/:storage/content`                     |:material-close:|:material-close:|
 | `/nodes/:node/storage/:storage/content/:volume`             |:material-close:|:material-close:|:material-close:|:material-close:|
 | `/nodes/:node/storage/:storage/file-restore`                |:material-close:|:material-close:|:material-close:|:material-close:|
 | `/nodes/:node/storage/:storage/file-restore/download`       |:material-close:|
 | `/nodes/:node/storage/:storage/file-restore/list`           |:material-close:|
-| `/nodes/:node/storage/:storage/download-url`                ||:material-check:|
+| `/nodes/:node/storage/:storage/download-url`                ||:material-close:|
 | `/nodes/:node/storage/:storage/import-metadata`             |:material-close:|
 | `/nodes/:node/storage/:storage/prunebackups`                |:material-close:|||:material-close:|
 | `/nodes/:node/storage/:storage/rdd`                         |:material-close:|

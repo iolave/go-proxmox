@@ -1,90 +1,84 @@
 package pve
 
 import (
-	"fmt"
+	"crypto/tls"
+	"net/http"
 
-	"github.com/iolave/go-proxmox/pkg/cloudflare"
+	"github.com/iolave/go-errors"
+	"github.com/iolave/go-proxmox/pkg/pve/internal/helpers"
 )
 
 type Config struct {
-	Host               string
-	Port               int
+	// CustomHeaders is a map of custom headers
+	// to be sent with each request.
+	CustomHeaders http.Header
+
+	// Proto is the protocol used to send requests
+	// to the proxmox api.
+	Proto string `validate:"required,oneof=http https"`
+
+	// Host is the host used to send requests
+	// to the proxmox api.
+	Host string `validate:"required"`
+
+	// Port is the port used to send requests
+	// to the proxmox api.
+	Port int `validate:"required"`
+
+	// Credentials is the proxmox api credentials.
+	Credentials *Credentials `validate:"required"`
+
+	// InsecureSkipVerify is a flag that indicates
+	// whether the client should skip verifying the
+	// server's certificate chain and host name.
+	// It is used to disable SSL certificate verification.
 	InsecureSkipVerify bool
-	CfServiceToken     *cloudflare.ServiceToken
-	APIWrapper         bool
 }
 
-type PVE struct {
-	config Config
-	creds  *Credentials
-	client *httpClient
+type Client struct {
+	// cfg is the proxmox api configuration.
+	cfg Config
 
-	// PVE API implementations
-	Access  *PVEAccessService
-	Node    *PVENodeService
-	Cluster *PVEClusterService
-	LXC     *PVELxcService
+	// httpc is the underlying http client used
+	// to send requests to the proxmox api.
+	httpc *http.Client
 }
 
-func New(config Config) (*PVE, error) {
-	creds, err := NewEnvCreds()
+// New returns a new go-proxmox client which can be used to
+// create go-proxmox services.
+//
+// It returns an error when if the config is invalid.
+//
+// - Any error returned is of type [errors].Error.
+// - It also initializes custom httpin directives.
+//
+// [errors]: https://pkg.go.dev/github.com/iolave/go-errors
+func New(cfg Config) (*Client, error) {
+	httpinInit()
 
-	if err != nil {
-		return nil, err
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: cfg.InsecureSkipVerify,
+		},
+	}
+	httpc := &http.Client{Transport: transport}
+
+	if cfg.CustomHeaders == nil {
+		cfg.CustomHeaders = http.Header{}
 	}
 
-	api := &PVE{
-		config: config,
-		creds:  creds,
-		client: newHttpClient(
-			creds,
-			config.CfServiceToken,
-			config.Host,
-			config.Port,
-			config.InsecureSkipVerify,
-			config.APIWrapper,
-		),
+	c := &Client{
+		httpc: httpc,
+		cfg:   cfg,
 	}
 
-	_, err = api.GetVersion()
-
-	if err != nil {
-		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
+	if err := helpers.Validate.Struct(c); err != nil {
+		return nil, errors.NewWithNameAndErr(
+			"validation_error",
+			"config contains invalid values",
+			err,
+		)
 	}
 
-	initializeServices(api)
-
-	return api, nil
-}
-
-func NewWithCredentials(config Config, creds *Credentials) (*PVE, error) {
-	api := &PVE{
-		config: config,
-		creds:  creds,
-		client: newHttpClient(
-			creds,
-			config.CfServiceToken,
-			config.Host,
-			config.Port,
-			config.InsecureSkipVerify,
-			config.APIWrapper,
-		),
-	}
-
-	_, err := api.GetVersion()
-
-	if err != nil {
-		return nil, fmt.Errorf("Unable to comunicate with proxmox api, %v\n", err)
-	}
-
-	initializeServices(api)
-
-	return api, nil
-}
-
-func initializeServices(api *PVE) {
-	api.Access = newPVEAccessService(api)
-	api.Node = newPVENodeService(api)
-	api.Cluster = newPVEClusterService(api)
-	api.LXC = newPVELxcService(api)
+	return c, nil
 }
