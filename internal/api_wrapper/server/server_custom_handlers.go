@@ -11,6 +11,7 @@ import (
 	apidef "github.com/iolave/go-proxmox/internal/api_wrapper/api_def"
 	"github.com/iolave/go-proxmox/internal/api_wrapper/pve_utils"
 	"github.com/iolave/go-proxmox/pkg/errors"
+	"github.com/iolave/go-proxmox/pkg/pve/services/access"
 )
 
 func addCustomRoutes(m *http.ServeMux, s *server) {
@@ -37,7 +38,7 @@ func addCustomRoutes(m *http.ServeMux, s *server) {
 func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.Method, r.URL.Path, "started")
-		authorized, err := s.IsUserAuthorized(r, "VMS", "VM.Audit")
+		authorized, err := s.IsUserAuthorized(r, access.PRIVILEGE_VM_AUDIT, "/vms")
 		if err != nil {
 			httperr := errors.NewHTTPError(
 				http.StatusInternalServerError,
@@ -129,7 +130,7 @@ func getLXCIPHandlerV1(s *server) http.HandlerFunc {
 func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.Method, r.URL.Path, "started")
-		authorized, err := s.IsUserAuthorized(r, "VMS", "VM.Console")
+		authorized, err := s.IsUserAuthorized(r, access.PRIVILEGE_VM_CONSOLE, "/vms")
 		if err != nil {
 			httperr := errors.NewHTTPError(
 				http.StatusInternalServerError,
@@ -236,7 +237,6 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		w.Write(b)
 		log.Println(r.Method, r.URL.Path, "succeeded")
-		return
 	})
 }
 
@@ -258,7 +258,7 @@ func postLXCCMDHandlerV1(s *server) http.HandlerFunc {
 func postLXCCMDAsyncHandlerV1(s *server) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.Method, r.URL.Path, "started")
-		authorized, err := s.IsUserAuthorized(r, "VMS", "VM.Console")
+		authorized, err := s.IsUserAuthorized(r, access.PRIVILEGE_VM_CONSOLE, "/vms")
 		if err != nil {
 			httperr := errors.NewHTTPError(
 				http.StatusInternalServerError,
@@ -380,7 +380,6 @@ func postLXCCMDAsyncHandlerV1(s *server) http.HandlerFunc {
 				return
 			}
 			log.Println(r.Method, r.URL.Path, "succeeded_async")
-			return
 		}()
 	})
 }
@@ -402,7 +401,7 @@ func postLXCCMDAsyncHandlerV1(s *server) http.HandlerFunc {
 func getCMDResultHandlerV1(s *server) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.Method, r.URL.Path, "started")
-		authorized, err := s.IsUserAuthorized(r, "VMS", "VM.Audit")
+		authorized, err := s.IsUserAuthorized(r, access.PRIVILEGE_VM_AUDIT, "/vms")
 		if err != nil {
 			httperr := errors.NewHTTPError(
 				http.StatusInternalServerError,

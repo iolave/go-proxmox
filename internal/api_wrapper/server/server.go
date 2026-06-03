@@ -7,13 +7,15 @@ import (
 	"net/http"
 
 	"github.com/iolave/go-proxmox/internal/api_wrapper/models"
+	"github.com/iolave/go-proxmox/pkg/pve"
 )
 
 type server struct {
-	c      *http.Client
-	s      *http.Server
-	cfg    serverConfig
-	models *models.Models
+	c         *http.Client
+	s         *http.Server
+	cfg       serverConfig
+	models    *models.Models
+	pveClient *pve.Client
 }
 
 type serverConfig struct {
